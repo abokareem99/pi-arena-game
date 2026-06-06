@@ -50,6 +50,7 @@
             flex-direction: column;
             gap: 2rem;
             backdrop-filter: blur(10px);
+            z-index: 10;
         }
 
         .brand {
@@ -100,6 +101,7 @@
             color: var(--text-muted);
             font-weight: 600;
             border: 1px solid transparent;
+            text-align: right;
         }
 
         .nav-item:hover, .nav-item.active {
@@ -144,6 +146,7 @@
             gap: 1.5rem;
             backdrop-filter: blur(10px);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            width: 100%;
         }
 
         .game-header {
@@ -153,11 +156,13 @@
             align-items: center;
             border-bottom: 1px solid rgba(255,255,255,0.05);
             padding-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
         .game-stats {
             display: flex;
-            gap: 2rem;
+            gap: 1.5rem;
         }
 
         .stat-box {
@@ -181,6 +186,8 @@
             border-radius: 12px;
             box-shadow: 0 0 20px rgba(138, 43, 226, 0.3);
             cursor: crosshair;
+            max-width: 100%;
+            height: auto;
         }
 
         .btn-action {
@@ -283,7 +290,8 @@
             border: 2px solid var(--neon-gold);
             border-radius: 16px;
             padding: 2rem;
-            width: 400px;
+            width: 90%;
+            max-width: 400px;
             text-align: center;
             box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
             animation: modalPop 0.3s ease-out;
@@ -308,12 +316,75 @@
         }
 
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* ========================================== */
+        /* التحديث السحري: كود التجاوب الخاص بالهواتف */
+        /* ========================================== */
+        @media (max-width: 768px) {
+            .app-container {
+                grid-template-columns: 1fr; /* تحويل التخطيط إلى عمود واحد مكبوس للأسفل */
+            }
+
+            sidebar {
+                border-left: none;
+                border-bottom: 1px solid rgba(138, 43, 226, 0.2);
+                padding: 1rem;
+                gap: 1rem;
+            }
+
+            .brand {
+                font-size: 1.2rem;
+                padding-bottom: 0.5rem;
+            }
+
+            .wallet-card {
+                padding: 0.8rem;
+            }
+
+            .balance {
+                font-size: 1.4rem;
+            }
+
+            .nav-menu {
+                flex-direction: row; /* تحويل القائمة الجانبية إلى أزرار أفقية متناسقة في الهاتف */
+                justify-content: space-around;
+                flex-wrap: wrap;
+                gap: 0.4rem;
+            }
+
+            .nav-item {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.85rem;
+                border-radius: 6px;
+                text-align: center;
+                flex: 1;
+                min-width: 90px;
+            }
+
+            .nav-item:hover, .nav-item.active {
+                border-right: transparent;
+                border-bottom: 3px solid var(--neon-blue); /* خط سفلي بدلاً من الجانبي */
+            }
+
+            main {
+                padding: 1rem;
+            }
+
+            .game-panel {
+                padding: 1rem;
+            }
+
+            .luxury-table th, .luxury-table td {
+                padding: 0.6rem 0.8rem;
+                font-size: 0.85rem;
+            }
+        }
     </style>
 </head>
 <body>
 
 <div class="app-container">
-    <!-- القائمة الجانبية الاستراتيجية -->
+    <!-- القائمة الجانبية الاستراتيجية متجاوبة -->
     <sidebar>
         <div class="brand">PI ARENA ELITE</div>
         
@@ -324,8 +395,8 @@
 
         <ul class="nav-menu">
             <li class="nav-item active" onclick="switchTab('game-section', this)">🎯 ميدان التحدي</li>
-            <li class="nav-item" onclick="switchTab('leaderboard-section', this)">🏆 لوحة الصدارة الحية</li>
-            <li class="nav-item" onclick="switchTab('shop-section', this)">⚡ ترسانة المظاهر (Skins)</li>
+            <li class="nav-item" onclick="switchTab('leaderboard-section', this)">🏆 لوحة الصدارة</li>
+            <li class="nav-item" onclick="switchTab('shop-section', this)">⚡ المظاهر (Skins)</li>
         </ul>
     </sidebar>
 
@@ -338,8 +409,8 @@
                     <h2>بوابة التصويب النخبوية</h2>
                     <div class="game-stats">
                         <div class="stat-box"><div class="stat-label">النقاط</div><div class="stat-val" id="scoreVal">0</div></div>
-                        <div class="stat-box"><div class="stat-label">المجموعة (Combo)</div><div class="stat-val" id="comboVal">x1</div></div>
-                        <div class="stat-box"><div class="stat-label">الوقت المتبقي</div><div class="stat-val" id="timerVal">30s</div></div>
+                        <div class="stat-box"><div class="stat-label">المجموعة</div><div class="stat-val" id="comboVal">x1</div></div>
+                        <div class="stat-box"><div class="stat-label">الوقت</div><div class="stat-val" id="timerVal">30s</div></div>
                     </div>
                 </div>
 
@@ -353,7 +424,7 @@
 
         <!-- 2. شاشة لوحة الصدارة الفخمة -->
         <section id="leaderboard-section" class="view-section">
-            <h2 style="margin-bottom: 1rem; text-shadow: 0 0 10px var(--neon-blue);">المتصدرون لهذا اليوم (الموسم الاحترافي)</h2>
+            <h2 style="margin-bottom: 1rem; text-shadow: 0 0 10px var(--neon-blue);">المتصدرون لهذا اليوم</h2>
             <table class="luxury-table">
                 <thead>
                     <tr>
@@ -373,7 +444,7 @@
 
         <!-- 3. شاشة المتجر وشراء المظاهر التجميلية -->
         <section id="shop-section" class="view-section">
-            <h2 style="margin-bottom: 1rem; text-shadow: 0 0 10px var(--pi-neon);">ترسانة ليزر الأسلحة التجميلية</h2>
+            <h2 style="margin-bottom: 1rem; text-shadow: 0 0 10px var(--pi-neon);">ترسانة ليزر الأسلحة</h2>
             <div class="shop-grid">
                 <div class="shop-card">
                     <div class="skin-preview" style="color: #00f0ff;">⚡</div>
@@ -400,7 +471,7 @@
         <p id="piModalTxName" style="font-size: 0.95rem; color: var(--text-light);"></p>
         <p id="piModalCost" style="font-size: 1.4rem; font-weight: bold; margin: 0.5rem 0; color: #fff;"></p>
         <div class="loader"></div>
-        <p style="color: var(--text-muted); font-size: 0.85rem;">جاري استدعاء الـ SDK وتأكيد المعاملة عبر البلوكشين الأصلي...</p>
+        <p style="color: var(--text-muted); font-size: 0.85rem;">جاري استدعاء الـ SDK وتأكيد المعاملة عبر البلوكشين...</p>
     </div>
 </div>
 
@@ -471,7 +542,6 @@
             ctx.shadowBlur = 15; ctx.shadowColor = this.color;
             ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
             ctx.fillStyle = this.color; ctx.fill();
-            // حلقة داخلية تكتيكية
             ctx.beginPath(); ctx.arc(this.x, this.y, this.radius * 0.5, 0, Math.PI * 2);
             ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.stroke();
             ctx.shadowBlur = 0;
@@ -514,25 +584,24 @@
         if (!state.gameActive) return;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // روعة وتأثيرات الأهداف
         targets.forEach(t => { t.update(); t.draw(); });
-        // معالجة جزيئات الانفجار
         particles = particles.filter(p => p.alpha > 0);
         particles.forEach(p => { p.update(); p.draw(); });
 
         requestAnimationFrame(gameLoop);
     }
 
-    // تتبع ضغطات الماوس والتصويب الدقيق داخل الـ Canvas
+    // تتبع تصويب اللمس والماوس بدقة متناهية مع تصغير الـ Canvas على الهواتف
     canvas.addEventListener('mousedown', (e) => {
         if (!state.gameActive) return;
         AudioEngine.playShoot();
         
         const rect = canvas.getBoundingClientRect();
-        const mouseX = e.clientX - rect.left;
-        const mouseY = e.clientY - rect.top;
+        
+        // الحسبة السحرية: تحويل إحداثيات شاشة الهاتف لتطابق حجم الـ Canvas الداخلي الافتراضي (750x420)
+        const mouseX = (e.clientX - rect.left) * (canvas.width / rect.width);
+        const mouseY = (e.clientY - rect.top) * (canvas.height / rect.height);
 
-        // رسم ليزر تكتيكي لحظي بناء على المظهر المختار
         ctx.strokeStyle = state.currentLaserColor; ctx.lineWidth = 3;
         ctx.beginPath(); ctx.moveTo(canvas.width/2, canvas.height); ctx.lineTo(mouseX, mouseY); ctx.stroke();
 
@@ -542,10 +611,8 @@
             let dist = Math.hypot(mouseX - t.x, mouseY - t.y);
             if (dist < t.radius) {
                 hit = true; AudioEngine.playHit();
-                // توليد الجزيئات المتفجرة الفخمة
                 for(let p=0; p<15; p++) particles.push(new Particle(t.x, t.y, t.color));
                 
-                // حساب النقاط بناءً على حجم الهدف الفعلي (أصغر = نقاط أعلى)
                 let basePoints = t.radius < 18 ? 150 : 50;
                 state.score += basePoints * state.combo;
                 state.combo++;
@@ -564,12 +631,11 @@
         state.gameActive = false;
         clearInterval(gameInterval);
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = '#fff'; ctx.font = '30px Segoe UI'; ctx.textAlign = 'center';
-        ctx.fillText(`انتهت جولة القنص! مجموع نقاطك: ${state.score}`, canvas.width/2, canvas.height/2);
+        ctx.fillStyle = '#fff'; ctx.font = '24px Segoe UI'; ctx.textAlign = 'center';
+        ctx.fillText(`انتهت الجولة! نقاطك: ${state.score}`, canvas.width/2, canvas.height/2);
         document.getElementById('startBtn').style.display = 'block';
         document.getElementById('startBtn').innerText = 'دخول تحدي جديد (0.1 Pi)';
         
-        // تحديث الصدارة آلياً إذا حقق أبو كريم رقم قياسي
         if (state.score > state.highScore) {
             state.highScore = state.score;
             const body = document.getElementById('leaderboardBody');
@@ -577,13 +643,11 @@
         }
     }
 
-    // --- محاكاة الـ Pi SDK واستدعاء الـ Callbacks الحقيقية لباي ---
     function simulatePiPayment(txName, amount, onSuccess) {
         document.getElementById('piModalTxName').innerText = `المعاملة: ${txName}`;
         document.getElementById('piModalCost').innerText = `${amount.toFixed(2)} Pi`;
         document.getElementById('piPaywallModal').style.display = 'flex';
 
-        // محاكاة فترة التحقق في البلوكشين (تأخذ عادة من 1.5 إلى 2 ثانية)
         setTimeout(() => {
             document.getElementById('piPaywallModal').style.display = 'none';
             if (state.balance >= amount) {
@@ -591,13 +655,12 @@
                 document.getElementById('walletBalance').innerText = `${state.balance.toFixed(2)} Pi`;
                 onSuccess();
             } else {
-                alert('فشلت المعاملة: رصيد محفظة Pi الخاصة بك غير كافٍ!');
+                alert('رصيد محفظتك غير كافٍ!');
             }
         }, 1800);
     }
 
     function requestMatchEntry() {
-        // تمثيلاً لهيكل الكود الفعلي Pi.createPayment()
         simulatePiPayment("تذكرة دخول ميدان النخبة التنافسي", 0.10, () => {
             initGame();
         });
@@ -606,11 +669,10 @@
     function buySkin(skinName, cost, laserColor) {
         simulatePiPayment(`شراء مظهر السلاح: ${skinName}`, cost, () => {
             state.currentLaserColor = laserColor;
-            alert(`تم تفعيل مظهر السلاح [${skinName}] الفاخر بنجاح وتغيير لون الليزر المتوهج.`);
+            alert(`تم تفعيل مظهر [${skinName}] الجديد!`);
         });
     }
 
-    // التنقل السلس بين شاشات لوحة التحكم
     function switchTab(sectionId, element) {
         document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
