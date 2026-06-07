@@ -29,11 +29,15 @@
             user-select: none;
         }
 
+        html, body {
+            overflow-x: hidden;
+            max-width: 100%;
+        }
+
         body {
             background-color: var(--bg-dark);
             color: var(--text-light);
             font-family: 'Cairo', sans-serif;
-            overflow-x: hidden;
             min-height: 100vh;
             position: relative;
         }
@@ -167,8 +171,6 @@
             overflow: hidden;
         }
 
-        .nav-item i { font-size: 1.3rem; }
-
         .nav-item:hover {
             color: var(--text-light);
             background: rgba(255,255,255,0.03);
@@ -191,7 +193,6 @@
             overflow-y: auto;
         }
 
-        /* تخصيص شريط التمرير (Scrollbar) */
         main::-webkit-scrollbar { width: 8px; }
         main::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
         main::-webkit-scrollbar-thumb { background: var(--panel-border); border-radius: 4px; }
@@ -223,6 +224,7 @@
             backdrop-filter: blur(15px);
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 0 0 1px rgba(255,255,255,0.05);
             position: relative;
+            max-width: 100%;
         }
 
         .game-header {
@@ -279,9 +281,10 @@
             border-radius: 16px;
             overflow: hidden;
             box-shadow: 0 0 40px rgba(138, 43, 226, 0.3), 0 0 15px rgba(0, 229, 255, 0.2);
+            width: 100%;
+            max-width: 800px;
         }
 
-        /* إضافة تأثير الشاشة (Scanlines) فوق اللعبة */
         .canvas-container::after {
             content: " ";
             display: block;
@@ -320,6 +323,7 @@
             letter-spacing: 1px;
             position: relative;
             overflow: hidden;
+            max-width: 100%;
         }
 
         .btn-action::before {
@@ -448,10 +452,9 @@
 
         .shop-card h3 { font-size: 1.4rem; font-weight: 800; }
         .shop-card p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; flex-grow: 1; }
-        
         .shop-card button { width: 100%; padding: 1rem; font-size: 1.1rem; }
 
-        /* نوافذ Pi (Modals) بمظهر سايبربانك */
+        /* نوافذ Pi (Modals) */
         .pi-modal {
             display: none; position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -486,21 +489,112 @@
 
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* الشاشات الصغيرة */
+        /* ---------------------------------------------------- */
+        /* التحديث الشامل والمضمون لتجاوب شاشات الهواتف المحمولة */
+        /* ---------------------------------------------------- */
         @media (max-width: 900px) {
-            .app-container { grid-template-columns: 1fr; }
-            sidebar { border-left: none; border-bottom: 1px solid var(--panel-border); flex-direction: row; flex-wrap: wrap; justify-content: space-between; align-items: center; padding: 1rem; }
-            .brand-header { padding: 0.5rem; border: none; width: auto; }
+            .app-container { 
+                grid-template-columns: 1fr; 
+                overflow-x: hidden;
+            }
+            
+            sidebar { 
+                border-left: none; 
+                border-bottom: 1px solid var(--panel-border); 
+                flex-direction: column; 
+                padding: 1.2rem; 
+                gap: 1.2rem;
+            }
+            
+            .brand-header { padding: 0.5rem; border: none; width: 100%; }
             .brand-header::after { display: none; }
-            .sidebar-content { padding: 0; flex-direction: row; align-items: center; width: 100%; justify-content: space-between; gap: 1rem; }
-            .wallet-card { padding: 0.8rem; margin: 0; min-width: 150px; }
-            .nav-menu { flex-direction: row; gap: 0.5rem; overflow-x: auto; padding-bottom: 5px; }
-            .nav-item { padding: 0.8rem 1rem; font-size: 0.9rem; white-space: nowrap; }
-            main { padding: 1.5rem; }
-            .game-panel { padding: 1.5rem; }
-            .game-stats { gap: 0.8rem; }
-            .stat-box { min-width: 80px; padding: 0.5rem 1rem; }
-            .stat-val { font-size: 1.4rem; }
+            
+            .sidebar-content { 
+                padding: 0; 
+                flex-direction: column; 
+                width: 100%; 
+                gap: 1.2rem; 
+            }
+            
+            .wallet-card { padding: 1rem; margin: 0; width: 100%; }
+            
+            .nav-menu { 
+                flex-direction: row; 
+                gap: 0.5rem; 
+                width: 100%; 
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            
+            .nav-item { 
+                padding: 0.6rem 1rem; 
+                font-size: 0.9rem; 
+                white-space: nowrap; 
+                border-radius: 8px;
+            }
+            
+            .nav-item.active {
+                border-right: none;
+                border-bottom: 3px solid var(--neon-blue);
+                background: linear-gradient(180deg, rgba(0, 229, 255, 0.15) 0%, transparent 100%);
+                box-shadow: 0 10px 15px rgba(0, 229, 255, 0.1);
+            }
+            
+            main { 
+                padding: 1.2rem 1rem; 
+                height: auto;
+                overflow-y: visible;
+            }
+            
+            .game-panel { 
+                padding: 1.2rem; 
+                gap: 1.5rem;
+                width: 100%;
+                overflow: hidden;
+            }
+            
+            /* هنا يكمن إصلاح مشكلة تداخل هيدر اللعبة وانهيار الصناديق */
+            .game-header { 
+                flex-direction: column; 
+                gap: 1.2rem; 
+                text-align: center; 
+                align-items: center;
+                padding-bottom: 1.2rem;
+            }
+            
+            .game-header h2 { 
+                font-size: 1.4rem; 
+                width: 100%;
+            }
+            
+            .game-stats { 
+                width: 100%; 
+                justify-content: center; 
+                gap: 0.6rem; 
+            }
+            
+            .stat-box { 
+                min-width: 0; 
+                flex: 1; 
+                padding: 0.6rem 0.4rem; 
+                border-radius: 10px;
+            }
+            
+            .stat-label {
+                font-size: 0.75rem;
+                letter-spacing: 1px;
+            }
+            
+            .stat-val { 
+                font-size: 1.3rem; 
+            }
+            
+            .btn-action { 
+                width: 100%; 
+                padding: 1rem 1.5rem; 
+                font-size: 1.1rem; 
+                text-align: center;
+            }
         }
     </style>
 </head>
@@ -538,7 +632,7 @@
                 <div class="canvas-container">
                     <canvas id="gameCanvas" width="800" height="450"></canvas>
                 </div>
-                <div id="gameControls" style="margin-top: 1rem;">
+                <div id="gameControls" style="margin-top: 0.5rem; width: 100%; text-align: center;">
                     <button class="btn-action" id="startBtn" onclick="requestMatchEntry()">بدء التحدي (0.1 Pi)</button>
                 </div>
             </div>
@@ -556,7 +650,6 @@
                         </tr>
                     </thead>
                     <tbody id="leaderboardBody">
-                        <!-- بيانات افتراضية لحين التحميل -->
                         <tr><td colspan="3" style="text-align:center; color: var(--text-muted);">جاري جلب البيانات من الخادم...</td></tr>
                     </tbody>
                 </table>
@@ -611,7 +704,6 @@
 </div>
 
 <script>
-    // الحفاظ على نفس المنطق البرمجي والربط الخاص بك تماماً لضمان عدم تعطل الدفع
     const BACKEND_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
         ? 'http://localhost:5000' 
         : 'https://pi-arena-game.vercel.app'; 
@@ -645,7 +737,6 @@
         document.getElementById('piCustomModal').style.display = 'none';
     }
 
-    // نظام فحص ومصادقة Pi SDK
     document.addEventListener("DOMContentLoaded", () => {
         let authRetries = 0;
         const maxRetries = 3;
@@ -751,7 +842,6 @@
         });
     }
 
-    // محرك الأهداف والجسيمات
     class CyberTarget {
         constructor() {
             this.x = Math.random() * (canvas.width - 80) + 40; 
@@ -761,7 +851,7 @@
             this.pulseTimer = Math.random() * 10;
             this.vx = (Math.random() - 0.5) * 5; 
             this.vy = (Math.random() - 0.5) * 5;
-            this.hue = Math.random() > 0.5 ? 190 : 280; // درجات أزرق وبنفسجي سايبربانك
+            this.hue = Math.random() > 0.5 ? 190 : 280; 
             this.rotationAngle = 0; 
             this.rotSpeed = (Math.random() - 0.5) * 0.08;
         }
@@ -777,7 +867,6 @@
             ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.rotationAngle);
             ctx.shadowBlur = 25; ctx.shadowColor = `hsl(${this.hue}, 100%, 50%)`;
             
-            // رسم شكل هندسي سايبربانك (مثمن بدلاً من دائرة بسيطة)
             ctx.beginPath();
             for(let i=0; i<8; i++) {
                 let angle = i * Math.PI / 4;
@@ -850,7 +939,6 @@
         if (!state.gameActive) return;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
-        // رسم شبكة خلفية متحركة ببطء في الكانفاس
         ctx.strokeStyle = "rgba(0, 229, 255, 0.05)";
         ctx.lineWidth = 1;
         let offset = (Date.now() / 50) % 40;
@@ -883,7 +971,7 @@
         let hit = false;
         for (let i = targets.length - 1; i >= 0; i--) {
             let t = targets[i]; let dist = Math.hypot(mouseX - t.x, mouseY - t.y);
-            if (dist < t.radius + 10) { // توسيع منطقة الإصابة قليلاً
+            if (dist < t.radius + 10) { 
                 hit = true; AudioEngine.playHit();
                 for(let p=0; p<25; p++) particles.push(new NeonParticle(t.x, t.y, state.currentLaserColor));
                 state.score += 100 * state.combo; state.combo++;
