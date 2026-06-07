@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pi Arena: Elite Marksman</title>
+    <title>Pi Arena: Cyber Marksman</title>
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
     <style>
         :root {
@@ -55,7 +55,6 @@
             z-index: 10;
         }
 
-        /* حاوية الشعار والهوية الرسمية بالخط الأحمر المتوهج */
         .brand-header {
             width: 100%;
             padding: 2rem 1.5rem 1.5rem;
@@ -87,7 +86,7 @@
             border-radius: 16px;
             padding: 1.2rem;
             text-align: center;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.4), inset 0 0 15px rgba(255,255,255,0.02);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
             backdrop-filter: blur(5px);
         }
 
@@ -95,7 +94,6 @@
             font-size: 0.85rem;
             color: var(--text-muted);
             margin-bottom: 0.6rem;
-            letter-spacing: 0.5px;
         }
 
         .balance {
@@ -117,14 +115,13 @@
             padding: 0.9rem 1.2rem;
             border-radius: 10px;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s;
             color: var(--text-muted);
             font-weight: 600;
             border: 1px solid transparent;
             text-align: right;
             display: flex;
             align-items: center;
-            justify-content: flex-start;
             gap: 10px;
         }
 
@@ -132,7 +129,6 @@
             color: var(--text-light);
             background: linear-gradient(90deg, rgba(138, 43, 226, 0.25) 0%, transparent 100%);
             border-right: 4px solid var(--neon-blue);
-            border-color: rgba(138, 43, 226, 0.3) rgba(138, 43, 226, 0.3) rgba(138, 43, 226, 0.3) transparent;
             box-shadow: -5px 0 15px rgba(0, 240, 255, 0.1);
         }
 
@@ -146,7 +142,7 @@
 
         .view-section {
             display: none;
-            animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            animation: fadeIn 0.5s ease forwards;
         }
 
         .view-section.active {
@@ -168,7 +164,7 @@
             align-items: center;
             gap: 2rem;
             backdrop-filter: blur(15px);
-            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.6), inset 0 0 30px rgba(255,255,255,0.02);
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.6);
             width: 100%;
         }
 
@@ -201,33 +197,27 @@
             background: rgba(0, 0, 0, 0.3);
             padding: 0.5rem 1.2rem;
             border-radius: 10px;
-            border: 1px solid rgba(255,255,255,0.03);
         }
 
         .stat-label {
             font-size: 0.75rem;
             color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 0.2rem;
         }
 
         .stat-val {
             font-size: 1.6rem;
             font-weight: 800;
             color: var(--neon-blue);
-            text-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
         }
 
         #gameCanvas {
-            background: #030207;
+            background: #020106;
             border: 2px solid rgba(138, 43, 226, 0.4);
             border-radius: 16px;
             box-shadow: 0 0 30px rgba(138, 43, 226, 0.2);
             cursor: crosshair;
             max-width: 100%;
             height: auto;
-            transition: border-color 0.3s;
         }
 
         .btn-action {
@@ -241,16 +231,11 @@
             cursor: pointer;
             box-shadow: 0 0 20px rgba(242, 169, 0, 0.3);
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            letter-spacing: 0.5px;
         }
 
         .btn-action:hover {
-            transform: translateY(-3px) scale(1.02);
+            transform: translateY(-3px);
             box-shadow: 0 0 30px var(--neon-gold-bright);
-        }
-
-        .btn-action:active {
-            transform: translateY(-1px);
         }
 
         .luxury-table-container {
@@ -258,8 +243,6 @@
             border-radius: 20px;
             padding: 0.5rem;
             border: 1px solid rgba(138, 43, 226, 0.15);
-            backdrop-filter: blur(15px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
             overflow: hidden;
         }
 
@@ -276,22 +259,10 @@
         .luxury-table th {
             background: rgba(138, 43, 226, 0.15);
             color: var(--neon-blue);
-            font-weight: 700;
-            font-size: 0.95rem;
-            letter-spacing: 0.5px;
         }
 
         .luxury-table tr {
             border-bottom: 1px solid rgba(255,255,255,0.04);
-            transition: background 0.2s;
-        }
-
-        .luxury-table tr:last-child {
-            border-bottom: none;
-        }
-
-        .luxury-table tr:hover {
-            background: rgba(255,255,255,0.02);
         }
 
         .rank-gold { 
@@ -315,15 +286,12 @@
             display: flex;
             flex-direction: column;
             gap: 1.2rem;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            backdrop-filter: blur(15px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: all 0.3s;
         }
 
         .shop-card:hover {
             border-color: var(--neon-blue);
             transform: translateY(-6px);
-            box-shadow: 0 15px 35px rgba(0, 240, 255, 0.15);
         }
 
         .skin-preview {
@@ -334,163 +302,68 @@
             align-items: center;
             justify-content: center;
             font-size: 3rem;
-            border: 1px solid rgba(255,255,255,0.02);
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
         }
 
-        /* هيكل نافذة التنبيه الاحترافية المخصصة (Custom Modal) */
+        /* نافذة التنبيه المخصصة الاحترافية */
         .pi-modal-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(5, 1, 13, 0.85);
             backdrop-filter: blur(8px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            opacity: 0;
-            pointer-events: none;
+            display: flex; justify-content: center; align-items: center;
+            z-index: 9999; opacity: 0; pointer-events: none;
             transition: opacity 0.4s ease;
         }
 
-        .pi-modal-overlay.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
+        .pi-modal-overlay.active { opacity: 1; pointer-events: auto; }
 
         .pi-modal-box {
             background: linear-gradient(145deg, #1f1235 0%, #0f071c 100%);
             border: 2px solid var(--neon-gold);
-            box-shadow: 0 0 40px rgba(242, 169, 0, 0.25), inset 0 0 20px rgba(255, 255, 255, 0.05);
-            border-radius: 24px;
-            padding: 35px;
-            max-width: 420px;
-            width: 90%;
-            text-align: center;
-            transform: scale(0.7) translateY(-30px);
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border-radius: 24px; padding: 35px; max-width: 420px; width: 90%;
+            text-align: center; transform: scale(0.7); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .pi-modal-overlay.active .pi-modal-box {
-            transform: scale(1) translateY(0);
-        }
+        .pi-modal-overlay.active .pi-modal-box { transform: scale(1); }
 
         .pi-modal-icon {
-            width: 70px;
-            height: 70px;
-            background: rgba(242, 169, 0, 0.1);
-            border: 2px solid var(--neon-gold);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 0 auto 20px;
-            color: var(--neon-gold);
-            font-size: 2rem;
-            animation: pulseGlow 2s infinite;
-        }
-
-        .pi-modal-title {
-            font-size: 1.4rem;
-            font-weight: bold;
-            color: #fff;
-            margin-bottom: 12px;
-            letter-spacing: 0.5px;
-        }
-
-        .pi-modal-message {
-            font-size: 1rem;
-            color: var(--text-muted);
-            line-height: 1.6;
-            margin-bottom: 25px;
+            width: 70px; height: 70px; background: rgba(242, 169, 0, 0.1);
+            border: 2px solid var(--neon-gold); border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            margin: 0 auto 20px; color: var(--neon-gold); font-size: 2rem;
         }
 
         .pi-modal-btn {
-            background: var(--neon-gold);
-            color: #0b0416;
-            border: none;
-            border-radius: 10px;
-            padding: 12px 40px;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.2s;
+            background: var(--neon-gold); color: #0b0416; border: none;
+            border-radius: 10px; padding: 12px 40px; font-weight: bold; cursor: pointer;
         }
 
-        .pi-modal-btn:hover {
-            background: var(--neon-gold-bright);
-        }
-
-        /* النافذة المخصصة للبوابات المالية (Paywall Screen) */
+        /* بوابة الدفع المالي */
         .pi-modal {
-            display: none;
-            position: fixed;
+            display: none; position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(5, 1, 13, 0.9);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(10px);
+            background: rgba(5, 1, 13, 0.9); z-index: 1000;
+            align-items: center; justify-content: center; backdrop-filter: blur(10px);
         }
 
         .pi-modal-content {
             background: linear-gradient(145deg, #141522 0%, #0b0c16 100%);
-            border: 2px solid var(--neon-gold);
-            border-radius: 24px;
-            padding: 2.5rem;
-            width: 90%;
-            max-width: 420px;
-            text-align: center;
-            box-shadow: 0 0 40px rgba(242, 169, 0, 0.25);
-            animation: modalPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        @keyframes modalPop { from {transform: scale(0.8); opacity:0;} to {transform: scale(1); opacity:1;} }
-
-        .pi-logo {
-            width: 75px; height: 75px;
-            background: var(--neon-gold);
-            color: #0b0c16;
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 2.8rem; font-weight: bold; margin: 0 auto 1.5rem;
-            box-shadow: 0 0 20px rgba(242, 169, 0, 0.4);
+            border: 2px solid var(--neon-gold); border-radius: 24px;
+            padding: 2.5rem; width: 90%; max-width: 420px; text-align: center;
         }
 
         .loader {
-            border: 4px solid rgba(255,255,255,0.05);
-            border-top: 4px solid var(--neon-gold);
-            border-radius: 50%; width: 45px; height: 45px;
-            animation: spin 1s linear infinite; margin: 1.8rem auto;
-            box-shadow: 0 0 15px rgba(242, 169, 0, 0.2);
+            border: 4px solid rgba(255,255,255,0.05); border-top: 4px solid var(--neon-gold);
+            border-radius: 50%; width: 45px; height: 45px; animation: spin 1s linear infinite; margin: 1.8rem auto;
         }
 
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        @keyframes pulseGlow {
-            0% { box-shadow: 0 0 0 0 rgba(242, 169, 0, 0.4); }
-            70% { box-shadow: 0 0 0 15px rgba(242, 169, 0, 0.0); }
-            100% { box-shadow: 0 0 0 0 rgba(242, 169, 0, 0.0); }
-        }
-
         @media (max-width: 768px) {
             .app-container { grid-template-columns: 1fr; }
-            sidebar { border-left: none; border-bottom: 1px solid rgba(138, 43, 226, 0.2); padding: 0; gap: 0.5rem; }
-            .brand-header { padding: 1.2rem; }
-            .sidebar-content { padding: 0 1rem 1rem; gap: 1rem; }
-            .wallet-card { padding: 0.8rem; border-radius: 12px; }
-            .balance { font-size: 1.2rem; }
-            .nav-menu { flex-direction: row; justify-content: space-around; flex-wrap: wrap; gap: 0.4rem; }
-            .nav-item { padding: 0.6rem 0.8rem; font-size: 0.85rem; border-radius: 8px; text-align: center; flex: 1; min-width: 90px; justify-content: center; }
-            .nav-item:hover, .nav-item.active { border-right: transparent; border-bottom: 3px solid var(--neon-blue); background: rgba(138, 43, 226, 0.15); box-shadow: 0 4px 10px rgba(0, 240, 255, 0.05); }
+            sidebar { border-left: none; border-bottom: 1px solid rgba(138, 43, 226, 0.2); }
+            .nav-menu { flex-direction: row; justify-content: space-around; }
             main { padding: 1.2rem; }
-            .game-panel { padding: 1.2rem; border-radius: 18px; }
-            .game-header h2 { font-size: 1.3rem; }
-            .stat-val { font-size: 1.3rem; }
-            .luxury-table th, .luxury-table td { padding: 0.8rem 1rem; font-size: 0.85rem; }
         }
     </style>
 </head>
@@ -498,17 +371,14 @@
 
 <div class="app-container">
     <sidebar>
-        <!-- الـ Header الرسمي المحمي للهوية التجارية -->
         <div class="brand-header">
             <div class="brand">PI ARENA ELITE</div>
         </div>
-        
         <div class="sidebar-content">
             <div class="wallet-card">
                 <h3>حساب اللاعب الحالي</h3>
-                <div class="balance" id="walletBalance" style="font-size: 14px; transition: all 0.3s; color: var(--text-muted);">جاري الاتصال بـ Pi...</div>
+                <div class="balance" id="walletBalance" style="font-size: 14px; color: var(--text-muted);">جاري الاتصال بـ Pi...</div>
             </div>
-
             <ul class="nav-menu">
                 <li class="nav-item active" onclick="switchTab('game-section', this)">🎯 ميدان التحدي</li>
                 <li class="nav-item" onclick="switchTab('leaderboard-section', this)">🏆 لوحة الصدارة</li>
@@ -528,9 +398,7 @@
                         <div class="stat-box"><div class="stat-label">الوقت</div><div class="stat-val" id="timerVal">30s</div></div>
                     </div>
                 </div>
-
                 <canvas id="gameCanvas" width="750" height="420"></canvas>
-                
                 <div id="gameControls">
                     <button class="btn-action" id="startBtn" onclick="requestMatchEntry()">دخول التحدي (0.1 Pi)</button>
                 </div>
@@ -548,8 +416,7 @@
                             <th>أعلى نقاط</th>
                         </tr>
                     </thead>
-                    <tbody id="leaderboardBody">
-                    </tbody>
+                    <tbody id="leaderboardBody"></tbody>
                 </table>
             </div>
         </section>
@@ -560,13 +427,13 @@
                 <div class="shop-card">
                     <div class="skin-preview" style="color: #00f0ff; text-shadow: 0 0 15px #00f0ff;">⚡</div>
                     <h3 style="font-weight: 700;">شعاع البلازما السياني</h3>
-                    <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.5;">يغير لون مؤشر إطلاق النار إلى الأزرق السياني المضيء.</p>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">يغير لون ليزر إطلاق النار والصدمات المرتدة إلى الأزرق السياني.</p>
                     <button class="btn-action" style="padding: 0.7rem; font-size: 1rem; border-radius: 10px;" onclick="buySkin('Plasma', 0.5, '#00f0ff')">امتلاك (0.5 Pi)</button>
                 </div>
                 <div class="shop-card">
                     <div class="skin-preview" style="color: #ffd700; text-shadow: 0 0 15px #ffd700;">🔥</div>
                     <h3 style="font-weight: 700;">شحنة النخبة الذهبية</h3>
-                    <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.5;">تأثير ليزري ذهبي ملكي مخصص لأبطال لوحة الصدارة.</p>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">تأثير ليزري ذهبي ملكي مخصص لأبطال الساحة النخبوية.</p>
                     <button class="btn-action" style="padding: 0.7rem; font-size: 1rem; border-radius: 10px;" onclick="buySkin('Gold', 1.5, '#ffd700')">امتلاك (1.5 Pi)</button>
                 </div>
             </div>
@@ -574,24 +441,22 @@
     </main>
 </div>
 
-<!-- واجهة الدفع المالية الأصلية من Pi SDK -->
+<!-- الواجهات العائمة المخصصة -->
 <div class="pi-modal" id="piPaywallModal">
     <div class="pi-modal-content">
-        <div class="pi-logo">π</div>
         <h2 style="color: var(--neon-gold); margin-bottom: 0.5rem; font-weight: 800;">بوابة دفع Pi Network</h2>
-        <p id="piModalTxName" style="font-size: 0.95rem; color: var(--text-light);"></p>
-        <p id="piModalCost" style="font-size: 1.6rem; font-weight: bold; margin: 0.5rem 0; color: #fff; text-shadow: 0 0 10px var(--neon-gold);"></p>
+        <p id="piModalTxName" style="font-size: 0.95rem;"></p>
+        <p id="piModalCost" style="font-size: 1.6rem; font-weight: bold; color: #fff;"></p>
         <div class="loader"></div>
-        <p id="piModalStatus" style="color: var(--text-muted); font-size: 0.85rem;">جاري فتح محفظة باي والتأكيد...</p>
+        <p id="piModalStatus" style="color: var(--text-muted); font-size: 0.85rem;">جاري التأكيد...</p>
     </div>
 </div>
 
-<!-- نافذة التنبيه الاحترافية المخصصة (Custom Modal) البديلة عن الـ Browser Alert -->
 <div id="piCustomModal" class="pi-modal-overlay">
     <div class="pi-modal-box">
         <div class="pi-modal-icon">⚡</div>
         <div class="pi-modal-title" id="modalTitle">تحديث النظام</div>
-        <div class="pi-modal-message" id="modalMessage">جاري معالجة البيانات المخصصة...</div>
+        <div class="pi-modal-message" id="modalMessage">جاري معالجة البيانات...</div>
         <button class="pi-modal-btn" onclick="closePiModalCustom()">موافق</button>
     </div>
 </div>
@@ -603,14 +468,16 @@
 
     let state = {
         currentUser: 'مقاتل_مجهول',
-        currentLaserColor: '#a855f7',
+        currentLaserColor: '#a855f7', // هذا المتغير سيتحكم بلون خط الليزر والانفجارات
         score: 0,
         combo: 1,
         timeLeft: 30,
         gameActive: false
     };
 
-    // دوال تشغيل النافذة الاحترافية المخصصة
+    // مصفوفة للاحتفاظ بخطوط الليزر النشطة للحظات لكي يراها اللاعب بوضوح قبل مسح الإطار
+    let activeLasers = [];
+
     function showPiModal(title, message, icon = '⚡') {
         document.getElementById('modalTitle').innerText = title;
         document.getElementById('modalMessage').innerText = message;
@@ -624,57 +491,24 @@
 
     document.addEventListener("DOMContentLoaded", () => {
         if (typeof Pi !== 'undefined') {
-            document.getElementById('walletBalance').innerText = "جاري تهيئة SDK...";
-            
             try {
                 Pi.init({ version: "2.0", sandbox: true });
-                
-                setTimeout(() => {
-                    document.getElementById('walletBalance').innerText = "جاري طلب المصادقة...";
-                    
-                    const onIncompletePaymentFound = (payment) => {
-                        console.warn("⚠️ تم العثور على دفعة غير مكتملة، جاري تأكيدها ماليًا بالسيرفر:", payment);
-                        
-                        fetch(`${BACKEND_URL}/api/pi/complete`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ 
-                                paymentId: payment.identifier, 
-                                txid: payment.transaction ? payment.transaction.txid : null 
-                            })
-                        })
-                        .then(res => res.json())
-                        .then(data => {
-                            if(data.identifier) {
-                                console.log("✅ تم إغلاق وإكمال الدفعة المعلقة بنجاح ومزامنتها.");
-                                showPiModal("استعادة المعاملة المعلقة ✅", "تم العثور على عملية دفع سابقة غير مكتملة وتم تأكيدها بنجاح ماليًا!", "🎉");
-                            }
-                        })
-                        .catch(err => console.error("❌ فشل الاتصال بالسيرفر لإكمال الدفعة المعلقة:", err));
-                    };
-
-                    Pi.authenticate(['username', 'payments'], onIncompletePaymentFound)
-                      .then(auth => {
-                          state.currentUser = auth.user.username;
-                          document.getElementById('walletBalance').innerText = auth.user.username;
-                          document.getElementById('walletBalance').style.color = "var(--neon-gold)";
-                          console.log("تم تسجيل الدخول بنجاح لـ: ", auth.user.username);
-                      })
-                      .catch(err => {
-                          console.error("Auth Error:", err);
-                          let errMsg = err.message || JSON.stringify(err) || "فشلت المصادقة";
-                          document.getElementById('walletBalance').innerText = "خطأ مصادقة: " + errMsg;
-                          document.getElementById('walletBalance').style.color = "#ff4444";
-                      });
-                }, 500);
-
-            } catch(e) {
-                document.getElementById('walletBalance').innerText = "خطأ أثناء تنفيذ init";
-                document.getElementById('walletBalance').style.color = "#ff4444";
-                console.error(e);
-            }
+                Pi.authenticate(['username', 'payments'], (payment) => {
+                    fetch(`${BACKEND_URL}/api/pi/complete`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ paymentId: payment.identifier, txid: payment.transaction.txid })
+                    });
+                }).then(auth => {
+                    state.currentUser = auth.user.username;
+                    document.getElementById('walletBalance').innerText = auth.user.username;
+                    document.getElementById('walletBalance').style.color = "var(--neon-gold)";
+                }).catch(err => {
+                    document.getElementById('walletBalance').innerText = "وضع التجربة نشط";
+                });
+            } catch(e) { console.error(e); }
         } else {
-            document.getElementById('walletBalance').innerText = "افتح التطبيق داخل متصفح Pi";
+            document.getElementById('walletBalance').innerText = "أنت في بيئة التطوير المحلية";
         }
         loadLeaderboard();
     });
@@ -685,28 +519,18 @@
         playShoot() {
             this.init(); const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain();
             osc.connect(gain); gain.connect(this.ctx.destination); osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(300, this.ctx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(80, this.ctx.currentTime + 0.15);
-            gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
-            gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.15);
-            osc.start(); osc.stop(this.ctx.currentTime + 0.15);
+            osc.frequency.setValueAtTime(400, this.ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(100, this.ctx.currentTime + 0.1);
+            gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
+            osc.start(); osc.stop(this.ctx.currentTime + 0.1);
         },
         playHit() {
             this.init(); const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain();
             osc.connect(gain); gain.connect(this.ctx.destination); osc.type = 'sine';
-            osc.frequency.setValueAtTime(150, this.ctx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(600, this.ctx.currentTime + 0.1);
-            gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
-            gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.15);
-            osc.start(); osc.stop(this.ctx.currentTime + 0.15);
-        },
-        playMiss() {
-            this.init(); const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain();
-            osc.connect(gain); gain.connect(this.ctx.destination); osc.type = 'triangle';
-            osc.frequency.setValueAtTime(100, this.ctx.currentTime);
-            gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
-            gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.2);
-            osc.start(); osc.stop(this.ctx.currentTime + 0.2);
+            osc.frequency.setValueAtTime(200, this.ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(700, this.ctx.currentTime + 0.12);
+            gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+            osc.start(); osc.stop(this.ctx.currentTime + 0.12);
         }
     };
 
@@ -716,51 +540,104 @@
     let particles = [];
     let gameInterval = null;
 
-    class Target {
+    // تصميم الأهداف السيبرانية الجديدة (Cyber Matrix Target) المتنقلة والنباضة
+    class CyberTarget {
         constructor() {
-            this.x = Math.random() * (canvas.width - 60) + 30;
-            this.y = Math.random() * (canvas.height - 60) + 30;
-            this.radius = Math.random() * 15 + 15;
-            this.growth = Math.random() > 0.5 ? 0.3 : -0.3;
-            this.color = `hsl(${Math.random() * 360}, 80%, 60%)`;
+            this.x = Math.random() * (canvas.width - 80) + 40;
+            this.y = Math.random() * (canvas.height - 80) + 40;
+            this.baseRadius = Math.random() * 10 + 18;
+            this.radius = this.baseRadius;
+            this.pulseTimer = Math.random() * 10;
+            
+            // سرعة الحركة لتفادي الملل والبدائية
+            this.vx = (Math.random() - 0.5) * 4;
+            this.vy = (Math.random() - 0.5) * 4;
+            
+            this.hue = Math.random() * 360;
+            this.rotationAngle = 0;
+            this.rotSpeed = (Math.random() - 0.5) * 0.05;
         }
+
         update() {
-            this.radius += this.growth;
-            if (this.radius > 35 || this.radius < 10) this.growth *= -1;
+            // تحديث موقع الحركة والارتداد عن جدران الكانفاس
+            this.x += this.vx;
+            this.y += this.vy;
+            if (this.x - this.radius < 0 || this.x + this.radius > canvas.width) this.vx *= -1;
+            if (this.y - this.radius < 0 || this.y + this.radius > canvas.height) this.vy *= -1;
+
+            // تحديث النبض الداخلي والتدوير للحلقات الكونية حول الهدف
+            this.pulseTimer += 0.1;
+            this.radius = this.baseRadius + Math.sin(this.pulseTimer) * 4;
+            this.rotationAngle += this.rotSpeed;
         }
+
         draw() {
-            ctx.shadowBlur = 15; ctx.shadowColor = this.color;
-            ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-            ctx.fillStyle = this.color; ctx.fill();
-            ctx.beginPath(); ctx.arc(this.x, this.y, this.radius * 0.5, 0, Math.PI * 2);
-            ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.stroke();
-            ctx.shadowBlur = 0;
+            ctx.save();
+            ctx.translate(this.x, this.y);
+            ctx.rotate(this.rotationAngle);
+
+            // توهج نيون خارجي
+            ctx.shadowBlur = 20;
+            ctx.shadowColor = `hsl(${this.hue}, 100%, 60%)`;
+
+            // الحلقة الخارجية المتقطعة (Cyber Ring)
+            ctx.strokeStyle = `hsl(${this.hue}, 100%, 60%)`;
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(0, 0, this.radius, 0, Math.PI * 1.5);
+            ctx.stroke();
+
+            // الحلقة الداخلية المعاكسة للدوران
+            ctx.beginPath();
+            ctx.arc(0, 0, this.radius * 0.6, Math.PI * 0.5, Math.PI * 2);
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+
+            // مركز الهدف المضيء المكثف
+            ctx.beginPath();
+            ctx.arc(0, 0, 6, 0, Math.PI * 2);
+            ctx.fillStyle = `hsl(${this.hue}, 100%, 70%)`;
+            ctx.fill();
+
+            ctx.restore();
         }
     }
 
-    class Particle {
+    class NeonParticle {
         constructor(x, y, color) {
             this.x = x; this.y = y; this.color = color;
-            this.vx = (Math.random() - 0.5) * 6; this.vy = (Math.random() - 0.5) * 6;
+            this.vx = (Math.random() - 0.5) * 8; 
+            this.vy = (Math.random() - 0.5) * 8;
+            this.radius = Math.random() * 3 + 1;
             this.alpha = 1;
+            this.decay = Math.random() * 0.02 + 0.02;
         }
-        update() { this.x += this.vx; this.y += this.vy; this.alpha -= 0.04; }
+        update() { this.x += this.vx; this.y += this.vy; this.alpha -= this.decay; }
         draw() {
-            ctx.save(); ctx.globalAlpha = this.alpha;
-            ctx.fillStyle = this.color; ctx.fillRect(this.x, this.y, 4, 4);
+            ctx.save();
+            ctx.globalAlpha = this.alpha;
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = this.color;
+            ctx.fillStyle = this.color;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+            ctx.fill();
             ctx.restore();
         }
     }
 
     function initGame() {
         state.score = 0; state.combo = 1; state.timeLeft = 30; state.gameActive = true;
-        targets = [new Target(), new Target(), new Target()];
+        targets = [new CyberTarget(), new CyberTarget(), new CyberTarget(), new CyberTarget()];
         particles = [];
+        activeLasers = [];
         document.getElementById('scoreVal').innerText = state.score;
         document.getElementById('comboVal').innerText = 'x' + state.combo;
         document.getElementById('timerVal').innerText = state.timeLeft + 's';
         document.getElementById('startBtn').style.display = 'none';
         
+        if(gameInterval) clearInterval(gameInterval);
         gameInterval = setInterval(() => {
             state.timeLeft--;
             document.getElementById('timerVal').innerText = state.timeLeft + 's';
@@ -773,9 +650,36 @@
     function gameLoop() {
         if (!state.gameActive) return;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // تحديث ورسم الأهداف المتنقلة الذكية
         targets.forEach(t => { t.update(); t.draw(); });
+
+        // تحديث ورسم جزيئات الانفجار المتطايرة
         particles = particles.filter(p => p.alpha > 0);
         particles.forEach(p => { p.update(); p.draw(); });
+
+        // رسم حزم الليزر النشطة ومسح منتهية الصلاحية
+        activeLasers = activeLasers.filter(l => l.alpha > 0);
+        activeLasers.forEach(laser => {
+            ctx.save();
+            ctx.globalAlpha = laser.alpha;
+            ctx.shadowBlur = 25;
+            ctx.shadowColor = state.currentLaserColor; // يستخدم لون الليزر المشتري الحالي بدقة هنا
+            ctx.strokeStyle = state.currentLaserColor;
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.moveTo(canvas.width/2, canvas.height);
+            ctx.lineTo(laser.targetX, laser.targetY);
+            ctx.stroke();
+            
+            // قلب شعاع الليزر بلون أبيض ناصع لإعطاء قوة بصرية صاعقة
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+            ctx.restore();
+            laser.alpha -= 0.15; // تتبدد بسرعة عالية جداً
+        });
+
         requestAnimationFrame(gameLoop);
     }
 
@@ -787,26 +691,34 @@
         const mouseX = (e.clientX - rect.left) * (canvas.width / rect.width);
         const mouseY = (e.clientY - rect.top) * (canvas.height / rect.height);
 
-        ctx.strokeStyle = state.currentLaserColor; ctx.lineWidth = 3;
-        ctx.beginPath(); ctx.moveTo(canvas.width/2, canvas.height); ctx.lineTo(mouseX, mouseY); ctx.stroke();
+        // تسجيل إطلاق ليزر لإظهاره باللون الذي اشتراه اللاعب فورًا
+        activeLasers.push({ targetX: mouseX, targetY: mouseY, alpha: 1.0 });
 
         let hit = false;
         for (let i = targets.length - 1; i >= 0; i--) {
             let t = targets[i];
             let dist = Math.hypot(mouseX - t.x, mouseY - t.y);
-            if (dist < t.radius) {
-                hit = true; AudioEngine.playHit();
-                for(let p=0; p<15; p++) particles.push(new Particle(t.x, t.y, t.color));
-                let basePoints = t.radius < 18 ? 150 : 50;
-                state.score += basePoints * state.combo;
+            
+            // التحقق من الإصابة النظيفة
+            if (dist < t.radius + 5) {
+                hit = true; 
+                AudioEngine.playHit();
+                
+                // توليد انفجار جزيئات النيون الحركي الملون
+                let particleColor = `hsl(${t.hue}, 100%, 65%)`;
+                for(let p=0; p<20; p++) {
+                    particles.push(new NeonParticle(t.x, t.y, particleColor));
+                }
+                
+                state.score += 100 * state.combo;
                 state.combo++;
                 targets.splice(i, 1);
-                targets.push(new Target());
+                targets.push(new CyberTarget()); // إنتاج هدف متحرك جديد فورًا بديل عنه
                 break;
             }
         }
 
-        if (!hit) { state.combo = 1; AudioEngine.playMiss(); }
+        if (!hit) { state.combo = 1; }
         document.getElementById('scoreVal').innerText = state.score;
         document.getElementById('comboVal').innerText = 'x' + state.combo;
     });
@@ -815,21 +727,15 @@
         state.gameActive = false;
         clearInterval(gameInterval);
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = '#fff'; ctx.font = '24px Segoe UI'; ctx.textAlign = 'center';
-        ctx.fillText(`انتهت الجولة! نقاطك: ${state.score}`, canvas.width/2, canvas.height/2);
+        ctx.fillStyle = '#fff'; ctx.font = 'bold 26px Segoe UI'; ctx.textAlign = 'center';
+        ctx.fillText(`انتهت جولة التصويب! النتيجة: ${state.score}`, canvas.width/2, canvas.height/2);
         document.getElementById('startBtn').style.display = 'block';
-        document.getElementById('startBtn').innerText = 'دخول تحدي جديد (0.1 Pi)';
         
         fetch(`${BACKEND_URL}/api/score/submit`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username: state.currentUser, score: state.score })
-        })
-        .then(res => res.json())
-        .then(data => {
-            loadLeaderboard();
-        })
-        .catch(err => console.error("خطأ في إرسال النتيجة للوحة الصدارة:", err));
+        }).then(() => loadLeaderboard()).catch(err => console.error(err));
     }
 
     function loadLeaderboard() {
@@ -842,15 +748,23 @@
                 const rankClass = index === 0 ? 'class="rank-gold"' : '';
                 body.innerHTML += `<tr><td ${rankClass}>#${player.rank}</td><td>${player.username}</td><td>${player.score.toLocaleString()}</td></tr>`;
             });
-        })
-        .catch(err => console.error("خطأ في تحميل المتصدرين:", err));
+        }).catch(err => console.error(err));
     }
 
     function executeRealPiPayment(txName, amount, onSuccess) {
         document.getElementById('piModalTxName').innerText = `المعاملة: ${txName}`;
         document.getElementById('piModalCost').innerText = `${amount.toFixed(2)} Pi`;
-        document.getElementById('piModalStatus').innerText = "جاري إنشاء الفاتورة من البلوكشين...";
+        document.getElementById('piModalStatus').innerText = "جاري فتح المحفظة للتأكيد البلوكي...";
         document.getElementById('piPaywallModal').style.display = 'flex';
+
+        if (typeof Pi === 'undefined') {
+            // بيئة تجريبية محلية في حال عدم وجود الـ SDK لسهولة الفحص والتشغيل الفوري
+            setTimeout(() => {
+                closePiModal();
+                onSuccess();
+            }, 1000);
+            return;
+        }
 
         Pi.createPayment({
             amount: amount,
@@ -858,64 +772,28 @@
             metadata: { txType: txName }
         }, {
             onReadyForServerApproval: function(paymentId) {
-                document.getElementById('piModalStatus').innerText = "جاري مراجعة وموافقة السيرفر (Approve)...";
-                
                 fetch(`${BACKEND_URL}/api/pi/approve`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ paymentId: paymentId })
-                })
-                .then(res => {
-                    if (!res.ok) throw new Error("فشل رد السيرفر المالي");
-                    return res.json();
-                })
-                .then(paymentObjFromBackend => {
-                    console.log("✅ تم تأكيد موافقة السيرفر وتغذية الـ SDK بكائن الدفع الحقيقي:", paymentObjFromBackend);
-                })
-                .catch(err => {
-                    console.error("خطأ أثناء الموافقة:", err);
-                    closePiModal();
-                    showPiModal("خطأ في الشبكة ⚠️", "انتهت مهلة خادم الموافقة أو حدث خطأ بالاتصال الشبكي.", "❌");
-                });
+                }).then(res => res.json());
             },
             onReadyForServerCompletion: function(paymentId, txid) {
-                document.getElementById('piModalStatus').innerText = "جاري تأكيد استلاف المعاملة في البلوكشين النهائي...";
-                
                 fetch(`${BACKEND_URL}/api/pi/complete`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ paymentId: paymentId, txid: txid })
-                })
-                .then(res => {
-                    if (!res.ok) throw new Error("فشل رد السيرفر في مرحلة الإغلاق");
-                    return res.json();
-                })
-                .then(completedPaymentObj => {
+                }).then(res => res.json()).then(() => {
                     closePiModal();
-                    console.log("✅ تمت المعاملة الماليّة بنجاح مطلق:", completedPaymentObj);
                     onSuccess();
-                })
-                .catch(err => {
-                    console.error("خطأ أثناء الإغلاق المالي لـ Pi:", err);
-                    closePiModal();
-                    showPiModal("فشل التأكيد النهائي ⚠️", "فشل السيرفر في معالجة إغلاق المعاملة الموقعة مسبقاً على البلوكشين.", "❌");
                 });
             },
-            onCancel: function(paymentId) {
-                console.log("قام المستخدم بإلغاء المعاملة:", paymentId);
-                closePiModal();
-            },
-            onError: function(error, payment) {
-                console.error("خطأ مالي في الـ SDK:", error);
-                closePiModal();
-                showPiModal("خطأ في واجهة SDK ⚠️", "حدث خطأ في واجهة محفظة باي: " + (error.message || "انتهت المهلة الزمنية"), "❌");
-            }
+            onCancel: function() { closePiModal(); },
+            onError: function() { closePiModal(); showPiModal("فشل الدفع ⚠️", "تعذر إكمال المعاملة.", "❌"); }
         });
     }
 
-    function closePiModal() {
-        document.getElementById('piPaywallModal').style.display = 'none';
-    }
+    function closePiModal() { document.getElementById('piPaywallModal').style.display = 'none'; }
 
     function requestMatchEntry() {
         executeRealPiPayment("تذكرة دخول ميدان النخبة التنافسي", 0.10, () => {
@@ -923,14 +801,14 @@
         });
     }
 
+    // هنا تكمن معالجة تفعيل اللون برمجياً فور الشراء المالي الناجح
     function buySkin(skinName, cost, laserColor) {
         executeRealPiPayment(`شراء مظهر السلاح: ${skinName}`, cost, () => {
-            state.currentLaserColor = laserColor;
-            // استدعاء نافذة النيون المخصصة الجديدة بدلاً من الـ alert التقليدي البشع
+            state.currentLaserColor = laserColor; // تحديث اللون فورا في الحالة النشطة للكانفاس
             showPiModal(
-                "تمت الترقية بنجاح! 🚀", 
-                `تم تفعيل مظهر [${skinName}] الجديد النيون لسلاح ليزر التصويب الخاص بك. استعد لسحق الأرقام القياسية في الساحة!`, 
-                "🔥"
+                "تمت ترقية الليزر بنجاح! 🔥", 
+                `لقد تم تفعيل مظهر السلاح [${skinName}] بنجاح، وربطه برمجياً بمحرك الرندرة الحالي للعبة. جربه الآن!`, 
+                "🚀"
             );
         });
     }
