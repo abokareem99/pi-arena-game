@@ -54,7 +54,7 @@ app.post('/api/score/submit', (req, res) => {
 });
 
 // ==========================================
-// 2. مسارات ربط بوابة مدفوعات باي المعدلة هندسياً
+// 2. مسارات ربط بوابة مدفوعات باي المحمية والمعدلة هندسياً
 // ==========================================
 
 // المسار الأول: الموافقة على الدفع (Approve Payment)
@@ -66,26 +66,46 @@ app.post('/api/pi/approve', async (req, res) => {
     }
 
     try {
+        console.log(`[Pi API] جاري محاولة إرسال طلب الموافقة للمعاملة: ${paymentId}`);
+        
         const response = await axios.post(
             `${PI_API_URL}/payments/${paymentId}/approve`,
             {},
             {
                 headers: {
-                    'Authorization': `Key ${PI_SERVER_API_KEY}`,
+                    'Authorization': `Key ${PI_SERVER_API_KEY.trim()}`, // تنظيف الفراغات الزائدة إن وجدت
                     'Content-Type': 'application/json'
-                }
+                },
+                timeout: 15000 // مهلة 15 ثانية لمنع تعليق الدالة في Vercel
             }
         );
 
         activePayments[paymentId] = { status: 'approved', timestamp: Date.now() };
         console.log(`[Pi API] تم الموافقة بنجاح على المعاملة: ${paymentId}`);
         
-        // تعديل جوهري: إرجاع كائن الدفع النقي المرجوع من خوادم Pi مباشرة دون غشلفته لمنع الـ Timeout
+        // إرجاع كائن الدفع الأصلي النقي كما تشترطه خوادم باي لمنع الـ Timeout في الـ SDK
         return res.status(200).json(response.data);
 
     } catch (error) {
-        console.error("[Pi API Error] خطأ أثناء الموافقة:", error.response ? error.response.data : error.message);
-        return res.status(500).json({ error: "فشلت عملية الموافقة من خادم باي الرسمي" });
+        // حماية حاسمة: الإمساك بخطأ Axios ومنع الـ Serverless من الانهيار (Crash) والـ 500 Error
+        console.error("[Pi API Error] حدث خطأ أثناء الموافقة في السيرفر:");
+        
+        if (error.response) {
+            // الطلب وصل لخوادم باي ولكنها ردت برفض (مثل مفتاح API خاطئ أو غير مصرح)
+            console.error("تفاصيل رد خادم باي:", error.response.data);
+            return res.status(error.response.status).json({
+                error: "رفضت خوادم باي الموافقة على المعاملة",
+                details: error.response.data
+            });
+        } else if (error.request) {
+            // الطلب أُرسل ولكن لم يصل رد من باي (مشكلة شبكة بين سيرفر Vercel وباي)
+            console.error("لم يتم استلام رد من خوادم باي (Network Timeout)");
+            return res.status(504).json({ error: "انتهت مهلة الاتصال بخوادم باي الرسمية" });
+        } else {
+            // خطأ برمجي آخر في إعداد الطلب
+            console.error("خطأ عام:", error.message);
+            return res.status(500).json({ error: "خطأ داخلي في معالجة الطلب وبناء الهيدرز", message: error.message });
+        }
     }
 });
 
@@ -98,26 +118,37 @@ app.post('/api/pi/complete', async (req, res) => {
     }
 
     try {
+        console.log(`[Pi API] جاري إرسال طلب الإغلاق النهائي للمعاملة: ${paymentId}`);
+        
         const response = await axios.post(
             `${PI_API_URL}/payments/${paymentId}/complete`,
             { txid: txid },
             {
                 headers: {
-                    'Authorization': `Key ${PI_SERVER_API_KEY}`,
+                    'Authorization': `Key ${PI_SERVER_API_KEY.trim()}`,
                     'Content-Type': 'application/json'
-                }
+                },
+                timeout: 15000
             }
         );
 
         activePayments[paymentId] = { status: 'completed', txid, timestamp: Date.now() };
         console.log(`[Pi API] تم تسليم العملات وإغلاق الطلب بنجاح: ${paymentId}`);
         
-        // إرجاع كائن النجاح المكتمل الصادر من خوادم Pi
         return res.status(200).json(response.data);
 
     } catch (error) {
-        console.error("[Pi API Error] خطأ أثناء الإكمال المالي:", error.response ? error.response.data : error.message);
-        return res.status(500).json({ error: "فشلت عملية إكمال وإغلاق المعاملة بالبلوكشين" });
+        console.error("[Pi API Error] خطأ أثناء الإكمال المالي في السيرفر:");
+        
+        if (error.response) {
+            console.error("تفاصيل رد خادم باي عند الإكمال:", error.response.data);
+            return res.status(error.response.status).json({
+                error: "فشلت عملية إكمال المعاملة من طرف خوادم باي",
+                details: error.response.data
+            });
+        } else {
+            return res.status(500).json({ error: "فشلت عملية إكمال المعاملة ماليًا بالبلوكشين", message: error.message });
+        }
     }
 });
 
