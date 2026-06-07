@@ -41,7 +41,6 @@
             flex-direction: column;
         }
 
-        /* تحويل الحاوية لتصبح مرنة عمودياً مع شريط علوي */
         .app-container {
             display: flex;
             flex-direction: column;
@@ -53,11 +52,10 @@
             flex-grow: 1;
         }
 
-        /* شريط علوي أفقي فخم ومدمج */
         header {
             background: rgba(11, 4, 22, 0.9);
             border: 1px solid rgba(138, 43, 226, 0.2);
-            border-bottom: 3px solid var(--brand-red); /* الحفاظ على الهوية الرسمية بالخط الأحمر */
+            border-bottom: 3px solid var(--brand-red);
             border-radius: 14px;
             display: flex;
             justify-content: space-between;
@@ -84,7 +82,6 @@
             white-space: nowrap;
         }
 
-        /* القائمة العلوية الأفقية بدلاً من الجانبية */
         .nav-menu {
             display: flex;
             gap: 0.5rem;
@@ -108,14 +105,12 @@
             box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
         }
 
-        /* منطقة التحكم بالحساب والدفع بشكل مدمج جداً وصغير */
         .user-actions-zone {
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
-        /* دمج حساب اللاعب مع زر التحديث ليصبح كارت تفاعلي صغير */
         .btn-user-sync {
             background: rgba(138, 43, 226, 0.1);
             border: 1px solid rgba(138, 43, 226, 0.4);
@@ -135,7 +130,6 @@
             border-color: var(--pi-neon);
         }
 
-        /* زر الدفع الصغير والأنيق (ضغط فقط) */
         .btn-pay-small {
             background: linear-gradient(135deg, var(--neon-gold) 0%, var(--neon-gold-bright) 100%);
             color: #05010d;
@@ -178,7 +172,6 @@
 
         .view-section.active { display: flex; flex-direction: column; width: 100%; }
 
-        /* لوحة اللعبة المتناسقة */
         .game-panel {
             background: var(--panel-bg);
             border: 1px solid rgba(138, 43, 226, 0.25);
@@ -221,9 +214,10 @@
         .stat-label { font-size: 0.65rem; color: var(--text-muted); }
         .stat-val { font-size: 1.1rem; font-weight: 800; color: var(--neon-blue); }
 
-        /* حاوية الميدان المتجاوبة والأنيقة */
+        /* حاوية الميدان المحمية من التمطيط */
         .canvas-container {
             width: 100%;
+            max-width: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -234,11 +228,11 @@
             overflow: hidden;
         }
 
-        /* حجم متناسق وممتاز للرماية دون تضخم زائد مخل بالمنظر */
+        /* الميدان يعتمد الآن على الأبعاد البرمجية الحقيقية المتجاوبة */
         #gameCanvas {
-            width: 100% !important;
-            height: auto !important;
-            min-height: 400px;
+            width: 100%;
+            height: auto;
+            aspect-ratio: 2 / 1; /* الحفاظ على نسبة أبعاد ثابتة لمنع أي تمطيط طولى */
             max-height: 500px;
             display: block;
             cursor: crosshair;
@@ -270,7 +264,6 @@
         .shop-card { background: var(--panel-bg); border: 1px solid rgba(255,255,255,0.04); border-radius: 14px; padding: 1rem; text-align: center; display: flex; flex-direction: column; gap: 0.8rem; }
         .skin-preview { height: 80px; background: rgba(0,0,0,0.3); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 2rem; }
 
-        /* النوافذ المنبثقة */
         .pi-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5, 1, 13, 0.85); backdrop-filter: blur(8px); display: flex; justify-content: center; align-items: center; z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
         .pi-modal-overlay.active { opacity: 1; pointer-events: auto; }
         .pi-modal-box { background: linear-gradient(145deg, #1f1235 0%, #0f071c 100%); border: 2px solid var(--neon-gold); border-radius: 20px; padding: 25px; max-width: 380px; width: 90%; text-align: center; }
@@ -282,18 +275,15 @@
         .loader { border: 4px solid rgba(255,255,255,0.05); border-top: 4px solid var(--neon-gold); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 1.5rem auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* تجاوب الشاشات الصغيرة والهواتف عمودياً */
         @media (max-width: 768px) {
             header { flex-direction: column; gap: 10px; padding: 0.8rem; }
             .user-actions-zone { width: 100%; justify-content: center; }
             .nav-menu { width: 100%; justify-content: center; }
-            #gameCanvas { min-height: 350px; }
         }
     </style>
 </head>
 <body>
 
-<!-- الشريط العلوي الأفقي الشامل والمنظم -->
 <header>
     <div class="brand-zone">
         <div class="brand">PI ARENA ELITE</div>
@@ -307,11 +297,9 @@
 
     <div class="user-actions-zone">
         <div class="game-balance-badge" id="gameBalance">0.00 Pi</div>
-        <!-- دمج اسم حساب اللاعب مع أيقونة/زر التحديث المدمج -->
         <button class="btn-user-sync" id="walletBalance" onclick="forceReauthenticate()">
             🔄 جاري الفحص...
         </button>
-        <!-- زر دفع التذكرة الصغير والذكي (اضغط فقط) -->
         <button class="btn-pay-small" id="sidePayBtn" onclick="requestMatchEntry()">
             🎯 دفع التذكرة (0.1 Pi)
         </button>
@@ -331,7 +319,8 @@
                     </div>
                 </div>
                 <div class="canvas-container">
-                    <canvas id="gameCanvas" width="1200" height="500"></canvas>
+                    <!-- تم إزالة الأبعاد الثابتة والمطاطية من هنا ليتم التحكم بها برمجياً -->
+                    <canvas id="gameCanvas"></canvas>
                 </div>
                 <div id="gameControls">
                     <button class="btn-action" id="startBtn" onclick="requestMatchEntry()">بدء معركة الميدان</button>
@@ -381,7 +370,6 @@
     </main>
 </div>
 
-<!-- بقية عناصر النوافذ المنبثقة والنظام كما هي بدون تغيير لمنع الأخطاء البرمجية -->
 <div class="pi-modal" id="piPaywallModal">
     <div class="pi-modal-content">
         <h2 style="color: var(--neon-gold); margin-bottom: 0.5rem; font-weight: 800;">بوابة دفع Pi Network</h2>
@@ -422,6 +410,21 @@
     let particles = [];
     let gameInterval = null;
 
+    // وظيفة ديناميكية لضبط دقة الميدان الحقيقية بناء على شاشة المستخدم دون تمطيط
+    function resizeCanvas() {
+        const rect = canvas.getBoundingClientRect();
+        canvas.width = rect.width;
+        canvas.height = rect.height;
+        
+        // إعادة رسم الخلفية السوداء إذا كانت اللعبة متوقفة حتى لا تظهر شاشة بيضاء
+        if(!state.gameActive) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+    }
+
+    // استدعاء الضبط التلقائي عند التحميل وعند تغيير حجم الشاشة
+    window.addEventListener('resize', resizeCanvas);
+
     function showPiModal(title, message, icon = '⚡') {
         document.getElementById('modalTitle').innerText = title;
         document.getElementById('modalMessage').innerText = message;
@@ -432,6 +435,7 @@
     function closePiModalCustom() { document.getElementById('piCustomModal').classList.remove('active'); }
 
     document.addEventListener("DOMContentLoaded", () => {
+        resizeCanvas();
         tryPiAuthenticate();
         loadLeaderboard();
     });
@@ -533,13 +537,14 @@
 
     class CyberTarget {
         constructor() {
-            this.x = Math.random() * (canvas.width - 150) + 75; 
-            this.y = Math.random() * (canvas.height - 150) + 75;
-            this.baseRadius = Math.random() * 8 + 25; 
+            // توليد الأهداف بناءً على العرض والارتفاع الفعلي الحالي للميدان لمنع خروجها أو انضغاطها
+            this.x = Math.random() * (canvas.width - 100) + 50; 
+            this.y = Math.random() * (canvas.height - 100) + 50;
+            this.baseRadius = Math.random() * 6 + 20; 
             this.radius = this.baseRadius; 
             this.pulseTimer = Math.random() * 10;
-            this.vx = (Math.random() - 0.5) * 6; 
-            this.vy = (Math.random() - 0.5) * 6;
+            this.vx = (Math.random() - 0.5) * 4; 
+            this.vy = (Math.random() - 0.5) * 4;
             this.hue = Math.random() * 360; 
             this.rotationAngle = 0; 
             this.rotSpeed = (Math.random() - 0.5) * 0.04;
@@ -548,28 +553,28 @@
             this.x += this.vx; this.y += this.vy;
             if (this.x - this.radius < 0 || this.x + this.radius > canvas.width) this.vx *= -1;
             if (this.y - this.radius < 0 || this.y + this.radius > canvas.height) this.vy *= -1;
-            this.pulseTimer += 0.1; this.radius = this.baseRadius + Math.sin(this.pulseTimer) * 4; 
+            this.pulseTimer += 0.1; this.radius = this.baseRadius + Math.sin(this.pulseTimer) * 3; 
             this.rotationAngle += this.rotSpeed;
         }
         draw() {
             ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.rotationAngle);
-            ctx.shadowBlur = 20; ctx.shadowColor = `hsl(${this.hue}, 100%, 60%)`;
-            ctx.strokeStyle = `hsl(${this.hue}, 100%, 60%)`; ctx.lineWidth = 3;
+            ctx.shadowBlur = 15; ctx.shadowColor = `hsl(${this.hue}, 100%, 60%)`;
+            ctx.strokeStyle = `hsl(${this.hue}, 100%, 60%)`; ctx.lineWidth = 2.5;
             ctx.beginPath(); ctx.arc(0, 0, this.radius, 0, Math.PI * 1.5); ctx.stroke();
-            ctx.beginPath(); ctx.arc(0, 0, this.radius * 0.6, Math.PI * 0.5, Math.PI * 2); ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 1.5; ctx.stroke();
-            ctx.beginPath(); ctx.arc(0, 0, 6, 0, Math.PI * 2); ctx.fillStyle = `hsl(${this.hue}, 100%, 70%)`; ctx.fill(); ctx.restore();
+            ctx.beginPath(); ctx.arc(0, 0, this.radius * 0.6, Math.PI * 0.5, Math.PI * 2); ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 1.2; ctx.stroke();
+            ctx.beginPath(); ctx.arc(0, 0, 5, 0, Math.PI * 2); ctx.fillStyle = `hsl(${this.hue}, 100%, 70%)`; ctx.fill(); ctx.restore();
         }
     }
 
     class NeonParticle {
         constructor(x, y, color) {
             this.x = x; this.y = y; this.color = color; 
-            this.vx = (Math.random() - 0.5) * 9; this.vy = (Math.random() - 0.5) * 9;
-            this.radius = Math.random() * 3 + 1; this.alpha = 1; this.decay = Math.random() * 0.025 + 0.02;
+            this.vx = (Math.random() - 0.5) * 7; this.vy = (Math.random() - 0.5) * 7;
+            this.radius = Math.random() * 2.5 + 1; this.alpha = 1; this.decay = Math.random() * 0.025 + 0.02;
         }
         update() { this.x += this.vx; this.y += this.vy; this.alpha -= this.decay; }
         draw() {
-            ctx.save(); ctx.globalAlpha = this.alpha; ctx.shadowBlur = 10; ctx.shadowColor = this.color;
+            ctx.save(); ctx.globalAlpha = this.alpha; ctx.shadowBlur = 8; ctx.shadowColor = this.color;
             ctx.fillStyle = this.color; ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); ctx.fill(); ctx.restore();
         }
     }
@@ -592,6 +597,7 @@
     };
 
     function initGame() {
+        resizeCanvas(); // تأكيد الأبعاد الدقيقة قبل بدء الجولة مباشرة
         state.score = 0; state.combo = 1; state.timeLeft = 30; state.gameActive = true;
         targets = [new CyberTarget(), new CyberTarget(), new CyberTarget(), new CyberTarget(), new CyberTarget()];
         particles = []; activeLasers = [];
@@ -614,10 +620,10 @@
         
         activeLasers = activeLasers.filter(l => l.alpha > 0);
         activeLasers.forEach(laser => {
-            ctx.save(); ctx.globalAlpha = laser.alpha; ctx.shadowBlur = 25; ctx.shadowColor = state.currentLaserColor;
-            ctx.strokeStyle = state.currentLaserColor; ctx.lineWidth = 4.5;
+            ctx.save(); ctx.globalAlpha = laser.alpha; ctx.shadowBlur = 20; ctx.shadowColor = state.currentLaserColor;
+            ctx.strokeStyle = state.currentLaserColor; ctx.lineWidth = 3.5;
             ctx.beginPath(); ctx.moveTo(canvas.width/2, canvas.height); ctx.lineTo(laser.targetX, laser.targetY); ctx.stroke();
-            ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 1.5; ctx.stroke(); ctx.restore();
+            ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 1.2; ctx.stroke(); ctx.restore();
             laser.alpha -= 0.18;
         });
         requestAnimationFrame(gameLoop);
@@ -627,6 +633,7 @@
         if (!state.gameActive) return;
         AudioEngine.playShoot();
         const rect = canvas.getBoundingClientRect();
+        // حساب الإحداثيات بدقة متناهية بناءً على الحجم الحالي الفعلي بدون فجوات
         const mouseX = (e.clientX - rect.left) * (canvas.width / rect.width);
         const mouseY = (e.clientY - rect.top) * (canvas.height / rect.height);
         activeLasers.push({ targetX: mouseX, targetY: mouseY, alpha: 1.0 });
@@ -637,7 +644,7 @@
             if (dist < t.radius + 6) {
                 hit = true; AudioEngine.playHit();
                 let particleColor = `hsl(${t.hue}, 100%, 65%)`;
-                for(let p=0; p<18; p++) particles.push(new NeonParticle(t.x, t.y, particleColor));
+                for(let p=0; p<15; p++) particles.push(new NeonParticle(t.x, t.y, particleColor));
                 state.score += 100 * state.combo; state.combo++;
                 targets.splice(i, 1); targets.push(new CyberTarget()); break;
             }
@@ -649,8 +656,16 @@
     function endGame() {
         state.gameActive = false; clearInterval(gameInterval);
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = '#fff'; ctx.font = 'bold 24px Segoe UI'; ctx.textAlign = 'center';
-        ctx.fillText(`انتهت الجولة الساحقة! نقاطك: ${state.score}`, canvas.width/2, canvas.height/2);
+        
+        // ضبط خط وحجم نص النهاية ليظهر بشكل عريض ومثالي ومتناسق تماماً مع شاشات الهواتف والكمبيوتر بدون أي تمطيط
+        ctx.fillStyle = '#ffffff';
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = 'var(--neon-blue)';
+        ctx.font = 'bold 22px "Segoe UI", Tahoma, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(`انتهت الجولة الساحقة! نقاطك: ${state.score}`, canvas.width / 2, canvas.height / 2);
+        
         document.getElementById('startBtn').style.display = 'block';
         
         fetch(`${BACKEND_URL}/api/score/submit`, {
@@ -702,6 +717,9 @@
         document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
         document.getElementById(sectionId).classList.add('active'); element.classList.add('active');
+        if(sectionId === 'game-section') {
+            setTimeout(resizeCanvas, 50); // تأكيد أبعاد الميدان عند العودة للتبويب
+        }
     }
 </script>
 </body>
