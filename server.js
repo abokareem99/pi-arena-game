@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const axios = require('axios');
+const path = require('path'); // تم استدعاء المكتبة للتحكم في مسارات الملفات الثابتة
 require('dotenv').config();
 
 const app = express();
@@ -19,6 +20,15 @@ let leaderboard = [
 ];
 
 let activePayments = {};
+
+// ==========================================
+// الإعداد الحاسم: ربط واجهة المستخدم بالخلفية
+// ==========================================
+
+// تشغيل الواجهة (index.html) تلقائياً عند فتح الرابط الرئيسي للمشروع
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 // ==========================================
 // 1. مسارات لوحة الصدارة والنقاط (Leaderboard)
