@@ -7,14 +7,16 @@
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
     <style>
         :root {
-            --bg-dark: #0a0b10;
-            --panel-bg: rgba(20, 22, 37, 0.7);
+            --bg-dark: #05010d;
+            --panel-bg: rgba(25, 14, 44, 0.45);
             --pi-purple: #8a2be2;
             --pi-neon: #a855f7;
             --neon-blue: #00f0ff;
-            --neon-gold: #ffd700;
+            --neon-gold: #f2a900;
+            --neon-gold-bright: #ffcd00;
+            --brand-red: #ff003c;
             --text-light: #f3f4f6;
-            --text-muted: #9ca3af;
+            --text-muted: #b3a4c9;
         }
 
         * {
@@ -30,98 +32,121 @@
             color: var(--text-light);
             overflow-x: hidden;
             background-image: 
-                radial-gradient(at 0% 0%, rgba(138, 43, 226, 0.15) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(0, 240, 255, 0.1) 0px, transparent 50%);
+                radial-gradient(circle at top right, rgba(138, 43, 226, 0.15) 0%, transparent 60%),
+                radial-gradient(circle at bottom left, rgba(0, 240, 255, 0.08) 0%, transparent 60%),
+                radial-gradient(circle at center, #1a0b2e 0%, #05010d 100%);
             min-height: 100vh;
         }
 
         .app-container {
             display: grid;
-            grid-template-columns: 280px 1fr;
+            grid-template-columns: 290px 1fr;
             min-height: 100vh;
         }
 
         sidebar {
-            background: rgba(13, 14, 24, 0.85);
+            background: rgba(11, 4, 22, 0.85);
             border-left: 1px solid rgba(138, 43, 226, 0.2);
-            padding: 2rem 1.5rem;
+            padding: 0;
             display: flex;
             flex-direction: column;
             gap: 2rem;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(12px);
             z-index: 10;
         }
 
-        .brand {
+        /* حاوية الشعار والهوية الرسمية بالخط الأحمر المتوهج */
+        .brand-header {
+            width: 100%;
+            padding: 2rem 1.5rem 1.5rem;
             text-align: center;
-            font-size: 1.5rem;
-            font-weight: bold;
-            letter-spacing: 1px;
+            background: rgba(0, 0, 0, 0.2);
+            border-bottom: 3px solid var(--brand-red);
+            box-shadow: 0 4px 20px rgba(255, 0, 60, 0.25);
+        }
+
+        .brand {
+            font-size: 1.6rem;
+            font-weight: 900;
+            letter-spacing: 1.5px;
             color: var(--text-light);
-            text-shadow: 0 0 10px var(--pi-neon);
-            border-bottom: 2px solid var(--pi-purple);
-            padding-bottom: 1rem;
+            text-shadow: 0 0 15px var(--pi-neon);
+        }
+
+        .sidebar-content {
+            padding: 0 1.5rem 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            flex-grow: 1;
         }
 
         .wallet-card {
-            background: linear-gradient(135deg, rgba(138, 43, 226, 0.3), rgba(0, 240, 255, 0.1));
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
+            background: linear-gradient(135deg, rgba(138, 43, 226, 0.25), rgba(0, 240, 255, 0.05));
+            border: 1px solid rgba(242, 169, 0, 0.2);
+            border-radius: 16px;
             padding: 1.2rem;
             text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4), inset 0 0 15px rgba(255,255,255,0.02);
+            backdrop-filter: blur(5px);
         }
 
         .wallet-card h3 {
             font-size: 0.85rem;
             color: var(--text-muted);
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.6rem;
+            letter-spacing: 0.5px;
         }
 
         .balance {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: 800;
             color: var(--neon-gold);
-            text-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
+            text-shadow: 0 0 10px rgba(242, 169, 0, 0.4);
             word-break: break-all;
         }
 
         .nav-menu {
             display: flex;
             flex-direction: column;
-            gap: 0.8rem;
+            gap: 0.9rem;
             list-style: none;
         }
 
         .nav-item {
-            padding: 0.8rem 1.2rem;
-            border-radius: 8px;
+            padding: 0.9rem 1.2rem;
+            border-radius: 10px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             color: var(--text-muted);
             font-weight: 600;
             border: 1px solid transparent;
             text-align: right;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 10px;
         }
 
         .nav-item:hover, .nav-item.active {
             color: var(--text-light);
-            background: rgba(138, 43, 226, 0.2);
+            background: linear-gradient(90deg, rgba(138, 43, 226, 0.25) 0%, transparent 100%);
             border-right: 4px solid var(--neon-blue);
-            border-color: rgba(138, 43, 226, 0.4) rgba(138, 43, 226, 0.4) rgba(138, 43, 226, 0.4) transparent;
+            border-color: rgba(138, 43, 226, 0.3) rgba(138, 43, 226, 0.3) rgba(138, 43, 226, 0.3) transparent;
+            box-shadow: -5px 0 15px rgba(0, 240, 255, 0.1);
         }
 
         main {
-            padding: 2rem;
+            padding: 2.5rem;
             display: flex;
             flex-direction: column;
-            gap: 1.5rem;
+            gap: 2rem;
             overflow-y: auto;
         }
 
         .view-section {
             display: none;
-            animation: fadeIn 0.4s ease-in-out forwards;
+            animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
 
         .view-section.active {
@@ -129,21 +154,21 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
         .game-panel {
             background: var(--panel-bg);
-            border: 1px solid rgba(138, 43, 226, 0.2);
-            border-radius: 16px;
-            padding: 1.5rem;
+            border: 1px solid rgba(138, 43, 226, 0.25);
+            border-radius: 24px;
+            padding: 2rem;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 1.5rem;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            gap: 2rem;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.6), inset 0 0 30px rgba(255,255,255,0.02);
             width: 100%;
         }
 
@@ -152,178 +177,320 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            padding-bottom: 1.5rem;
             flex-wrap: wrap;
-            gap: 1rem;
+            gap: 1.5rem;
+        }
+
+        .game-header h2 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff 0%, var(--text-muted) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .game-stats {
             display: flex;
-            gap: 1.5rem;
+            gap: 1.8rem;
         }
 
         .stat-box {
             text-align: center;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.5rem 1.2rem;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.03);
         }
 
         .stat-label {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.2rem;
         }
 
         .stat-val {
-            font-size: 1.4rem;
-            font-weight: 700;
+            font-size: 1.6rem;
+            font-weight: 800;
             color: var(--neon-blue);
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
         }
 
         #gameCanvas {
-            background: #05060b;
-            border: 2px solid var(--pi-purple);
-            border-radius: 12px;
-            box-shadow: 0 0 20px rgba(138, 43, 226, 0.3);
+            background: #030207;
+            border: 2px solid rgba(138, 43, 226, 0.4);
+            border-radius: 16px;
+            box-shadow: 0 0 30px rgba(138, 43, 226, 0.2);
             cursor: crosshair;
             max-width: 100%;
             height: auto;
+            transition: border-color 0.3s;
         }
 
         .btn-action {
-            background: linear-gradient(90deg, var(--pi-purple), #6366f1);
-            color: white;
+            background: linear-gradient(135deg, var(--neon-gold) 0%, var(--neon-gold-bright) 100%);
+            color: #05010d;
             border: none;
-            padding: 1rem 2.5rem;
+            padding: 1.1rem 3rem;
             font-size: 1.2rem;
-            font-weight: bold;
-            border-radius: 8px;
+            font-weight: 800;
+            border-radius: 14px;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(138, 43, 226, 0.4);
-            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(242, 169, 0, 0.3);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            letter-spacing: 0.5px;
         }
 
         .btn-action:hover {
-            transform: scale(1.03);
-            box-shadow: 0 0 25px var(--pi-neon);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 0 30px var(--neon-gold-bright);
+        }
+
+        .btn-action:active {
+            transform: translateY(-1px);
+        }
+
+        .luxury-table-container {
+            background: var(--panel-bg);
+            border-radius: 20px;
+            padding: 0.5rem;
+            border: 1px solid rgba(138, 43, 226, 0.15);
+            backdrop-filter: blur(15px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+            overflow: hidden;
         }
 
         .luxury-table {
             width: 100%;
             border-collapse: collapse;
-            background: var(--panel-bg);
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.05);
         }
 
         .luxury-table th, .luxury-table td {
-            padding: 1rem 1.5rem;
+            padding: 1.2rem 1.5rem;
             text-align: right;
         }
 
         .luxury-table th {
-            background: rgba(138, 43, 226, 0.2);
+            background: rgba(138, 43, 226, 0.15);
             color: var(--neon-blue);
-            font-weight: 600;
+            font-weight: 700;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
         }
 
         .luxury-table tr {
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            transition: background 0.2s;
+        }
+
+        .luxury-table tr:last-child {
+            border-bottom: none;
         }
 
         .luxury-table tr:hover {
             background: rgba(255,255,255,0.02);
         }
 
-        .rank-gold { color: var(--neon-gold); font-weight: bold;}
+        .rank-gold { 
+            color: var(--neon-gold-bright); 
+            font-weight: 900;
+            text-shadow: 0 0 8px rgba(255, 205, 0, 0.4);
+        }
 
         .shop-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 2rem;
         }
 
         .shop-card {
             background: var(--panel-bg);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 12px;
-            padding: 1.5rem;
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: 20px;
+            padding: 2rem;
             text-align: center;
             display: flex;
             flex-direction: column;
-            gap: 1rem;
-            transition: all 0.3s;
+            gap: 1.2rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(15px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
         .shop-card:hover {
             border-color: var(--neon-blue);
-            transform: translateY(-5px);
+            transform: translateY(-6px);
+            box-shadow: 0 15px 35px rgba(0, 240, 255, 0.15);
         }
 
         .skin-preview {
-            height: 100px;
-            background: rgba(0,0,0,0.3);
-            border-radius: 8px;
+            height: 120px;
+            background: rgba(0,0,0,0.4);
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.5rem;
+            font-size: 3rem;
+            border: 1px solid rgba(255,255,255,0.02);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
         }
 
+        /* هيكل نافذة التنبيه الاحترافية المخصصة (Custom Modal) */
+        .pi-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5, 1, 13, 0.85);
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .pi-modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .pi-modal-box {
+            background: linear-gradient(145deg, #1f1235 0%, #0f071c 100%);
+            border: 2px solid var(--neon-gold);
+            box-shadow: 0 0 40px rgba(242, 169, 0, 0.25), inset 0 0 20px rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+            padding: 35px;
+            max-width: 420px;
+            width: 90%;
+            text-align: center;
+            transform: scale(0.7) translateY(-30px);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .pi-modal-overlay.active .pi-modal-box {
+            transform: scale(1) translateY(0);
+        }
+
+        .pi-modal-icon {
+            width: 70px;
+            height: 70px;
+            background: rgba(242, 169, 0, 0.1);
+            border: 2px solid var(--neon-gold);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 20px;
+            color: var(--neon-gold);
+            font-size: 2rem;
+            animation: pulseGlow 2s infinite;
+        }
+
+        .pi-modal-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .pi-modal-message {
+            font-size: 1rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .pi-modal-btn {
+            background: var(--neon-gold);
+            color: #0b0416;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 40px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .pi-modal-btn:hover {
+            background: var(--neon-gold-bright);
+        }
+
+        /* النافذة المخصصة للبوابات المالية (Paywall Screen) */
         .pi-modal {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(5, 5, 10, 0.85);
+            background: rgba(5, 1, 13, 0.9);
             z-index: 1000;
             align-items: center;
             justify-content: center;
-            backdrop-filter: blur(8px);
+            backdrop-filter: blur(10px);
         }
 
         .pi-modal-content {
-            background: #141522;
+            background: linear-gradient(145deg, #141522 0%, #0b0c16 100%);
             border: 2px solid var(--neon-gold);
-            border-radius: 16px;
-            padding: 2rem;
+            border-radius: 24px;
+            padding: 2.5rem;
             width: 90%;
-            max-width: 400px;
+            max-width: 420px;
             text-align: center;
-            box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
-            animation: modalPop 0.3s ease-out;
+            box-shadow: 0 0 40px rgba(242, 169, 0, 0.25);
+            animation: modalPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         @keyframes modalPop { from {transform: scale(0.8); opacity:0;} to {transform: scale(1); opacity:1;} }
 
         .pi-logo {
-            width: 70px; height: 70px;
+            width: 75px; height: 75px;
             background: var(--neon-gold);
-            color: #141522;
+            color: #0b0c16;
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            font-size: 2.5rem; font-weight: bold; margin: 0 auto 1rem;
+            font-size: 2.8rem; font-weight: bold; margin: 0 auto 1.5rem;
+            box-shadow: 0 0 20px rgba(242, 169, 0, 0.4);
         }
 
         .loader {
-            border: 4px solid rgba(255,255,255,0.1);
+            border: 4px solid rgba(255,255,255,0.05);
             border-top: 4px solid var(--neon-gold);
-            border-radius: 50%; width: 40px; height: 40px;
-            animation: spin 1s linear infinite; margin: 1.5rem auto;
+            border-radius: 50%; width: 45px; height: 45px;
+            animation: spin 1s linear infinite; margin: 1.8rem auto;
+            box-shadow: 0 0 15px rgba(242, 169, 0, 0.2);
         }
 
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 0 0 rgba(242, 169, 0, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(242, 169, 0, 0.0); }
+            100% { box-shadow: 0 0 0 0 rgba(242, 169, 0, 0.0); }
+        }
+
         @media (max-width: 768px) {
             .app-container { grid-template-columns: 1fr; }
-            sidebar { border-left: none; border-bottom: 1px solid rgba(138, 43, 226, 0.2); padding: 1rem; gap: 1rem; }
-            .brand { font-size: 1.2rem; padding-bottom: 0.5rem; }
-            .wallet-card { padding: 0.8rem; }
+            sidebar { border-left: none; border-bottom: 1px solid rgba(138, 43, 226, 0.2); padding: 0; gap: 0.5rem; }
+            .brand-header { padding: 1.2rem; }
+            .sidebar-content { padding: 0 1rem 1rem; gap: 1rem; }
+            .wallet-card { padding: 0.8rem; border-radius: 12px; }
             .balance { font-size: 1.2rem; }
             .nav-menu { flex-direction: row; justify-content: space-around; flex-wrap: wrap; gap: 0.4rem; }
-            .nav-item { padding: 0.5rem 0.8rem; font-size: 0.85rem; border-radius: 6px; text-align: center; flex: 1; min-width: 90px; }
-            .nav-item:hover, .nav-item.active { border-right: transparent; border-bottom: 3px solid var(--neon-blue); }
-            main { padding: 1rem; }
-            .game-panel { padding: 1rem; }
-            .luxury-table th, .luxury-table td { padding: 0.6rem 0.8rem; font-size: 0.85rem; }
+            .nav-item { padding: 0.6rem 0.8rem; font-size: 0.85rem; border-radius: 8px; text-align: center; flex: 1; min-width: 90px; justify-content: center; }
+            .nav-item:hover, .nav-item.active { border-right: transparent; border-bottom: 3px solid var(--neon-blue); background: rgba(138, 43, 226, 0.15); box-shadow: 0 4px 10px rgba(0, 240, 255, 0.05); }
+            main { padding: 1.2rem; }
+            .game-panel { padding: 1.2rem; border-radius: 18px; }
+            .game-header h2 { font-size: 1.3rem; }
+            .stat-val { font-size: 1.3rem; }
+            .luxury-table th, .luxury-table td { padding: 0.8rem 1rem; font-size: 0.85rem; }
         }
     </style>
 </head>
@@ -331,18 +498,23 @@
 
 <div class="app-container">
     <sidebar>
-        <div class="brand">PI ARENA ELITE</div>
-        
-        <div class="wallet-card">
-            <h3>حساب اللاعب الحالي</h3>
-            <div class="balance" id="walletBalance" style="font-size: 14px; transition: all 0.3s; color: var(--text-muted);">جاري الاتصال بـ Pi...</div>
+        <!-- الـ Header الرسمي المحمي للهوية التجارية -->
+        <div class="brand-header">
+            <div class="brand">PI ARENA ELITE</div>
         </div>
+        
+        <div class="sidebar-content">
+            <div class="wallet-card">
+                <h3>حساب اللاعب الحالي</h3>
+                <div class="balance" id="walletBalance" style="font-size: 14px; transition: all 0.3s; color: var(--text-muted);">جاري الاتصال بـ Pi...</div>
+            </div>
 
-        <ul class="nav-menu">
-            <li class="nav-item active" onclick="switchTab('game-section', this)">🎯 ميدان التحدي</li>
-            <li class="nav-item" onclick="switchTab('leaderboard-section', this)">🏆 لوحة الصدارة</li>
-            <li class="nav-item" onclick="switchTab('shop-section', this)">⚡ المظاهر (Skins)</li>
-        </ul>
+            <ul class="nav-menu">
+                <li class="nav-item active" onclick="switchTab('game-section', this)">🎯 ميدان التحدي</li>
+                <li class="nav-item" onclick="switchTab('leaderboard-section', this)">🏆 لوحة الصدارة</li>
+                <li class="nav-item" onclick="switchTab('shop-section', this)">⚡ المظاهر (Skins)</li>
+            </ul>
+        </div>
     </sidebar>
 
     <main>
@@ -366,48 +538,61 @@
         </section>
 
         <section id="leaderboard-section" class="view-section">
-            <h2 style="margin-bottom: 1rem; text-shadow: 0 0 10px var(--neon-blue);">المتصدرون لهذا اليوم</h2>
-            <table class="luxury-table">
-                <thead>
-                    <tr>
-                        <th>الترتيب</th>
-                        <th>المقاتل</th>
-                        <th>أعلى نقاط</th>
-                    </tr>
-                </thead>
-                <tbody id="leaderboardBody">
-                </tbody>
-            </table>
+            <h2 style="margin-bottom: 1.5rem; text-shadow: 0 0 15px var(--neon-blue); font-weight: 800;">المتصدرون لهذا اليوم</h2>
+            <div class="luxury-table-container">
+                <table class="luxury-table">
+                    <thead>
+                        <tr>
+                            <th>الترتيب</th>
+                            <th>المقاتل</th>
+                            <th>أعلى نقاط</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboardBody">
+                    </tbody>
+                </table>
+            </div>
         </section>
 
         <section id="shop-section" class="view-section">
-            <h2 style="margin-bottom: 1rem; text-shadow: 0 0 10px var(--pi-neon);">ترسانة ليزر الأسلحة</h2>
+            <h2 style="margin-bottom: 1.5rem; text-shadow: 0 0 15px var(--pi-neon); font-weight: 800;">ترسانة ليزر الأسلحة</h2>
             <div class="shop-grid">
                 <div class="shop-card">
-                    <div class="skin-preview" style="color: #00f0ff;">⚡</div>
-                    <h3>شعاع البلازما السياني</h3>
-                    <p style="color: var(--text-muted); font-size: 0.9rem;">يغير لون مؤشر إطلاق النار إلى الأزرق السياني المضيء.</p>
-                    <button class="btn-action" style="padding: 0.5rem;" onclick="buySkin('Plasma', 0.5, '#00f0ff')">امتلاك (0.5 Pi)</button>
+                    <div class="skin-preview" style="color: #00f0ff; text-shadow: 0 0 15px #00f0ff;">⚡</div>
+                    <h3 style="font-weight: 700;">شعاع البلازما السياني</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.5;">يغير لون مؤشر إطلاق النار إلى الأزرق السياني المضيء.</p>
+                    <button class="btn-action" style="padding: 0.7rem; font-size: 1rem; border-radius: 10px;" onclick="buySkin('Plasma', 0.5, '#00f0ff')">امتلاك (0.5 Pi)</button>
                 </div>
                 <div class="shop-card">
-                    <div class="skin-preview" style="color: #ffd700;">🔥</div>
-                    <h3>شحنة النخبة الذهبية</h3>
-                    <p style="color: var(--text-muted); font-size: 0.9rem;">تأثير ليزري ذهبي ملكي مخصص لأبطال لوحة الصدارة.</p>
-                    <button class="btn-action" style="padding: 0.5rem;" onclick="buySkin('Gold', 1.5, '#ffd700')">امتلاك (1.5 Pi)</button>
+                    <div class="skin-preview" style="color: #ffd700; text-shadow: 0 0 15px #ffd700;">🔥</div>
+                    <h3 style="font-weight: 700;">شحنة النخبة الذهبية</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.5;">تأثير ليزري ذهبي ملكي مخصص لأبطال لوحة الصدارة.</p>
+                    <button class="btn-action" style="padding: 0.7rem; font-size: 1rem; border-radius: 10px;" onclick="buySkin('Gold', 1.5, '#ffd700')">امتلاك (1.5 Pi)</button>
                 </div>
             </div>
         </section>
     </main>
 </div>
 
+<!-- واجهة الدفع المالية الأصلية من Pi SDK -->
 <div class="pi-modal" id="piPaywallModal">
     <div class="pi-modal-content">
         <div class="pi-logo">π</div>
-        <h2 style="color: var(--neon-gold); margin-bottom: 0.5rem;">بوابة دفع Pi Network</h2>
+        <h2 style="color: var(--neon-gold); margin-bottom: 0.5rem; font-weight: 800;">بوابة دفع Pi Network</h2>
         <p id="piModalTxName" style="font-size: 0.95rem; color: var(--text-light);"></p>
-        <p id="piModalCost" style="font-size: 1.4rem; font-weight: bold; margin: 0.5rem 0; color: #fff;"></p>
+        <p id="piModalCost" style="font-size: 1.6rem; font-weight: bold; margin: 0.5rem 0; color: #fff; text-shadow: 0 0 10px var(--neon-gold);"></p>
         <div class="loader"></div>
         <p id="piModalStatus" style="color: var(--text-muted); font-size: 0.85rem;">جاري فتح محفظة باي والتأكيد...</p>
+    </div>
+</div>
+
+<!-- نافذة التنبيه الاحترافية المخصصة (Custom Modal) البديلة عن الـ Browser Alert -->
+<div id="piCustomModal" class="pi-modal-overlay">
+    <div class="pi-modal-box">
+        <div class="pi-modal-icon">⚡</div>
+        <div class="pi-modal-title" id="modalTitle">تحديث النظام</div>
+        <div class="pi-modal-message" id="modalMessage">جاري معالجة البيانات المخصصة...</div>
+        <button class="pi-modal-btn" onclick="closePiModalCustom()">موافق</button>
     </div>
 </div>
 
@@ -424,6 +609,18 @@
         timeLeft: 30,
         gameActive: false
     };
+
+    // دوال تشغيل النافذة الاحترافية المخصصة
+    function showPiModal(title, message, icon = '⚡') {
+        document.getElementById('modalTitle').innerText = title;
+        document.getElementById('modalMessage').innerText = message;
+        document.querySelector('.pi-modal-icon').innerText = icon;
+        document.getElementById('piCustomModal').classList.add('active');
+    }
+
+    function closePiModalCustom() {
+        document.getElementById('piCustomModal').classList.remove('active');
+    }
 
     document.addEventListener("DOMContentLoaded", () => {
         if (typeof Pi !== 'undefined') {
@@ -450,7 +647,7 @@
                         .then(data => {
                             if(data.identifier) {
                                 console.log("✅ تم إغلاق وإكمال الدفعة المعلقة بنجاح ومزامنتها.");
-                                alert("✅ تم العثور على عملية دفع سابقة غير مكتملة وتم تأكيدها بنجاح!");
+                                showPiModal("استعادة المعاملة المعلقة ✅", "تم العثور على عملية دفع سابقة غير مكتملة وتم تأكيدها بنجاح ماليًا!", "🎉");
                             }
                         })
                         .catch(err => console.error("❌ فشل الاتصال بالسيرفر لإكمال الدفعة المعلقة:", err));
@@ -678,7 +875,7 @@
                 .catch(err => {
                     console.error("خطأ أثناء الموافقة:", err);
                     closePiModal();
-                    alert("انتهت مهلة خادم الموافقة أو حدث خطأ بالاتصال الشبكي.");
+                    showPiModal("خطأ في الشبكة ⚠️", "انتهت مهلة خادم الموافقة أو حدث خطأ بالاتصال الشبكي.", "❌");
                 });
             },
             onReadyForServerCompletion: function(paymentId, txid) {
@@ -701,7 +898,7 @@
                 .catch(err => {
                     console.error("خطأ أثناء الإغلاق المالي لـ Pi:", err);
                     closePiModal();
-                    alert("فشل السيرفر في معالجة إغلاق المعاملة الموقعة مسبقاً.");
+                    showPiModal("فشل التأكيد النهائي ⚠️", "فشل السيرفر في معالجة إغلاق المعاملة الموقعة مسبقاً على البلوكشين.", "❌");
                 });
             },
             onCancel: function(paymentId) {
@@ -711,7 +908,7 @@
             onError: function(error, payment) {
                 console.error("خطأ مالي في الـ SDK:", error);
                 closePiModal();
-                alert("حدث خطأ في واجهة محفظة باي: " + (error.message || "انتهت المهلة الزمنية"));
+                showPiModal("خطأ في واجهة SDK ⚠️", "حدث خطأ في واجهة محفظة باي: " + (error.message || "انتهت المهلة الزمنية"), "❌");
             }
         });
     }
@@ -729,7 +926,12 @@
     function buySkin(skinName, cost, laserColor) {
         executeRealPiPayment(`شراء مظهر السلاح: ${skinName}`, cost, () => {
             state.currentLaserColor = laserColor;
-            alert(`تم تفعيل مظهر [${skinName}] الجديد لليزر بنجاح!`);
+            // استدعاء نافذة النيون المخصصة الجديدة بدلاً من الـ alert التقليدي البشع
+            showPiModal(
+                "تمت الترقية بنجاح! 🚀", 
+                `تم تفعيل مظهر [${skinName}] الجديد النيون لسلاح ليزر التصويب الخاص بك. استعد لسحق الأرقام القياسية في الساحة!`, 
+                "🔥"
+            );
         });
     }
 
