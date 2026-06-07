@@ -510,36 +510,61 @@
         document.getElementById('piCustomModal').classList.remove('active');
     }
 
-    // تفعيل مصادقة وإقلاع البلوكشين دون تعليق
+    // نظام فحص ومصادقة مرن ومحصن ضد التجميد وفشل التعرف للـ SDK
     document.addEventListener("DOMContentLoaded", () => {
-        if (typeof Pi !== 'undefined') {
-            try {
-                const isSandbox = window.location.hostname.includes('vercel.app') ? false : true;
-                Pi.init({ version: "2.0", sandbox: isSandbox });
-                
-                Pi.authenticate(['username', 'payments'])
-                .then(function(auth) {
-                    state.currentUser = auth.user.username;
-                    const walletEl = document.getElementById('walletBalance');
-                    walletEl.innerText = auth.user.username;
-                    walletEl.style.color = "var(--neon-gold)";
+        let authRetries = 0;
+        const maxRetries = 3;
+
+        function tryPiAuthenticate() {
+            if (typeof Pi !== 'undefined') {
+                try {
+                    // الفحص التلقائي لنوع البيئة وإغلاق الـ Sandbox فوراً عند الرفع على Vercel
+                    const isSandbox = !(window.location.hostname.includes('vercel.app') || window.location.hostname.includes('yourdomain.com'));
                     
-                    syncUserSkinsFromBackend();
-                })
-                .catch(function(error) {
-                    console.error("خطأ مصادقة متصفح باي:", error);
-                    document.getElementById('walletBalance').innerText = "فشل التعرف";
-                    updateShopUI();
-                });
-            } catch(e) { 
-                console.error("خلل في البنية التحتية:", e); 
-                document.getElementById('walletBalance').innerText = "وضع التجربة نشط";
-                updateShopUI(); 
+                    console.log("إطلاق محرك الـ Pi SDK. نمط التجربة المحمي:", isSandbox);
+                    Pi.init({ version: "2.0", sandbox: isSandbox });
+                    
+                    Pi.authenticate(['username', 'payments'])
+                    .then(function(auth) {
+                        console.log("نجح التعرف والمصادقة التامة للمستخدم:", auth.user.username);
+                        state.currentUser = auth.user.username;
+                        const walletEl = document.getElementById('walletBalance');
+                        walletEl.innerText = auth.user.username;
+                        walletEl.style.color = "var(--neon-gold)";
+                        
+                        // جلب البيانات المخزنة فور تأكيد الهوية
+                        syncUserSkinsFromBackend();
+                    })
+                    .catch(function(error) {
+                        console.error("خطأ معلق في مصفوفة التوثيق المباشرة:", error);
+                        authRetries++;
+                        if (authRetries < maxRetries) {
+                            console.log(`إعادة محاولة المزامنة رقم (${authRetries}/${maxRetries})...`);
+                            setTimeout(tryPiAuthenticate, 1500);
+                        } else {
+                            // حماية الواجهة من البقاء معلقة في وضع التجربة
+                            document.getElementById('walletBalance').innerText = "مقاتل_مستضيف";
+                            document.getElementById('walletBalance').style.color = "var(--text-muted)";
+                            updateShopUI();
+                        }
+                    });
+                } catch(e) { 
+                    console.error("فشل هيكلي في استدعاء حزم البلوكشين:", e); 
+                    document.getElementById('walletBalance').innerText = "خطأ في التهيئة";
+                    updateShopUI(); 
+                }
+            } else {
+                // بيئة الاختبار المحلية للمطور
+                console.log("محاكاة الخادم المحلي الافتراضي.");
+                state.currentUser = "لاعب_محلي_" + Math.floor(Math.random() * 900);
+                const walletEl = document.getElementById('walletBalance');
+                walletEl.innerText = state.currentUser + " (بيئة تجريبية)";
+                walletEl.style.color = "var(--neon-blue)";
+                updateShopUI();
             }
-        } else {
-            document.getElementById('walletBalance').innerText = "محاكاة خادم محلي";
-            updateShopUI();
         }
+
+        tryPiAuthenticate();
         loadLeaderboard();
     });
 
@@ -644,7 +669,7 @@
         }
     }
 
-    // هندسة النغمة الصوتية المدمجة (توليد داخلي بدون ملفات خارجية)
+    // هندسة النغمة الصوتية المدمجة
     const AudioEngine = {
         ctx: null,
         init() { if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)(); },
