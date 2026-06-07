@@ -390,7 +390,7 @@
         
         <div class="wallet-card">
             <h3>حساب اللاعب الحالي</h3>
-            <div class="balance" id="walletBalance">جاري تسجيل الدخول...</div>
+            <div class="balance" id="walletBalance" style="font-size: 14px; transition: all 0.3s;">جاري تسجيل الدخول...</div>
         </div>
 
         <ul class="nav-menu">
@@ -445,7 +445,7 @@
                 <div class="shop-card">
                     <div class="skin-preview" style="color: #00f0ff;">⚡</div>
                     <h3>شعاع البلازما السياني</h3>
-                    <p style="color: var(--text-muted); font-size: 0.9rem;">يغير لون مؤشر إطلاق النار إلى الأزرق السياني المضيء.</p>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">يغير لون مؤشار إطلاق النار إلى الأزرق السياني المضيء.</p>
                     <button class="btn-action" style="padding: 0.5rem;" onclick="buySkin('Plasma', 0.5, '#00f0ff')">امتلاك (0.5 Pi)</button>
                 </div>
                 <div class="shop-card">
@@ -489,13 +489,21 @@
     // تهيئة مكتبة Pi SDK الرسمية عند التحميل
     document.addEventListener("DOMContentLoaded", () => {
         if (typeof Pi !== 'undefined') {
-            Pi.init({ version: "2.0", sandbox: true });
-            
-            Pi.authenticate(['username', 'payments'], onPiAuthExtensionApproved)
-              .catch(err => {
-                  console.error(err);
-                  document.getElementById('walletBalance').innerText = "خطأ في متصفح باي";
-              });
+            try {
+                Pi.init({ version: "2.0", sandbox: true });
+                
+                Pi.authenticate(['username', 'payments'], onPiAuthExtensionApproved)
+                  .catch(err => {
+                      console.error("Auth Catch Error:", err);
+                      // تعديل ذكي: طباعة تفاصيل الخطأ الحقيقي القادم من باي لتسهيل الديباجينج
+                      let errMsg = err.message || JSON.stringify(err) || "فشلت المصادقة المبدئية";
+                      document.getElementById('walletBalance').innerText = "خطأ: " + errMsg;
+                      document.getElementById('walletBalance').style.color = "#ff4444";
+                  });
+            } catch(e) {
+                document.getElementById('walletBalance').innerText = "خطأ في تهيئة الـ SDK";
+                document.getElementById('walletBalance').style.color = "#ff4444";
+            }
         } else {
             document.getElementById('walletBalance').innerText = "افتح التطبيق داخل متصفح Pi";
         }
@@ -505,6 +513,7 @@
     function onPiAuthExtensionApproved(auth) {
         state.currentUser = auth.user.username;
         document.getElementById('walletBalance').innerText = auth.user.username;
+        document.getElementById('walletBalance').style.color = "var(--neon-gold)";
         console.log("تم تسجيل الدخول بنجاح لـ: ", auth.user.username);
     }
 
