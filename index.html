@@ -38,34 +38,42 @@
             min-height: 100vh;
         }
 
+        /* تعديل الحاوية لتأخذ 100% من عرض شاشة الهاتف أو المتصفح دون قيود */
         .app-container {
             display: grid;
-            grid-template-columns: 310px 1fr;
+            grid-template-columns: 280px 1fr;
             min-height: 100vh;
+            width: 100%;
+            max-width: 100%;
+            padding: 10px;
+            gap: 15px;
         }
 
         sidebar {
             background: rgba(11, 4, 22, 0.9);
-            border-left: 1px solid rgba(138, 43, 226, 0.2);
-            padding: 0;
+            border: 1px solid rgba(138, 43, 226, 0.2);
+            border-radius: 16px;
             display: flex;
             flex-direction: column;
             gap: 1.2rem;
             backdrop-filter: blur(12px);
             z-index: 10;
+            height: fit-content;
         }
 
         .brand-header {
             width: 100%;
-            padding: 1.5rem 1rem 1rem;
+            padding: 1.2rem 1rem;
             text-align: center;
             background: rgba(0, 0, 0, 0.2);
             border-bottom: 3px solid var(--brand-red);
+            border-top-left-radius: 14px;
+            border-top-right-radius: 14px;
             box-shadow: 0 4px 20px rgba(255, 0, 60, 0.25);
         }
 
         .brand {
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             font-weight: 900;
             letter-spacing: 1.5px;
             color: var(--text-light);
@@ -73,11 +81,10 @@
         }
 
         .sidebar-content {
-            padding: 0 1rem 1.5rem;
+            padding: 0 1rem 1.2rem;
             display: flex;
             flex-direction: column;
             gap: 1.2rem;
-            flex-grow: 1;
         }
 
         .wallet-card {
@@ -86,7 +93,6 @@
             border-radius: 14px;
             padding: 1rem;
             box-shadow: 0 8px 25px rgba(0,0,0,0.4);
-            backdrop-filter: blur(5px);
         }
 
         .wallet-card h3 {
@@ -106,19 +112,19 @@
         .balance-item:last-child { border-bottom: none; }
 
         .balance-label { font-size: 0.75rem; color: var(--text-muted); }
-        .balance-val { font-size: 1.1rem; font-weight: 700; color: var(--neon-gold); text-shadow: 0 0 8px rgba(242, 169, 0, 0.3); }
-        .balance-game { color: var(--neon-blue) !important; text-shadow: 0 0 8px rgba(0, 240, 255, 0.3) !important; }
+        .balance-val { font-size: 1.1rem; font-weight: 700; color: var(--neon-gold); }
+        .balance-game { color: var(--neon-blue) !important; }
 
         .sidebar-controls {
             display: flex;
             flex-direction: column;
             gap: 0.6rem;
-            margin-top: 0.2rem;
+            margin-top: 0.5rem;
         }
 
         .btn-side {
             width: 100%;
-            padding: 0.65rem;
+            padding: 0.7rem;
             font-size: 0.85rem;
             font-weight: 700;
             border-radius: 8px;
@@ -136,37 +142,29 @@
             border: 1px solid var(--pi-purple);
             color: var(--text-light);
         }
-        .btn-side-auth:hover { background: rgba(138, 43, 226, 0.3); box-shadow: 0 0 10px rgba(138, 43, 226, 0.3); }
 
         .btn-side-pay {
             background: linear-gradient(135deg, var(--neon-gold) 0%, var(--neon-gold-bright) 100%);
             color: #05010d;
-            box-shadow: 0 4px 12px rgba(242, 169, 0, 0.2);
         }
-        .btn-side-pay:hover { transform: translateY(-2px); box-shadow: 0 0 15px var(--neon-gold-bright); }
 
         .nav-menu {
             display: flex;
             flex-direction: column;
-            gap: 0.5rem;
+            gap: 0.4rem;
             list-style: none;
             border-top: 1px solid rgba(255,255,255,0.05);
-            padding-top: 1rem;
+            padding-top: 0.8rem;
         }
 
         .nav-item {
-            padding: 0.65rem 1rem;
+            padding: 0.7rem 1rem;
             border-radius: 8px;
             cursor: pointer;
-            transition: all 0.2s;
             color: var(--text-muted);
             font-weight: 600;
             font-size: 0.9rem;
-            border: 1px solid transparent;
             text-align: right;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
 
         .nav-item:hover, .nav-item.active {
@@ -176,30 +174,25 @@
         }
 
         main {
-            padding: 1.5rem;
             display: flex;
             flex-direction: column;
-            gap: 1.5rem;
-            overflow-y: auto;
+            gap: 1rem;
+            width: 100%;
         }
 
         .view-section {
             display: none;
-            animation: fadeIn 0.4s ease forwards;
+            width: 100%;
         }
 
-        .view-section.active { display: block; }
+        .view-section.active { display: flex; flex-direction: column; width: 100%; }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
+        /* تعديل لوحة اللعبة لتملأ العرض المتاح بالكامل وتبرز الميدان */
         .game-panel {
             background: var(--panel-bg);
-            border: 1px solid rgba(138, 43, 226, 0.2);
+            border: 1px solid rgba(138, 43, 226, 0.25);
             border-radius: 16px;
-            padding: 1.2rem;
+            padding: 1.5rem;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -207,6 +200,7 @@
             backdrop-filter: blur(15px);
             box-shadow: 0 15px 45px rgba(0, 0, 0, 0.5);
             width: 100%;
+            flex-grow: 1;
         }
 
         .game-header {
@@ -219,49 +213,52 @@
         }
 
         .game-header h2 {
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             font-weight: 800;
             color: var(--text-light);
         }
 
-        .game-stats { display: flex; gap: 1rem; }
+        .game-stats { display: flex; gap: 0.8rem; }
 
         .stat-box {
             text-align: center;
-            background: rgba(0, 0, 0, 0.4);
-            padding: 0.4rem 1rem;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 0.4rem 1.2rem;
             border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
         }
 
-        .stat-label { font-size: 0.7rem; color: var(--text-muted); }
-        .stat-val { font-size: 1.3rem; font-weight: 800; color: var(--neon-blue); }
+        .stat-label { font-size: 0.75rem; color: var(--text-muted); }
+        .stat-val { font-size: 1.4rem; font-weight: 800; color: var(--neon-blue); }
 
-        /* تعديلات حجم الميدان التنافسي الكبير */
+        /* حل جذري: إعطاء الميدان حاوية مرنة ومجبرة على التمدد الكامل */
         .canvas-container {
             width: 100%;
             display: flex;
             justify-content: center;
+            align-items: center;
+            background: #020106;
+            border: 2px solid rgba(138, 43, 226, 0.4);
+            border-radius: 14px;
+            box-shadow: 0 0 35px rgba(138, 43, 226, 0.3);
+            overflow: hidden;
         }
 
+        /* الميدان الآن يستغل كامل العرض مع ارتفاع محترم وكبير جداً للعب المتطور */
         #gameCanvas {
-            background: #020106;
-            border: 2px solid rgba(138, 43, 226, 0.35);
-            border-radius: 12px;
-            box-shadow: 0 0 25px rgba(138, 43, 226, 0.15);
+            width: 100% !important;
+            height: auto !important;
+            min-height: 520px; /* جعل الميدان ضخماً وعميقاً ليملأ واجهة الشاشة */
+            display: block;
             cursor: crosshair;
-            width: 100%;
-            max-width: 1050px; /* تمديد العرض الأقصى للميدان ليكون واسعاً جداً */
-            height: auto;
-            aspect-ratio: 21 / 9; /* أبعاد عريضة وسينمائية ممتازة للرمي والتصويب السريع المحترف */
         }
 
         .btn-action {
             background: linear-gradient(135deg, var(--neon-gold) 0%, var(--neon-gold-bright) 100%);
             color: #05010d;
             border: none;
-            padding: 0.8rem 2.5rem;
-            font-size: 1rem;
+            padding: 1rem 3.5rem;
+            font-size: 1.1rem;
             font-weight: 800;
             border-radius: 10px;
             cursor: pointer;
@@ -271,18 +268,18 @@
         .btn-action:hover { transform: translateY(-2px); box-shadow: 0 0 20px var(--neon-gold-bright); }
 
         .luxury-table-container {
-            background: var(--panel-bg); border-radius: 14px; padding: 0.5rem; border: 1px solid rgba(138, 43, 226, 0.15); overflow: hidden;
+            background: var(--panel-bg); border-radius: 14px; padding: 0.5rem; border: 1px solid rgba(138, 43, 226, 0.15); overflow: hidden; width: 100%;
         }
         .luxury-table { width: 100%; border-collapse: collapse; }
         .luxury-table th, .luxury-table td { padding: 1rem; text-align: right; font-size: 0.9rem; }
         .luxury-table th { background: rgba(138, 43, 226, 0.12); color: var(--neon-blue); }
         .luxury-table tr { border-bottom: 1px solid rgba(255,255,255,0.04); }
 
-        .shop-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; }
+        .shop-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; width: 100%; }
         .shop-card { background: var(--panel-bg); border: 1px solid rgba(255,255,255,0.04); border-radius: 16px; padding: 1.5rem; text-align: center; display: flex; flex-direction: column; gap: 1rem; }
         .skin-preview { height: 100px; background: rgba(0,0,0,0.3); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; }
 
-        /* النوافذ المنبثقة للـ SDK */
+        /* النوافذ المنبثقة */
         .pi-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5, 1, 13, 0.85); backdrop-filter: blur(8px); display: flex; justify-content: center; align-items: center; z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
         .pi-modal-overlay.active { opacity: 1; pointer-events: auto; }
         .pi-modal-box { background: linear-gradient(145deg, #1f1235 0%, #0f071c 100%); border: 2px solid var(--neon-gold); border-radius: 20px; padding: 25px; max-width: 380px; width: 90%; text-align: center; }
@@ -294,10 +291,14 @@
         .loader { border: 4px solid rgba(255,255,255,0.05); border-top: 4px solid var(--neon-gold); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 1.5rem auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
+        /* مواءمة الهواتف والشاشات الصغيرة بشكل عمودي فخم مع الحفاظ على الحجم الضخم للميدان */
         @media (max-width: 768px) {
-            .app-container { grid-template-columns: 1fr; }
-            sidebar { border-left: none; border-bottom: 1px solid rgba(138, 43, 226, 0.2); }
-            main { padding: 1rem; }
+            .app-container { grid-template-columns: 1fr; padding: 8px; gap: 10px; }
+            sidebar { width: 100%; }
+            main { padding: 0; }
+            #gameCanvas { min-height: 420px; } 
+            .game-panel { padding: 1rem; }
+            .game-header h2 { font-size: 1.1rem; }
         }
     </style>
 </head>
@@ -350,7 +351,7 @@
                     </div>
                 </div>
                 <div class="canvas-container">
-                    <canvas id="gameCanvas" width="1050" height="450"></canvas>
+                    <canvas id="gameCanvas" width="1200" height="600"></canvas>
                 </div>
                 <div id="gameControls">
                     <button class="btn-action" id="startBtn" onclick="requestMatchEntry()">بدء معركة الميدان (0.1 Pi)</button>
@@ -449,7 +450,6 @@
 
     function closePiModalCustom() { document.getElementById('piCustomModal').classList.remove('active'); }
 
-    // تشغيل وإقلاع المصادقة والربط
     document.addEventListener("DOMContentLoaded", () => {
         tryPiAuthenticate();
         loadLeaderboard();
@@ -550,16 +550,15 @@
         });
     }
 
-    // محرك أهداف الأنظمة الإحداثية الحركية للرماية
     class CyberTarget {
         constructor() {
-            this.x = Math.random() * (canvas.width - 100) + 50; 
-            this.y = Math.random() * (canvas.height - 100) + 50;
-            this.baseRadius = Math.random() * 8 + 20; 
+            this.x = Math.random() * (canvas.width - 150) + 75; 
+            this.y = Math.random() * (canvas.height - 150) + 75;
+            this.baseRadius = Math.random() * 8 + 25; 
             this.radius = this.baseRadius; 
             this.pulseTimer = Math.random() * 10;
-            this.vx = (Math.random() - 0.5) * 5; 
-            this.vy = (Math.random() - 0.5) * 5;
+            this.vx = (Math.random() - 0.5) * 6; 
+            this.vy = (Math.random() - 0.5) * 6;
             this.hue = Math.random() * 360; 
             this.rotationAngle = 0; 
             this.rotSpeed = (Math.random() - 0.5) * 0.04;
