@@ -430,7 +430,7 @@
                     </tr>
                 </thead>
                 <tbody id="leaderboardBody">
-                    </tbody>
+                </tbody>
             </table>
         </section>
 
@@ -490,9 +490,27 @@
                 setTimeout(() => {
                     document.getElementById('walletBalance').innerText = "جاري طلب المصادقة...";
                     
-                    // دالة لمعالجة المدفوعات غير المكتملة (مطلوبة في الـ SDK الجديد)
+                    // دالة صمام الأمان لمعالجة وإكمال المدفوعات غير المكتملة تلقائياً (تحمى من انقطاع الاتصال)
                     const onIncompletePaymentFound = (payment) => {
-                        console.log("تم العثور على دفعة غير مكتملة:", payment);
+                        console.warn("⚠️ تم العثور على دفعة غير مكتملة (بسبب انقطاع الشبكة أو مهلة)، جاري تأكيدها ماليًا بالسيرفر:", payment);
+                        
+                        fetch(`${BACKEND_URL}/api/pi/complete`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ 
+                                paymentId: payment.identifier, 
+                                txid: payment.transaction ? payment.transaction.txid : null 
+                            })
+                        })
+                        .then(res => res.json())
+                        .then(data => {
+                            if(data.success) {
+                                console.log("✅ تم إغلاق وإكمال الدفعة المعلقة بنجاح ومزامنتها.");
+                                alert("✅ تم العثور على عملية دفع سابقة غير مكتملة وتم تأكيدها بنجاح ومزامنة حسابك!");
+                                // هنا يمكنك استدعاء دالة لتحديث حالة اللعبة بناءً على نوع الفاتورة المكتملة إذا لزم الأمر
+                            }
+                        })
+                        .catch(err => console.error("❌ فشل الاتصال بالسيرفر لإكمال الدفعة المعلقة:", err));
                     };
 
                     // التعديل الرئيسي: استخدام .then لاستلام نتيجة المصادقة الناجحة وتحديث الواجهة
@@ -631,7 +649,7 @@
         const mouseY = (e.clientY - rect.top) * (canvas.height / rect.height);
 
         ctx.strokeStyle = state.currentLaserColor; ctx.lineWidth = 3;
-        ctx.beginPath(); ctx.moveTo(canvas.width/2, canvas.height); ctx.lineTo(mouseX, mouseY); stroke();
+        ctx.beginPath(); ctx.moveTo(canvas.width/2, canvas.height); ctx.lineTo(mouseX, mouseY); ctx.stroke();
 
         let hit = false;
         for (let i = targets.length - 1; i >= 0; i--) {
@@ -745,8 +763,18 @@
             },
             onError: function(error, payment) {
                 console.error("خطأ مالي في الـ SDK:", error);
-                alert("حدث خطأ ما أثناء معالجة المحفظة.");
                 closePiModal();
+                
+                // رصد ومعالجة انتهاء مهلة الدفع (Timeout) أو الإلغاء بشكل احترافي
+                const errorMessage = (error && error.message) ? error.message.toLowerCase() : "";
+                
+                if (errorMessage.includes('timeout')) {
+                    alert("⏳ انتهت مهلة الدفع المستهدفة! يرجى التأكد من استقرار الاتصال بالإنترنت والمحاولة مجدداً. (إذا خُصمت العملات، سيتم تأكيدها تلقائياً بفضل نظام الأمان الجديد للعبة).");
+                } else if (errorMessage.includes('user_cancelled')) {
+                    console.log("قام المستخدم بإلغاء العملية يدوياً.");
+                } else {
+                    alert("حدث خطأ أثناء معالجة المحفظة: " + (error.message || "خطأ غير معروف في الشبكة"));
+                }
             }
         });
     }
