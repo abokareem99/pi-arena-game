@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pi Arena: Elite Marksman</title>
-    <!-- استدعاء مكتبة الـ SDK الرسمية لشبكة باي نتورك -->
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
     <style>
         :root {
@@ -401,7 +400,6 @@
     </sidebar>
 
     <main>
-        <!-- 1. شاشة اللعبة وميدان الرماية -->
         <section id="game-section" class="view-section active">
             <div class="game-panel">
                 <div class="game-header">
@@ -421,7 +419,6 @@
             </div>
         </section>
 
-        <!-- 2. شاشة لوحة الصدارة الفخمة -->
         <section id="leaderboard-section" class="view-section">
             <h2 style="margin-bottom: 1rem; text-shadow: 0 0 10px var(--neon-blue);">المتصدرون لهذا اليوم</h2>
             <table class="luxury-table">
@@ -433,12 +430,10 @@
                     </tr>
                 </thead>
                 <tbody id="leaderboardBody">
-                    <!-- تعبئة تلقائية من السيرفر خلف الكواليس -->
-                </tbody>
+                    </tbody>
             </table>
         </section>
 
-        <!-- 3. شاشة المتجر -->
         <section id="shop-section" class="view-section">
             <h2 style="margin-bottom: 1rem; text-shadow: 0 0 10px var(--pi-neon);">ترسانة ليزر الأسلحة</h2>
             <div class="shop-grid">
@@ -459,7 +454,6 @@
     </main>
 </div>
 
-<!-- واجهة دفع Pi SDK -->
 <div class="pi-modal" id="piPaywallModal">
     <div class="pi-modal-content">
         <div class="pi-logo">π</div>
@@ -491,8 +485,8 @@
             document.getElementById('walletBalance').innerText = "جاري تهيئة SDK...";
             
             try {
-                // ملاحظة: قمنا بتغيير الـ sandbox إلى false للتوافق الكامل مع متصفح باي الرسمي والإنتاج الحي، غيرها لـ true فقط لو اختبرت على الكمبيوتر
-                Pi.init({ version: "2.0", sandbox: false });
+                // تم تعديل وضع الحماية إلى true ليتمكن متصفح باي من تهيئة النظام بدون أخطاء
+                Pi.init({ version: "2.0", sandbox: true });
                 
                 // نمنح الـ SDK مهلة بسيطة ومؤكدة للاستقرار التام قبل استدعاء المصادقة
                 setTimeout(() => {
