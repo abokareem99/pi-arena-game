@@ -242,7 +242,6 @@
             background: linear-gradient(135deg, #1e293b 0%, #334155 100%) !important;
             color: #94a3b8 !important;
             box-shadow: none !important;
-            cursor: pointer;
         }
 
         .btn-active-skin {
@@ -388,7 +387,7 @@
         <div class="sidebar-content">
             <div class="wallet-card">
                 <h3>حساب اللاعب الحالي</h3>
-                <div class="balance" id="walletBalance" style="font-size: 14px; color: var(--text-muted);">جاري الاتصال بـ Pi...</div>
+                <div class="balance" id="walletBalance" style="font-size: 14px; color: var(--text-muted);">جاري الاتصال بـ Pi SDK...</div>
             </div>
             <ul class="nav-menu">
                 <li class="nav-item active" onclick="switchTab('game-section', this)">🎯 ميدان التحدي</li>
@@ -486,7 +485,7 @@
         currentUser: 'مقاتل_مجهول',
         currentLaserColor: '#a855f7',
         activeSkinId: 'Default',
-        ownedSkins: ['Default'], // المظهر الافتراضي ممتلك دائماً
+        ownedSkins: ['Default'],
         score: 0,
         combo: 1,
         timeLeft: 30,
@@ -511,37 +510,39 @@
         document.getElementById('piCustomModal').classList.remove('active');
     }
 
-    // الفكرة الأساسية: الربط الشامل والمصادقة وجلب البيانات فور التحميل المبدئي
+    // تفعيل مصادقة وإقلاع البلوكشين دون تعليق
     document.addEventListener("DOMContentLoaded", () => {
         if (typeof Pi !== 'undefined') {
             try {
-                Pi.init({ version: "2.0", sandbox: true });
-                Pi.authenticate(['username', 'payments'], (payment) => {
-                    fetch(`${BACKEND_URL}/api/pi/complete`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ paymentId: payment.identifier, txid: payment.transaction.txid })
-                    });
-                }).then(auth => {
+                const isSandbox = window.location.hostname.includes('vercel.app') ? false : true;
+                Pi.init({ version: "2.0", sandbox: isSandbox });
+                
+                Pi.authenticate(['username', 'payments'])
+                .then(function(auth) {
                     state.currentUser = auth.user.username;
-                    document.getElementById('walletBalance').innerText = auth.user.username;
-                    document.getElementById('walletBalance').style.color = "var(--neon-gold)";
+                    const walletEl = document.getElementById('walletBalance');
+                    walletEl.innerText = auth.user.username;
+                    walletEl.style.color = "var(--neon-gold)";
                     
-                    // استدعاء المخدم فوراً لجلب المظاهر المملوكة لهذا الحساب الفعلي
                     syncUserSkinsFromBackend();
-                }).catch(err => {
-                    document.getElementById('walletBalance').innerText = "وضع التجربة نشط";
+                })
+                .catch(function(error) {
+                    console.error("خطأ مصادقة متصفح باي:", error);
+                    document.getElementById('walletBalance').innerText = "فشل التعرف";
                     updateShopUI();
                 });
-            } catch(e) { console.error(e); updateShopUI(); }
+            } catch(e) { 
+                console.error("خلل في البنية التحتية:", e); 
+                document.getElementById('walletBalance').innerText = "وضع التجربة نشط";
+                updateShopUI(); 
+            }
         } else {
-            document.getElementById('walletBalance').innerText = "بيئة تطوير محلية";
+            document.getElementById('walletBalance').innerText = "محاكاة خادم محلي";
             updateShopUI();
         }
         loadLeaderboard();
     });
 
-    // جلب حالة الشراء والمظاهر المفعلة مسبقاً من الباك إيند وتطبيقها فوراً
     function syncUserSkinsFromBackend() {
         fetch(`${BACKEND_URL}/api/users/${state.currentUser}/skins`)
         .then(res => res.json())
@@ -552,102 +553,69 @@
                 state.activeSkinId = data.activeSkinId || 'Default';
             }
             updateShopUI();
-        }).catch(() => {
-            updateShopUI();
-        });
+        }).catch(() => { updateShopUI(); });
     }
 
-    // تحديث شكل الأزرار في واجهة المتجر بناء على حالة الربط والمظاهر المملوكة
     function updateShopUI() {
-        const skinsConfig = {
-            'Default': '#a855f7',
-            'Plasma': '#00f0ff',
-            'Gold': '#ffd700'
-        };
-
+        const skinsConfig = { 'Default': '#a855f7', 'Plasma': '#00f0ff', 'Gold': '#ffd700' };
         Object.keys(skinsConfig).forEach(skinId => {
             const btn = document.getElementById(`btn-skin-${skinId}`);
             if (!btn) return;
-
             if (state.activeSkinId === skinId) {
-                btn.innerText = "نشط حالياً";
-                btn.className = "btn-action btn-active-skin";
+                btn.innerText = "نشط حالياً"; btn.className = "btn-action btn-active-skin";
             } else if (state.ownedSkins.includes(skinId)) {
-                btn.innerText = "تفعيل المظهر";
-                btn.className = "btn-action btn-owned";
+                btn.innerText = "تفعيل المظهر"; btn.className = "btn-action btn-owned";
             } else {
                 let price = skinId === 'Plasma' ? 0.5 : 1.5;
-                btn.innerText = `امتلاك (${price} Pi)`;
-                btn.className = "btn-action";
+                btn.innerText = `امتلاك (${price} Pi)`; btn.className = "btn-action";
             }
         });
     }
 
     function handleSkinAction(skinId, cost, color) {
-        if (state.ownedSkins.includes(skinId)) {
-            selectOwnedSkin(skinId, color);
-        } else {
-            buySkin(skinId, cost, color);
-        }
+        if (state.ownedSkins.includes(skinId)) { selectOwnedSkin(skinId, color); } else { buySkin(skinId, cost, color); }
     }
 
     function selectOwnedSkin(skinId, color) {
-        state.activeSkinId = skinId;
-        state.currentLaserColor = color;
-        updateShopUI();
-        
-        // إبلاغ السيرفر بتغيير المظهر النشط حالياً للحفظ الدائم
+        state.activeSkinId = skinId; state.currentLaserColor = color; updateShopUI();
         fetch(`${BACKEND_URL}/api/users/skin/select`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username: state.currentUser, activeSkinId: skinId, laserColor: color })
         });
     }
 
     function buySkin(skinName, cost, laserColor) {
         executeRealPiPayment(`شراء مظهر السلاح: ${skinName}`, cost, () => {
-            if(!state.ownedSkins.includes(skinName)) {
-                state.ownedSkins.push(skinName);
-            }
-            state.activeSkinId = skinName;
-            state.currentLaserColor = laserColor;
-            updateShopUI();
-            
-            // تحديث قاعدة البيانات الخلفية وحفظ السجل المالي والمظهر المشترى
+            if(!state.ownedSkins.includes(skinName)) state.ownedSkins.push(skinName);
+            state.activeSkinId = skinName; state.currentLaserColor = laserColor; updateShopUI();
             fetch(`${BACKEND_URL}/api/users/skin/buy-success`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username: state.currentUser, skinId: skinName, laserColor: laserColor })
             });
-
-            showPiModal(
-                "تمت ترقية الليزر بنجاح! 🔥", 
-                `لقد تم ربط وشراء المظهر [${skinName}] بمحفظتك بنجاح، وتفعيله داخل كود اللعبة.`, 
-                "🚀"
-            );
+            showPiModal("تمت ترقية الليزر بنجاح! 🔥", `تم ربط وتفعيل [${skinName}] بمحفظتك بنجاح.`, "🚀");
         });
     }
 
-    // بقية محرك الأنيميشن والأهداف المطورة السيبرانية النباضة كما هي تماماً:
+    // محرك الأهداف السيبرانية والنظام الإحداثي للماوس
     class CyberTarget {
         constructor() {
-            this.x = Math.random() * (canvas.width - 80) + 40;
+            this.x = Math.random() * (canvas.width - 80) + 40; 
             this.y = Math.random() * (canvas.height - 80) + 40;
-            this.baseRadius = Math.random() * 10 + 18;
-            this.radius = this.baseRadius;
+            this.baseRadius = Math.random() * 10 + 18; 
+            this.radius = this.baseRadius; 
             this.pulseTimer = Math.random() * 10;
-            this.vx = (Math.random() - 0.5) * 4;
+            this.vx = (Math.random() - 0.5) * 4; 
             this.vy = (Math.random() - 0.5) * 4;
-            this.hue = Math.random() * 360;
-            this.rotationAngle = 0;
+            this.hue = Math.random() * 360; 
+            this.rotationAngle = 0; 
             this.rotSpeed = (Math.random() - 0.5) * 0.05;
         }
         update() {
             this.x += this.vx; this.y += this.vy;
             if (this.x - this.radius < 0 || this.x + this.radius > canvas.width) this.vx *= -1;
             if (this.y - this.radius < 0 || this.y + this.radius > canvas.height) this.vy *= -1;
-            this.pulseTimer += 0.1;
-            this.radius = this.baseRadius + Math.sin(this.pulseTimer) * 4;
+            this.pulseTimer += 0.1; 
+            this.radius = this.baseRadius + Math.sin(this.pulseTimer) * 4; 
             this.rotationAngle += this.rotSpeed;
         }
         draw() {
@@ -655,18 +623,19 @@
             ctx.shadowBlur = 20; ctx.shadowColor = `hsl(${this.hue}, 100%, 60%)`;
             ctx.strokeStyle = `hsl(${this.hue}, 100%, 60%)`; ctx.lineWidth = 3;
             ctx.beginPath(); ctx.arc(0, 0, this.radius, 0, Math.PI * 1.5); ctx.stroke();
-            ctx.beginPath(); ctx.arc(0, 0, this.radius * 0.6, Math.PI * 0.5, Math.PI * 2);
+            ctx.beginPath(); ctx.arc(0, 0, this.radius * 0.6, Math.PI * 0.5, Math.PI * 2); 
             ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 1.5; ctx.stroke();
-            ctx.beginPath(); ctx.arc(0, 0, 6, 0, Math.PI * 2);
+            ctx.beginPath(); ctx.arc(0, 0, 6, 0, Math.PI * 2); 
             ctx.fillStyle = `hsl(${this.hue}, 100%, 70%)`; ctx.fill(); ctx.restore();
         }
     }
 
     class NeonParticle {
         constructor(x, y, color) {
-            this.x = x; this.y = y; this.color = color;
+            this.x = x; this.y = y; this.color = color; 
             this.vx = (Math.random() - 0.5) * 8; this.vy = (Math.random() - 0.5) * 8;
-            this.radius = Math.random() * 3 + 1; this.alpha = 1; this.decay = Math.random() * 0.02 + 0.02;
+            this.radius = Math.random() * 3 + 1; this.alpha = 1; 
+            this.decay = Math.random() * 0.02 + 0.02;
         }
         update() { this.x += this.vx; this.y += this.vy; this.alpha -= this.decay; }
         draw() {
@@ -675,6 +644,7 @@
         }
     }
 
+    // هندسة النغمة الصوتية المدمجة (توليد داخلي بدون ملفات خارجية)
     const AudioEngine = {
         ctx: null,
         init() { if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)(); },
@@ -696,15 +666,14 @@
         state.score = 0; state.combo = 1; state.timeLeft = 30; state.gameActive = true;
         targets = [new CyberTarget(), new CyberTarget(), new CyberTarget(), new CyberTarget()];
         particles = []; activeLasers = [];
-        document.getElementById('scoreVal').innerText = state.score;
+        document.getElementById('scoreVal').innerText = state.score; 
         document.getElementById('comboVal').innerText = 'x' + state.combo;
-        document.getElementById('timerVal').innerText = state.timeLeft + 's';
+        document.getElementById('timerVal').innerText = state.timeLeft + 's'; 
         document.getElementById('startBtn').style.display = 'none';
         
         if(gameInterval) clearInterval(gameInterval);
         gameInterval = setInterval(() => {
-            state.timeLeft--;
-            document.getElementById('timerVal').innerText = state.timeLeft + 's';
+            state.timeLeft--; document.getElementById('timerVal').innerText = state.timeLeft + 's';
             if (state.timeLeft <= 0) endGame();
         }, 1000);
         requestAnimationFrame(gameLoop);
@@ -714,9 +683,9 @@
         if (!state.gameActive) return;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         targets.forEach(t => { t.update(); t.draw(); });
-        particles = particles.filter(p => p.alpha > 0);
+        particles = particles.filter(p => p.alpha > 0); 
         particles.forEach(p => { p.update(); p.draw(); });
-
+        
         activeLasers = activeLasers.filter(l => l.alpha > 0);
         activeLasers.forEach(laser => {
             ctx.save(); ctx.globalAlpha = laser.alpha; ctx.shadowBlur = 25; ctx.shadowColor = state.currentLaserColor;
@@ -734,24 +703,21 @@
         const rect = canvas.getBoundingClientRect();
         const mouseX = (e.clientX - rect.left) * (canvas.width / rect.width);
         const mouseY = (e.clientY - rect.top) * (canvas.height / rect.height);
-
         activeLasers.push({ targetX: mouseX, targetY: mouseY, alpha: 1.0 });
-
+        
         let hit = false;
         for (let i = targets.length - 1; i >= 0; i--) {
-            let t = targets[i];
-            let dist = Math.hypot(mouseX - t.x, mouseY - t.y);
+            let t = targets[i]; let dist = Math.hypot(mouseX - t.x, mouseY - t.y);
             if (dist < t.radius + 5) {
                 hit = true; AudioEngine.playHit();
                 let particleColor = `hsl(${t.hue}, 100%, 65%)`;
                 for(let p=0; p<20; p++) particles.push(new NeonParticle(t.x, t.y, particleColor));
                 state.score += 100 * state.combo; state.combo++;
-                targets.splice(i, 1); targets.push(new CyberTarget());
-                break;
+                targets.splice(i, 1); targets.push(new CyberTarget()); break;
             }
         }
         if (!hit) state.combo = 1;
-        document.getElementById('scoreVal').innerText = state.score;
+        document.getElementById('scoreVal').innerText = state.score; 
         document.getElementById('comboVal').innerText = 'x' + state.combo;
     });
 
@@ -763,8 +729,7 @@
         document.getElementById('startBtn').style.display = 'block';
         
         fetch(`${BACKEND_URL}/api/score/submit`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username: state.currentUser, score: state.score })
         }).then(() => loadLeaderboard());
     }
@@ -781,13 +746,14 @@
         }).catch(err => console.error(err));
     }
 
+    // إدارة دورة حياة بوابة المدفوعات الرسمية لشبكة باي
     function executeRealPiPayment(txName, amount, onSuccess) {
         document.getElementById('piModalTxName').innerText = `المعاملة: ${txName}`;
         document.getElementById('piModalCost').innerText = `${amount.toFixed(2)} Pi`;
         document.getElementById('piModalStatus').innerText = "جاري فتح المحفظة للتأكيد البلوكي...";
         document.getElementById('piPaywallModal').style.display = 'flex';
 
-        if (typeof Pi === 'undefined') {
+        if (typeof Pi === 'undefined' || window.location.hostname === 'localhost') {
             setTimeout(() => { closePiModal(); onSuccess(); }, 1000);
             return;
         }
