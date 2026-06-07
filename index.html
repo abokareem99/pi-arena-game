@@ -479,20 +479,30 @@
         gameActive: false
     };
 
-    // معالجة تسلسل تهيئة الـ SDK ثم طلب المصادقة بشكل منظم وثابت تلافياً للمشكلة السابقة
+    // معالجة تسلسل تهيئة الـ SDK ثم طلب المصادقة بشكل منظم
     document.addEventListener("DOMContentLoaded", () => {
         if (typeof Pi !== 'undefined') {
             document.getElementById('walletBalance').innerText = "جاري تهيئة SDK...";
             
             try {
-                // تم تعديل وضع الحماية إلى true ليتمكن متصفح باي من تهيئة النظام بدون أخطاء
                 Pi.init({ version: "2.0", sandbox: true });
                 
-                // نمنح الـ SDK مهلة بسيطة ومؤكدة للاستقرار التام قبل استدعاء المصادقة
                 setTimeout(() => {
                     document.getElementById('walletBalance').innerText = "جاري طلب المصادقة...";
                     
-                    Pi.authenticate(['username', 'payments'], onPiAuthExtensionApproved)
+                    // دالة لمعالجة المدفوعات غير المكتملة (مطلوبة في الـ SDK الجديد)
+                    const onIncompletePaymentFound = (payment) => {
+                        console.log("تم العثور على دفعة غير مكتملة:", payment);
+                    };
+
+                    // التعديل الرئيسي: استخدام .then لاستلام نتيجة المصادقة الناجحة وتحديث الواجهة
+                    Pi.authenticate(['username', 'payments'], onIncompletePaymentFound)
+                      .then(auth => {
+                          state.currentUser = auth.user.username;
+                          document.getElementById('walletBalance').innerText = auth.user.username;
+                          document.getElementById('walletBalance').style.color = "var(--neon-gold)";
+                          console.log("تم تسجيل الدخول بنجاح لـ: ", auth.user.username);
+                      })
                       .catch(err => {
                           console.error("Auth Error:", err);
                           let errMsg = err.message || JSON.stringify(err) || "فشلت المصادقة";
@@ -511,13 +521,6 @@
         }
         loadLeaderboard();
     });
-
-    function onPiAuthExtensionApproved(auth) {
-        state.currentUser = auth.user.username;
-        document.getElementById('walletBalance').innerText = auth.user.username;
-        document.getElementById('walletBalance').style.color = "var(--neon-gold)";
-        console.log("تم تسجيل الدخول بنجاح لـ: ", auth.user.username);
-    }
 
     const AudioEngine = {
         ctx: null,
