@@ -5,13 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pi Arena: Cyber Marksman</title>
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
-    <!-- استدعاء خطوط احترافية: Cairo للعربية، و Orbitron للأرقام واللغة الإنجليزية -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-dark: #030108;
-            --panel-bg: rgba(16, 8, 30, 0.6);
-            --panel-border: rgba(138, 43, 226, 0.3);
+            --panel-bg: rgba(16, 8, 30, 0.65);
+            --panel-border: rgba(138, 43, 226, 0.4);
             --pi-purple: #8a2be2;
             --pi-neon: #b467ff;
             --neon-blue: #00e5ff;
@@ -19,7 +18,6 @@
             --brand-red: #ff0055;
             --text-light: #ffffff;
             --text-muted: #a093b5;
-            --hud-glow: 0 0 20px rgba(0, 229, 255, 0.4);
         }
 
         * {
@@ -31,67 +29,46 @@
 
         html, body {
             overflow-x: hidden;
-            max-width: 100%;
-        }
-
-        body {
             background-color: var(--bg-dark);
             color: var(--text-light);
             font-family: 'Cairo', sans-serif;
             min-height: 100vh;
-            position: relative;
         }
 
-        /* خلفية متحركة ديناميكية */
+        /* تأثير الخلفية الديناميكية المضيئة */
         body::before {
             content: '';
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
             background: 
-                radial-gradient(circle at 15% 50%, rgba(138, 43, 226, 0.08) 0%, transparent 50%),
-                radial-gradient(circle at 85% 30%, rgba(0, 229, 255, 0.08) 0%, transparent 50%);
+                radial-gradient(circle at 10% 20%, rgba(138, 43, 226, 0.12) 0%, transparent 50%),
+                radial-gradient(circle at 90% 80%, rgba(0, 229, 255, 0.12) 0%, transparent 50%);
             z-index: -1;
-            animation: bgPulse 10s infinite alternate;
         }
 
-        @keyframes bgPulse {
-            0% { transform: scale(1); opacity: 0.8; }
-            100% { transform: scale(1.1); opacity: 1; }
-        }
-
-        /* شبكة التصميم الأساسية */
+        /* تقسيم الشاشة الاحترافي للكمبيوتر */
         .app-container {
             display: grid;
             grid-template-columns: 280px 1fr;
             min-height: 100vh;
-            max-width: 1600px;
-            margin: 0 auto;
-            background: rgba(0, 0, 0, 0.2);
-            box-shadow: 0 0 50px rgba(0,0,0,0.5);
         }
 
-        /* القائمة الجانبية (Sidebar) */
+        /* القائمة الجانبية الفخمة */
         sidebar {
-            background: linear-gradient(180deg, rgba(11, 4, 22, 0.95) 0%, rgba(5, 1, 13, 0.95) 100%);
+            background: linear-gradient(180deg, #0b0416 0%, #05010d 100%);
             border-left: 1px solid var(--panel-border);
             display: flex;
             flex-direction: column;
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            z-index: 10;
+            z-index: 100;
         }
 
         .brand-header {
             padding: 2.5rem 1.5rem;
             text-align: center;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             position: relative;
-        }
-
-        .brand-header::after {
-            content: ''; position: absolute; bottom: -2px; left: 50%; transform: translateX(-50%);
-            width: 50%; height: 2px; background: var(--neon-blue);
-            box-shadow: 0 0 15px var(--neon-blue);
         }
 
         .brand {
@@ -99,42 +76,30 @@
             font-size: 1.8rem;
             font-weight: 900;
             letter-spacing: 2px;
-            color: var(--text-light);
             text-shadow: 0 0 20px var(--pi-purple), 0 0 40px var(--neon-blue);
         }
 
         .sidebar-content {
-            padding: 2rem 1.5rem;
+            padding: 2rem 1.2rem;
             display: flex;
             flex-direction: column;
             gap: 2.5rem;
             flex-grow: 1;
         }
 
-        /* بطاقة المحفظة */
         .wallet-card {
-            background: linear-gradient(135deg, rgba(138, 43, 226, 0.15), rgba(0, 229, 255, 0.05));
-            border: 1px solid rgba(255, 200, 0, 0.3);
+            background: linear-gradient(135deg, rgba(138, 43, 226, 0.2), rgba(0, 229, 255, 0.05));
+            border: 1px solid rgba(255, 200, 0, 0.4);
             border-radius: 16px;
-            padding: 1.5rem;
+            padding: 1.2rem;
             text-align: center;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            transition: transform 0.3s ease;
-        }
-
-        .wallet-card:hover {
-            transform: translateY(-2px);
-            border-color: var(--neon-gold);
-            box-shadow: 0 10px 30px rgba(255, 200, 0, 0.15);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
         }
 
         .wallet-card h3 {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: var(--text-muted);
-            margin-bottom: 0.8rem;
-            text-transform: uppercase;
+            margin-bottom: 0.5rem;
             letter-spacing: 1px;
         }
 
@@ -143,11 +108,9 @@
             font-size: 1.2rem;
             font-weight: 700;
             color: var(--neon-gold);
-            text-shadow: 0 0 15px rgba(255, 200, 0, 0.5);
-            word-break: break-all;
+            text-shadow: 0 0 15px rgba(255, 200, 0, 0.4);
         }
 
-        /* القائمة الملاحية */
         .nav-menu {
             display: flex;
             flex-direction: column;
@@ -162,439 +125,191 @@
             transition: all 0.3s ease;
             color: var(--text-muted);
             font-weight: 700;
-            font-size: 1.1rem;
-            border: 1px solid transparent;
+            font-size: 1.05rem;
             display: flex;
             align-items: center;
             gap: 12px;
-            position: relative;
-            overflow: hidden;
         }
 
         .nav-item:hover {
             color: var(--text-light);
             background: rgba(255,255,255,0.03);
-            transform: translateX(-5px);
         }
 
         .nav-item.active {
             color: var(--text-light);
             background: linear-gradient(90deg, rgba(0, 229, 255, 0.15) 0%, transparent 100%);
             border-right: 4px solid var(--neon-blue);
-            box-shadow: -10px 0 25px rgba(0, 229, 255, 0.1);
+            box-shadow: -10px 0 25px rgba(0, 229, 255, 0.15);
         }
 
-        /* المحتوى الرئيسي */
+        /* قسم المحتوى الرئيسي */
         main {
-            padding: 2.5rem 3rem;
+            padding: 2rem;
             display: flex;
             flex-direction: column;
-            height: 100vh;
             overflow-y: auto;
         }
 
-        main::-webkit-scrollbar { width: 8px; }
-        main::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
-        main::-webkit-scrollbar-thumb { background: var(--panel-border); border-radius: 4px; }
-        main::-webkit-scrollbar-thumb:hover { background: var(--pi-purple); }
-
         .view-section {
             display: none;
-            animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            opacity: 0;
-            transform: translateY(20px);
+            animation: fadeInUp 0.5s ease-out forwards;
         }
 
         .view-section.active { display: block; }
 
-        @keyframes fadeInUp {
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } from { opacity: 0; transform: translateY(15px); } }
 
-        /* تصميم قسم اللعب (HUD Style) */
+        /* لوحة ميدان القتال الاحترافية HUD */
         .game-panel {
             background: var(--panel-bg);
             border: 1px solid var(--panel-border);
             border-radius: 24px;
-            padding: 2.5rem;
+            padding: 2rem;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            gap: 2.5rem;
+            gap: 1.5rem;
             backdrop-filter: blur(15px);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 0 0 1px rgba(255,255,255,0.05);
-            position: relative;
-            max-width: 100%;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
         }
 
         .game-header {
-            width: 100%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding-bottom: 1.5rem;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            padding-bottom: 1.2rem;
         }
 
         .game-header h2 {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            text-shadow: 0 0 15px rgba(255,255,255,0.3);
+            text-shadow: 0 0 15px rgba(255,255,255,0.2);
         }
 
         .game-stats {
             display: flex;
-            gap: 1.5rem;
+            gap: 1rem;
         }
 
         .stat-box {
-            background: rgba(0, 0, 0, 0.6);
-            border: 1px solid rgba(0, 229, 255, 0.2);
-            padding: 0.8rem 1.8rem;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(0, 229, 255, 0.25);
+            padding: 0.6rem 1.2rem;
             border-radius: 12px;
             text-align: center;
-            min-width: 120px;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+            min-width: 100px;
         }
 
         .stat-label {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 0.4rem;
+            margin-bottom: 0.2rem;
         }
 
         .stat-val {
             font-family: 'Orbitron', sans-serif;
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             font-weight: 700;
             color: var(--neon-blue);
-            text-shadow: 0 0 15px var(--neon-blue);
+            text-shadow: 0 0 10px var(--neon-blue);
         }
 
-        /* حاوية اللعبة */
+        /* حاوية ميدان الرماية المتجاوبة والمثالية */
         .canvas-container {
             position: relative;
+            width: 100%;
             border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 0 40px rgba(138, 43, 226, 0.3), 0 0 15px rgba(0, 229, 255, 0.2);
-            width: 100%;
-            max-width: 800px;
-        }
-
-        .canvas-container::after {
-            content: " ";
-            display: block;
-            position: absolute;
-            top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            z-index: 2;
-            background-size: 100% 4px, 3px 100%;
-            pointer-events: none;
+            border: 2px solid var(--panel-border);
+            box-shadow: 0 0 30px rgba(138, 43, 226, 0.2);
+            background: #020106;
+            aspect-ratio: 16 / 9; /* تضمن حفاظ الميدان على أبعاده الهندسية الاحترافية */
         }
 
         #gameCanvas {
-            background: #020105;
-            border: 2px solid var(--panel-border);
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
             display: block;
             cursor: crosshair;
-            width: 100%;
-            max-width: 800px;
-            height: auto;
         }
 
-        /* الأزرار الاحترافية */
+        /* الأزرار الفاخرة */
         .btn-action {
-            background: linear-gradient(135deg, var(--neon-gold) 0%, #ffaa00 100%);
+            background: linear-gradient(135deg, var(--neon-gold) 0%, #ff9900 100%);
             color: #000;
             border: none;
-            padding: 1.2rem 3.5rem;
+            padding: 1rem 3rem;
             font-family: 'Cairo', sans-serif;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: 900;
             border-radius: 12px;
             cursor: pointer;
-            box-shadow: 0 0 25px rgba(255, 200, 0, 0.4);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            position: relative;
-            overflow: hidden;
-            max-width: 100%;
-        }
-
-        .btn-action::before {
-            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
-            background: linear-gradient(to right, transparent, rgba(255,255,255,0.5), transparent);
-            transform: skewX(-20deg); transition: 0.5s;
+            box-shadow: 0 0 20px rgba(255, 153, 0, 0.3);
+            transition: all 0.3s ease;
+            display: inline-block;
         }
 
         .btn-action:hover {
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 0 40px rgba(255, 200, 0, 0.6);
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(255, 153, 0, 0.5);
         }
 
-        .btn-action:hover::before { left: 150%; }
+        .btn-owned { background: rgba(255,255,255,0.06) !important; border: 1px solid rgba(255,255,255,0.15) !important; color: var(--text-muted) !important; box-shadow: none !important;}
+        .btn-active-skin { background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%) !important; color: #fff !important; box-shadow: 0 0 20px rgba(0, 198, 255, 0.4) !important;}
 
-        .btn-owned {
-            background: rgba(255,255,255,0.05) !important;
-            border: 1px solid rgba(255,255,255,0.2) !important;
-            color: var(--text-muted) !important;
-            box-shadow: none !important;
-        }
-
-        .btn-active-skin {
-            background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%) !important;
-            color: white !important;
-            box-shadow: 0 0 25px rgba(0, 198, 255, 0.5) !important;
-        }
-
-        /* جداول الصدارة */
-        .section-title {
-            font-size: 2rem;
-            font-weight: 900;
-            margin-bottom: 2rem;
-            text-shadow: 0 0 20px rgba(255,255,255,0.2);
-            display: inline-block;
-            position: relative;
-        }
-
-        .luxury-table-container {
-            background: var(--panel-bg);
-            border-radius: 16px;
-            border: 1px solid rgba(255,255,255,0.05);
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-
-        .luxury-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-family: 'Orbitron', 'Cairo', sans-serif;
-        }
-
-        .luxury-table th, .luxury-table td {
-            padding: 1.5rem;
-            text-align: right;
-        }
-
-        .luxury-table th {
-            background: rgba(255,255,255,0.03);
-            color: var(--neon-blue);
-            font-size: 1.1rem;
-            border-bottom: 2px solid rgba(0, 229, 255, 0.2);
-        }
-
-        .luxury-table tr {
-            border-bottom: 1px solid rgba(255,255,255,0.03);
-            transition: background 0.3s;
-        }
-
-        .luxury-table tr:hover { background: rgba(255,255,255,0.05); }
-
-        .rank-gold { 
-            color: var(--neon-gold); 
-            font-size: 1.3rem;
-            font-weight: 900;
-            text-shadow: 0 0 15px rgba(255, 200, 0, 0.5);
-        }
-
-        /* المتجر */
-        .shop-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-        }
-
-        .shop-card {
-            background: linear-gradient(180deg, rgba(25, 14, 44, 0.8) 0%, rgba(10, 5, 20, 0.9) 100%);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 20px;
-            padding: 2rem;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .shop-card::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px;
-            background: var(--pi-purple); transition: 0.4s;
-        }
-
-        .shop-card:hover {
-            transform: translateY(-10px);
-            border-color: rgba(255,255,255,0.2);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-        }
+        /* جداول الصدارة والترسانة */
+        .section-title { font-size: 1.8rem; font-weight: 900; margin-bottom: 1.5rem; text-shadow: 0 0 15px rgba(255,255,255,0.1); }
         
-        .shop-card:nth-child(1):hover::before { background: var(--pi-neon); box-shadow: 0 0 15px var(--pi-neon); }
-        .shop-card:nth-child(2):hover::before { background: var(--neon-blue); box-shadow: 0 0 15px var(--neon-blue); }
-        .shop-card:nth-child(3):hover::before { background: var(--neon-gold); box-shadow: 0 0 15px var(--neon-gold); }
+        .luxury-table-container { background: var(--panel-bg); border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); overflow: hidden; }
+        .luxury-table { width: 100%; border-collapse: collapse; text-align: right; }
+        .luxury-table th, .luxury-table td { padding: 1.2rem; }
+        .luxury-table th { background: rgba(255,255,255,0.02); color: var(--neon-blue); border-bottom: 2px solid rgba(0, 229, 255, 0.15); }
+        .luxury-table tr { border-bottom: 1px solid rgba(255,255,255,0.02); }
 
-        .skin-preview {
-            height: 140px;
-            background: rgba(0,0,0,0.5);
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 4rem;
-            box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
-            border: 1px solid rgba(255,255,255,0.02);
+        .shop-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+        .shop-card {
+            background: linear-gradient(180deg, rgba(25, 14, 44, 0.7) 0%, rgba(10, 5, 20, 0.85) 100%);
+            border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 1.5rem; text-align: center;
+            display: flex; flex-direction: column; gap: 1rem; transition: transform 0.3s ease;
         }
+        .shop-card:hover { transform: translateY(-5px); border-color: rgba(138, 43, 226, 0.4); }
+        .skin-preview { height: 120px; background: rgba(0,0,0,0.4); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 3.5rem; }
 
-        .shop-card h3 { font-size: 1.4rem; font-weight: 800; }
-        .shop-card p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; flex-grow: 1; }
-        .shop-card button { width: 100%; padding: 1rem; font-size: 1.1rem; }
-
-        /* نوافذ Pi (Modals) */
+        /* نوافذ الدفع والمودال */
         .pi-modal {
-            display: none; position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(2, 1, 5, 0.9); z-index: 9999;
-            align-items: center; justify-content: center; 
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(3, 1, 8, 0.9); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(10px);
         }
-
         .pi-modal-content {
-            background: linear-gradient(145deg, #150a21 0%, #080311 100%);
-            border: 1px solid var(--neon-gold);
-            border-radius: 24px;
-            padding: 3rem; width: 90%; max-width: 450px; text-align: center;
-            box-shadow: 0 0 60px rgba(255, 200, 0, 0.15), inset 0 0 20px rgba(255,255,255,0.02);
-            animation: modalPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: #11071c; border: 1px solid var(--neon-gold); border-radius: 24px;
+            padding: 2.5rem; width: 90%; max-width: 420px; text-align: center;
         }
-
-        @keyframes modalPop {
-            0% { transform: scale(0.8); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        .loader {
-            border: 3px solid rgba(255,255,255,0.05); 
-            border-top: 3px solid var(--neon-gold);
-            border-radius: 50%; width: 50px; height: 50px; 
-            animation: spin 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite; 
-            margin: 2.5rem auto;
-            box-shadow: 0 0 15px rgba(255, 200, 0, 0.4);
-        }
-
+        .loader { border: 3px solid rgba(255,255,255,0.05); border-top: 3px solid var(--neon-gold); border-radius: 50%; width: 45px; height: 45px; animation: spin 1s linear infinite; margin: 1.5rem auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* ---------------------------------------------------- */
-        /* التحديث الشامل والمضمون لتجاوب شاشات الهواتف المحمولة */
-        /* ---------------------------------------------------- */
+        /* ------------------------------------------- */
+        /* التجاوب السحري لشاشات الهواتف المحمولة والتابلت */
+        /* ------------------------------------------- */
         @media (max-width: 900px) {
-            .app-container { 
-                grid-template-columns: 1fr; 
-                overflow-x: hidden;
-            }
-            
-            sidebar { 
-                border-left: none; 
-                border-bottom: 1px solid var(--panel-border); 
-                flex-direction: column; 
-                padding: 1.2rem; 
-                gap: 1.2rem;
-            }
-            
-            .brand-header { padding: 0.5rem; border: none; width: 100%; }
-            .brand-header::after { display: none; }
-            
-            .sidebar-content { 
-                padding: 0; 
-                flex-direction: column; 
-                width: 100%; 
-                gap: 1.2rem; 
-            }
-            
-            .wallet-card { padding: 1rem; margin: 0; width: 100%; }
-            
-            .nav-menu { 
-                flex-direction: row; 
-                gap: 0.5rem; 
-                width: 100%; 
-                justify-content: center;
-                flex-wrap: wrap;
-            }
-            
-            .nav-item { 
-                padding: 0.6rem 1rem; 
-                font-size: 0.9rem; 
-                white-space: nowrap; 
-                border-radius: 8px;
-            }
-            
-            .nav-item.active {
-                border-right: none;
-                border-bottom: 3px solid var(--neon-blue);
-                background: linear-gradient(180deg, rgba(0, 229, 255, 0.15) 0%, transparent 100%);
-                box-shadow: 0 10px 15px rgba(0, 229, 255, 0.1);
-            }
-            
-            main { 
-                padding: 1.2rem 1rem; 
-                height: auto;
-                overflow-y: visible;
-            }
-            
-            .game-panel { 
-                padding: 1.2rem; 
-                gap: 1.5rem;
-                width: 100%;
-                overflow: hidden;
-            }
-            
-            /* هنا يكمن إصلاح مشكلة تداخل هيدر اللعبة وانهيار الصناديق */
-            .game-header { 
-                flex-direction: column; 
-                gap: 1.2rem; 
-                text-align: center; 
-                align-items: center;
-                padding-bottom: 1.2rem;
-            }
-            
-            .game-header h2 { 
-                font-size: 1.4rem; 
-                width: 100%;
-            }
-            
-            .game-stats { 
-                width: 100%; 
-                justify-content: center; 
-                gap: 0.6rem; 
-            }
-            
-            .stat-box { 
-                min-width: 0; 
-                flex: 1; 
-                padding: 0.6rem 0.4rem; 
-                border-radius: 10px;
-            }
-            
-            .stat-label {
-                font-size: 0.75rem;
-                letter-spacing: 1px;
-            }
-            
-            .stat-val { 
-                font-size: 1.3rem; 
-            }
-            
-            .btn-action { 
-                width: 100%; 
-                padding: 1rem 1.5rem; 
-                font-size: 1.1rem; 
-                text-align: center;
-            }
+            .app-container { grid-template-columns: 1fr; }
+            sidebar { border-left: none; border-bottom: 1px solid var(--panel-border); }
+            .brand-header { padding: 1rem; }
+            .sidebar-content { padding: 1rem; gap: 1rem; }
+            .nav-menu { flex-direction: row; justify-content: center; flex-wrap: wrap; gap: 0.5rem; }
+            .nav-item { padding: 0.6rem 1rem; font-size: 0.9rem; }
+            .nav-item.active { border-right: none; border-bottom: 3px solid var(--neon-blue); background: none; box-shadow: none; }
+            main { padding: 1rem; }
+            .game-panel { padding: 1rem; gap: 1rem; }
+            .game-header { flex-direction: column; gap: 1rem; text-align: center; }
+            .game-stats { width: 100%; justify-content: center; }
+            .stat-box { min-width: 0; flex: 1; padding: 0.5rem; }
+            .stat-val { font-size: 1.2rem; }
         }
     </style>
 </head>
@@ -602,18 +317,16 @@
 
 <div class="app-container">
     <sidebar>
-        <div class="brand-header">
-            <div class="brand">PI ARENA</div>
-        </div>
+        <div class="brand-header"><div class="brand">PI ARENA</div></div>
         <div class="sidebar-content">
             <div class="wallet-card">
-                <h3>محفظة التطبيق</h3>
-                <div class="balance" id="walletBalance" style="font-size: 14px; color: var(--text-muted);">جاري الاتصال...</div>
+                <h3>حساب الجندي</h3>
+                <div class="balance" id="walletBalance">جاري المزامنة...</div>
             </div>
             <ul class="nav-menu">
-                <li class="nav-item active" onclick="switchTab('game-section', this)">🎯 ميدان التحدي</li>
-                <li class="nav-item" onclick="switchTab('leaderboard-section', this)">🏆 لوحة الصدارة</li>
-                <li class="nav-item" onclick="switchTab('shop-section', this)">⚡ الترسانة</li>
+                <li class="nav-item active" onclick="switchTab('game-section', this)">🎯 ميدان القتال</li>
+                <li class="nav-item" onclick="switchTab('leaderboard-section', this)">🏆 قاعة المشاهير</li>
+                <li class="nav-item" onclick="switchTab('shop-section', this)">⚡ ترسانة الليزر</li>
             </ul>
         </div>
     </sidebar>
@@ -622,7 +335,7 @@
         <section id="game-section" class="view-section active">
             <div class="game-panel">
                 <div class="game-header">
-                    <h2>بوابة التصويب النخبوية</h2>
+                    <h2>ميدان الرماية السيبراني</h2>
                     <div class="game-stats">
                         <div class="stat-box"><div class="stat-label">النقاط</div><div class="stat-val" id="scoreVal">0</div></div>
                         <div class="stat-box"><div class="stat-label">المجموعة</div><div class="stat-val" id="comboVal">x1</div></div>
@@ -630,51 +343,47 @@
                     </div>
                 </div>
                 <div class="canvas-container">
-                    <canvas id="gameCanvas" width="800" height="450"></canvas>
+                    <canvas id="gameCanvas" width="960" height="540"></canvas>
                 </div>
-                <div id="gameControls" style="margin-top: 0.5rem; width: 100%; text-align: center;">
-                    <button class="btn-action" id="startBtn" onclick="requestMatchEntry()">بدء التحدي (0.1 Pi)</button>
+                <div style="text-align: center; margin-top: 0.5rem;">
+                    <button class="btn-action" id="startBtn" onclick="requestMatchEntry()">شحن طاقة الميدان (0.1 Pi)</button>
                 </div>
             </div>
         </section>
 
         <section id="leaderboard-section" class="view-section">
-            <h2 class="section-title">المتصدرون للشبكة</h2>
+            <h2 class="section-title">أفضل الرماة على الشبكة</h2>
             <div class="luxury-table-container">
                 <table class="luxury-table">
                     <thead>
-                        <tr>
-                            <th>الترتيب</th>
-                            <th>المقاتل</th>
-                            <th>أعلى نقاط</th>
-                        </tr>
+                        <tr><th>الرتبة</th><th>المقاتل</th><th>مجموع النقاط</th></tr>
                     </thead>
                     <tbody id="leaderboardBody">
-                        <tr><td colspan="3" style="text-align:center; color: var(--text-muted);">جاري جلب البيانات من الخادم...</td></tr>
+                        <tr><td colspan="3" style="text-align:center; color: var(--text-muted);">جاري الاتصال بقاعدة البيانات...</td></tr>
                     </tbody>
                 </table>
             </div>
         </section>
 
         <section id="shop-section" class="view-section">
-            <h2 class="section-title">ترسانة ليزر الأسلحة</h2>
+            <h2 class="section-title">تخصيص سلاح النيون</h2>
             <div class="shop-grid">
                 <div class="shop-card">
                     <div class="skin-preview" style="color: var(--pi-neon); text-shadow: 0 0 20px var(--pi-neon);">🔮</div>
-                    <h3>الشعاع الأرجواني</h3>
-                    <p>الليزر الأساسي المرفق مع بدلة القتال الافتراضية للشبكة.</p>
-                    <button class="btn-action btn-active-skin" id="btn-skin-Default" onclick="selectOwnedSkin('Default', '#a855f7')">نشط حالياً</button>
+                    <h3>شعاع ليزر أرجواني</h3>
+                    <p>اللون الأساسي لبدلة المحارب المعتمدة من خوادم Pi.</p>
+                    <button class="btn-action btn-active-skin" id="btn-skin-Default" onclick="selectOwnedSkin('Default', '#b467ff')">نشط</button>
                 </div>
                 <div class="shop-card">
                     <div class="skin-preview" style="color: var(--neon-blue); text-shadow: 0 0 20px var(--neon-blue);">⚡</div>
-                    <h3>بلازما سياني</h3>
-                    <p>يغير لون ليزر إطلاق النار والصدمات المرتدة إلى الأزرق السياني.</p>
+                    <h3>شحنة سيان نيون</h3>
+                    <p>يعطي السلاح طاقة زرقاء ساطعة مخصصة للمحترفين.</p>
                     <button class="btn-action" id="btn-skin-Plasma" onclick="handleSkinAction('Plasma', 0.5, '#00e5ff')">امتلاك (0.5 Pi)</button>
                 </div>
                 <div class="shop-card">
-                    <div class="skin-preview" style="color: var(--neon-gold); text-shadow: 0 0 20px var(--neon-gold);">🔥</div>
-                    <h3>شحنة النخبة الذهبية</h3>
-                    <p>تأثير ليزري ذهبي ملكي مخصص لأبطال الساحة النخبوية.</p>
+                    <div class="skin-preview" style="color: var(--neon-gold); text-shadow: 0 0 20px var(--neon-gold);">👑</div>
+                    <h3>شحنة النخبة الملكية</h3>
+                    <p>تأثير متوهج ذهبي فاخر يظهر قوتك لبقية اللاعبين.</p>
                     <button class="btn-action" id="btn-skin-Gold" onclick="handleSkinAction('Gold', 1.5, '#ffc800')">امتلاك (1.5 Pi)</button>
                 </div>
             </div>
@@ -682,24 +391,13 @@
     </main>
 </div>
 
-<!-- نافذة دفع Pi -->
 <div class="pi-modal" id="piPaywallModal">
     <div class="pi-modal-content">
-        <h2 style="color: var(--neon-gold); font-family: 'Cairo', sans-serif; font-weight: 900; font-size: 1.8rem; margin-bottom: 1rem;">بوابة الدفع الرسمية</h2>
-        <p id="piModalTxName" style="color: var(--text-muted); font-size: 1rem; margin-bottom: 0.5rem;"></p>
-        <p id="piModalCost" style="font-family: 'Orbitron', sans-serif; font-size: 2.2rem; font-weight: 900; color: #fff; text-shadow: 0 0 15px rgba(255,255,255,0.4);"></p>
+        <h2 style="color: var(--neon-gold); margin-bottom: 0.5rem; font-weight: 900;">تأكيد المعاملة المشفرة</h2>
+        <p id="piModalTxName" style="color: var(--text-muted); font-size: 0.95rem;"></p>
+        <p id="piModalCost" style="font-family: 'Orbitron', sans-serif; font-size: 2rem; font-weight: 900; margin: 1rem 0;"></p>
         <div class="loader"></div>
-        <p id="piModalStatus" style="color: var(--neon-blue); font-size: 0.9rem; font-weight: 700; letter-spacing: 1px;">جاري المصادقة مع البلوكشين...</p>
-    </div>
-</div>
-
-<!-- نافذة التنبيهات المخصصة -->
-<div class="pi-modal" id="piCustomModal" style="display: none;">
-    <div class="pi-modal-content" style="border-color: var(--neon-blue);">
-        <div id="modalIcon" style="font-size: 3.5rem; margin-bottom: 1rem;">⚡</div>
-        <h2 id="modalTitle" style="color: var(--text-light); margin-bottom: 1rem; font-weight: 800;">تحديث</h2>
-        <p id="modalMessage" style="color: var(--text-muted); margin-bottom: 2rem; line-height: 1.6;"></p>
-        <button class="btn-action" onclick="closePiModalCustom()" style="width: 100%; background: linear-gradient(135deg, var(--neon-blue) 0%, #0072ff 100%);">موافق</button>
+        <p style="color: var(--neon-blue); font-size: 0.85rem;">يرجى عدم غلق النافذة حتى اكتمال التوثيق السحابي...</p>
     </div>
 </div>
 
@@ -709,228 +407,135 @@
         : 'https://pi-arena-game.vercel.app'; 
 
     let state = {
-        currentUser: 'مقاتل_مجهول',
-        currentLaserColor: '#a855f7',
+        currentUser: 'قناص_مجهول',
+        currentLaserColor: '#b467ff',
         activeSkinId: 'Default',
         ownedSkins: ['Default'],
-        score: 0,
-        combo: 1,
-        timeLeft: 30,
-        gameActive: false
+        score: 0, combo: 1, timeLeft: 30, gameActive: false
     };
 
-    let activeLasers = [];
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
     let targets = [];
     let particles = [];
+    let activeLasers = [];
     let gameInterval = null;
 
-    function showPiModal(title, message, icon = '⚡') {
-        document.getElementById('modalTitle').innerText = title;
-        document.getElementById('modalMessage').innerText = message;
-        document.getElementById('modalIcon').innerText = icon;
-        document.getElementById('piCustomModal').style.display = 'flex';
-    }
-
-    function closePiModalCustom() {
-        document.getElementById('piCustomModal').style.display = 'none';
-    }
-
+    // المزامنة والربط المباشر مع البيئة والـ SDK
     document.addEventListener("DOMContentLoaded", () => {
-        let authRetries = 0;
-        const maxRetries = 3;
-
-        function tryPiAuthenticate() {
-            if (typeof Pi !== 'undefined') {
-                try {
-                    const isSandbox = !(window.location.hostname.includes('vercel.app') || window.location.hostname.includes('yourdomain.com'));
-                    
-                    console.log("إطلاق محرك الـ Pi SDK. نمط التجربة المحمي:", isSandbox);
-                    Pi.init({ version: "2.0", sandbox: isSandbox });
-                    
-                    Pi.authenticate(['username', 'payments'])
-                    .then(function(auth) {
-                        console.log("نجح التعرف والمصادقة التامة للمستخدم:", auth.user.username);
-                        state.currentUser = auth.user.username;
-                        const walletEl = document.getElementById('walletBalance');
-                        walletEl.innerText = auth.user.username;
-                        walletEl.style.color = "var(--neon-gold)";
-                        
-                        syncUserSkinsFromBackend();
-                    })
-                    .catch(function(error) {
-                        console.error("خطأ معلق في مصفوفة التوثيق المباشرة:", error);
-                        authRetries++;
-                        if (authRetries < maxRetries) {
-                            setTimeout(tryPiAuthenticate, 1500);
-                        } else {
-                            document.getElementById('walletBalance').innerText = "مقاتل_مستضيف";
-                            document.getElementById('walletBalance').style.color = "var(--text-muted)";
-                            updateShopUI();
-                        }
-                    });
-                } catch(e) { 
-                    console.error("فشل هيكلي في استدعاء حزم البلوكشين:", e); 
-                    document.getElementById('walletBalance').innerText = "خطأ في التهيئة";
-                    updateShopUI(); 
-                }
-            } else {
-                console.log("محاكاة الخادم المحلي الافتراضي.");
-                state.currentUser = "لاعب_محلي_" + Math.floor(Math.random() * 900);
-                const walletEl = document.getElementById('walletBalance');
-                walletEl.innerText = state.currentUser + " (تطوير)";
-                walletEl.style.color = "var(--neon-blue)";
-                updateShopUI();
-            }
-        }
-
-        tryPiAuthenticate();
+        if (typeof Pi !== 'undefined') {
+            try {
+                const isSandbox = !(window.location.hostname.includes('vercel.app'));
+                Pi.init({ version: "2.0", sandbox: isSandbox });
+                Pi.authenticate(['username', 'payments']).then(auth => {
+                    state.currentUser = auth.user.username;
+                    document.getElementById('walletBalance').innerText = auth.user.username;
+                    document.getElementById('walletBalance').style.color = "var(--neon-gold)";
+                    syncUserSkins();
+                }).catch(() => { useGuestAccount(); });
+            } catch(e) { useGuestAccount(); }
+        } else { useGuestAccount(); }
         loadLeaderboard();
     });
 
-    function syncUserSkinsFromBackend() {
+    function useGuestAccount() {
+        state.currentUser = "مقاتل_محلي_" + Math.floor(Math.random() * 900);
+        document.getElementById('walletBalance').innerText = state.currentUser;
+        updateShopUI();
+    }
+
+    function syncUserSkins() {
         fetch(`${BACKEND_URL}/api/users/${state.currentUser}/skins`)
-        .then(res => res.json())
-        .then(data => {
+        .then(res => res.json()).then(data => {
             if(data && data.ownedSkins) {
                 state.ownedSkins = data.ownedSkins;
-                state.currentLaserColor = data.currentLaserColor || '#a855f7';
+                state.currentLaserColor = data.currentLaserColor || '#b467ff';
                 state.activeSkinId = data.activeSkinId || 'Default';
             }
             updateShopUI();
-        }).catch(() => { updateShopUI(); });
+        }).catch(() => updateShopUI());
     }
 
     function updateShopUI() {
-        const skinsConfig = { 'Default': '#a855f7', 'Plasma': '#00e5ff', 'Gold': '#ffc800' };
-        Object.keys(skinsConfig).forEach(skinId => {
-            const btn = document.getElementById(`btn-skin-${skinId}`);
+        const conf = { 'Default': '#b467ff', 'Plasma': '#00e5ff', 'Gold': '#ffc800' };
+        Object.keys(conf).forEach(id => {
+            const btn = document.getElementById(`btn-skin-${id}`);
             if (!btn) return;
-            if (state.activeSkinId === skinId) {
-                btn.innerText = "نشط حالياً"; btn.className = "btn-action btn-active-skin";
-            } else if (state.ownedSkins.includes(skinId)) {
-                btn.innerText = "تفعيل المظهر"; btn.className = "btn-action btn-owned";
-            } else {
-                let price = skinId === 'Plasma' ? 0.5 : 1.5;
-                btn.innerText = `امتلاك (${price} Pi)`; btn.className = "btn-action";
-            }
+            if (state.activeSkinId === id) { btn.innerText = "نشط حالياً"; btn.className = "btn-action btn-active-skin"; }
+            else if (state.ownedSkins.includes(id)) { btn.innerText = "تفعيل المظهر"; btn.className = "btn-action btn-owned"; }
+            else { btn.innerText = `امتلاك (${id==='Plasma'?0.5:1.5} Pi)`; btn.className = "btn-action"; }
         });
     }
 
-    function handleSkinAction(skinId, cost, color) {
-        if (state.ownedSkins.includes(skinId)) { selectOwnedSkin(skinId, color); } else { buySkin(skinId, cost, color); }
-    }
-
-    function selectOwnedSkin(skinId, color) {
-        state.activeSkinId = skinId; state.currentLaserColor = color; updateShopUI();
-        fetch(`${BACKEND_URL}/api/users/skin/select`, {
-            method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username: state.currentUser, activeSkinId: skinId, laserColor: color })
-        }).catch(e => console.log(e));
-    }
-
-    function buySkin(skinName, cost, laserColor) {
-        executeRealPiPayment(`شراء مظهر: ${skinName}`, cost, () => {
-            if(!state.ownedSkins.includes(skinName)) state.ownedSkins.push(skinName);
-            state.activeSkinId = skinName; state.currentLaserColor = laserColor; updateShopUI();
-            fetch(`${BACKEND_URL}/api/users/skin/buy-success`, {
+    function handleSkinAction(id, cost, color) {
+        if (state.ownedSkins.includes(id)) {
+            state.activeSkinId = id; state.currentLaserColor = color; updateShopUI();
+            fetch(`${BACKEND_URL}/api/users/skin/select`, {
                 method: 'POST', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username: state.currentUser, skinId: skinName, laserColor: laserColor })
-            }).catch(e => console.log(e));
-            showPiModal("تمت الترقية بنجاح! 🔥", `تم تفعيل مظهر [${skinName}] في ترسانتك.`, "🚀");
-        });
+                body: JSON.stringify({ username: state.currentUser, activeSkinId: id, laserColor: color })
+            });
+        } else {
+            executeRealPiPayment(`فتح ترسانة: ${id}`, cost, () => {
+                state.ownedSkins.push(id); state.activeSkinId = id; state.currentLaserColor = color; updateShopUI();
+                fetch(`${BACKEND_URL}/api/users/skin/buy-success`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: state.currentUser, skinId: id, laserColor: color })
+                });
+            });
+        }
     }
 
+    // منطق هندسة الأهداف السيبرانية الفخمة
     class CyberTarget {
         constructor() {
-            this.x = Math.random() * (canvas.width - 80) + 40; 
-            this.y = Math.random() * (canvas.height - 80) + 40;
-            this.baseRadius = Math.random() * 12 + 15; 
-            this.radius = this.baseRadius; 
-            this.pulseTimer = Math.random() * 10;
-            this.vx = (Math.random() - 0.5) * 5; 
-            this.vy = (Math.random() - 0.5) * 5;
-            this.hue = Math.random() > 0.5 ? 190 : 280; 
-            this.rotationAngle = 0; 
-            this.rotSpeed = (Math.random() - 0.5) * 0.08;
+            this.x = Math.random() * (canvas.width - 120) + 60;
+            this.y = Math.random() * (canvas.height - 120) + 60;
+            this.radius = Math.random() * 10 + 20;
+            this.vx = (Math.random() - 0.5) * 6;
+            this.vy = (Math.random() - 0.5) * 6;
+            this.color = Math.random() > 0.5 ? '#00e5ff' : '#b467ff';
         }
         update() {
             this.x += this.vx; this.y += this.vy;
             if (this.x - this.radius < 0 || this.x + this.radius > canvas.width) this.vx *= -1;
             if (this.y - this.radius < 0 || this.y + this.radius > canvas.height) this.vy *= -1;
-            this.pulseTimer += 0.15; 
-            this.radius = this.baseRadius + Math.sin(this.pulseTimer) * 3; 
-            this.rotationAngle += this.rotSpeed;
         }
         draw() {
-            ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.rotationAngle);
-            ctx.shadowBlur = 25; ctx.shadowColor = `hsl(${this.hue}, 100%, 50%)`;
-            
-            ctx.beginPath();
-            for(let i=0; i<8; i++) {
-                let angle = i * Math.PI / 4;
-                let px = Math.cos(angle) * this.radius;
-                let py = Math.sin(angle) * this.radius;
-                if(i===0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
-            }
-            ctx.closePath();
-            ctx.strokeStyle = `hsl(${this.hue}, 100%, 60%)`; ctx.lineWidth = 3; ctx.stroke();
-            
-            ctx.beginPath(); ctx.arc(0, 0, this.radius * 0.4, 0, Math.PI * 2); 
-            ctx.fillStyle = `hsl(${this.hue}, 100%, 80%)`; ctx.fill(); 
+            ctx.save(); ctx.shadowBlur = 20; ctx.shadowColor = this.color;
+            ctx.strokeStyle = this.color; ctx.lineWidth = 4;
+            ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); ctx.stroke();
+            ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(this.x, this.y, this.radius * 0.3, 0, Math.PI * 2); ctx.fill();
             ctx.restore();
         }
     }
 
     class NeonParticle {
         constructor(x, y, color) {
-            this.x = x; this.y = y; this.color = color; 
-            this.vx = (Math.random() - 0.5) * 10; this.vy = (Math.random() - 0.5) * 10;
-            this.radius = Math.random() * 4 + 1; this.alpha = 1; 
-            this.decay = Math.random() * 0.02 + 0.03;
+            this.x = x; this.y = y; this.color = color;
+            this.vx = (Math.random() - 0.5) * 8; this.vy = (Math.random() - 0.5) * 8;
+            this.alpha = 1; this.decay = Math.random() * 0.03 + 0.02;
         }
         update() { this.x += this.vx; this.y += this.vy; this.alpha -= this.decay; }
         draw() {
-            ctx.save(); ctx.globalAlpha = this.alpha; ctx.shadowBlur = 15; ctx.shadowColor = this.color;
-            ctx.fillStyle = this.color; ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+            ctx.save(); ctx.globalAlpha = this.alpha; ctx.fillStyle = this.color;
+            ctx.beginPath(); ctx.arc(this.x, this.y, Math.random() * 3 + 1, 0, Math.PI * 2); ctx.fill();
+            ctx.restore();
         }
     }
 
-    const AudioEngine = {
-        ctx: null,
-        init() { if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)(); },
-        playShoot() {
-            try {
-                this.init(); const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain();
-                osc.connect(gain); gain.connect(this.ctx.destination); osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(600, this.ctx.currentTime); osc.frequency.exponentialRampToValueAtTime(100, this.ctx.currentTime + 0.1);
-                gain.gain.setValueAtTime(0.1, this.ctx.currentTime); osc.start(); osc.stop(this.ctx.currentTime + 0.1);
-            } catch(e){}
-        },
-        playHit() {
-            try {
-                this.init(); const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain();
-                osc.connect(gain); gain.connect(this.ctx.destination); osc.type = 'square';
-                osc.frequency.setValueAtTime(300, this.ctx.currentTime); osc.frequency.exponentialRampToValueAtTime(800, this.ctx.currentTime + 0.15);
-                gain.gain.setValueAtTime(0.15, this.ctx.currentTime); osc.start(); osc.stop(this.ctx.currentTime + 0.15);
-            } catch(e){}
-        }
-    };
-
     function initGame() {
         state.score = 0; state.combo = 1; state.timeLeft = 30; state.gameActive = true;
-        targets = [new CyberTarget(), new CyberTarget(), new CyberTarget(), new CyberTarget(), new CyberTarget()];
+        targets = [new CyberTarget(), new CyberTarget(), new CyberTarget(), new CyberTarget()];
         particles = []; activeLasers = [];
-        document.getElementById('scoreVal').innerText = state.score; 
+        document.getElementById('scoreVal').innerText = state.score;
         document.getElementById('comboVal').innerText = 'x' + state.combo;
-        document.getElementById('timerVal').innerText = state.timeLeft + 's'; 
+        document.getElementById('timerVal').innerText = state.timeLeft + 's';
         document.getElementById('startBtn').style.display = 'none';
-        
+
         if(gameInterval) clearInterval(gameInterval);
         gameInterval = setInterval(() => {
             state.timeLeft--; document.getElementById('timerVal').innerText = state.timeLeft + 's';
-            if (state.timeLeft <= 0) endGame();
+            if(state.timeLeft <= 0) endGame();
         }, 1000);
         requestAnimationFrame(gameLoop);
     }
@@ -938,123 +543,106 @@
     function gameLoop() {
         if (!state.gameActive) return;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        ctx.strokeStyle = "rgba(0, 229, 255, 0.05)";
-        ctx.lineWidth = 1;
-        let offset = (Date.now() / 50) % 40;
-        for(let i=0; i<canvas.width; i+=40) { ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); ctx.stroke(); }
-        for(let i=0; i<canvas.height; i+=40) { ctx.beginPath(); ctx.moveTo(0, i + offset); ctx.lineTo(canvas.width, i + offset); ctx.stroke(); }
+
+        // خطوط الشبكة السيبرانية المتطورة للخلفية
+        ctx.strokeStyle = "rgba(138, 43, 226, 0.05)"; ctx.lineWidth = 1;
+        for(let i=0; i<canvas.width; i+=50) { ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); ctx.stroke(); }
+        for(let i=0; i<canvas.height; i+=50) { ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(canvas.width, i); ctx.stroke(); }
 
         targets.forEach(t => { t.update(); t.draw(); });
-        particles = particles.filter(p => p.alpha > 0); 
-        particles.forEach(p => { p.update(); p.draw(); });
-        
+        particles = particles.filter(p => p.alpha > 0); particles.forEach(p => { p.update(); p.draw(); });
+
         activeLasers = activeLasers.filter(l => l.alpha > 0);
-        activeLasers.forEach(laser => {
-            ctx.save(); ctx.globalAlpha = laser.alpha; ctx.shadowBlur = 30; ctx.shadowColor = state.currentLaserColor;
-            ctx.strokeStyle = state.currentLaserColor; ctx.lineWidth = 6;
-            ctx.beginPath(); ctx.moveTo(canvas.width/2, canvas.height); ctx.lineTo(laser.targetX, laser.targetY); ctx.stroke();
-            ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2; ctx.stroke(); ctx.restore();
-            laser.alpha -= 0.12;
+        activeLasers.forEach(l => {
+            ctx.save(); ctx.globalAlpha = l.alpha; ctx.shadowBlur = 25; ctx.shadowColor = state.currentLaserColor;
+            ctx.strokeStyle = state.currentLaserColor; ctx.lineWidth = 5;
+            ctx.beginPath(); ctx.moveTo(canvas.width/2, canvas.height); ctx.lineTo(l.tx, l.ty); ctx.stroke();
+            ctx.restore(); l.alpha -= 0.15;
         });
+
         requestAnimationFrame(gameLoop);
     }
 
+    // هنا يكمن السر الحسابي لجعل اللمس والضرب دقيق 100% مهما تغير حجم الشاشة وتمددت
     canvas.addEventListener('mousedown', (e) => {
         if (!state.gameActive) return;
-        AudioEngine.playShoot();
         const rect = canvas.getBoundingClientRect();
         const mouseX = (e.clientX - rect.left) * (canvas.width / rect.width);
         const mouseY = (e.clientY - rect.top) * (canvas.height / rect.height);
-        activeLasers.push({ targetX: mouseX, targetY: mouseY, alpha: 1.0 });
-        
+
+        activeLasers.push({ tx: mouseX, ty: mouseY, alpha: 1.0 });
+
         let hit = false;
         for (let i = targets.length - 1; i >= 0; i--) {
             let t = targets[i]; let dist = Math.hypot(mouseX - t.x, mouseY - t.y);
-            if (dist < t.radius + 10) { 
-                hit = true; AudioEngine.playHit();
-                for(let p=0; p<25; p++) particles.push(new NeonParticle(t.x, t.y, state.currentLaserColor));
+            if (dist < t.radius + 12) {
+                hit = true;
+                for(let p=0; p<15; p++) particles.push(new NeonParticle(t.x, t.y, state.currentLaserColor));
                 state.score += 100 * state.combo; state.combo++;
                 targets.splice(i, 1); targets.push(new CyberTarget()); break;
             }
         }
         if (!hit) state.combo = 1;
-        document.getElementById('scoreVal').innerText = state.score; 
+        document.getElementById('scoreVal').innerText = state.score;
         document.getElementById('comboVal').innerText = 'x' + state.combo;
     });
 
     function endGame() {
         state.gameActive = false; clearInterval(gameInterval);
-        ctx.fillStyle = 'rgba(0,0,0,0.7)'; ctx.fillRect(0,0,canvas.width, canvas.height);
-        ctx.fillStyle = '#fff'; ctx.font = 'bold 32px Cairo'; ctx.textAlign = 'center';
-        ctx.fillText(`انتهت الجولة!`, canvas.width/2, canvas.height/2 - 20);
-        ctx.fillStyle = 'var(--neon-gold)'; ctx.font = 'bold 40px Orbitron';
-        ctx.fillText(`${state.score}`, canvas.width/2, canvas.height/2 + 30);
-        document.getElementById('startBtn').style.display = 'block';
-        document.getElementById('startBtn').innerText = 'العب مرة أخرى (0.1 Pi)';
+        ctx.fillStyle = 'rgba(3,1,8,0.85)'; ctx.fillRect(0,0,canvas.width, canvas.height);
+        ctx.fillStyle = '#fff'; ctx.font = '900 36px Cairo'; ctx.textAlign = 'center';
+        ctx.fillText("انتهت المعركة السيبرانية!", canvas.width/2, canvas.height/2 - 20);
+        ctx.fillStyle = 'var(--neon-gold)'; ctx.font = '900 45px Orbitron';
+        ctx.fillText(`SCORE: ${state.score}`, canvas.width/2, canvas.height/2 + 40);
         
+        document.getElementById('startBtn').style.display = 'inline-block';
+        document.getElementById('startBtn').innerText = 'تحدي جديد (0.1 Pi)';
+
         fetch(`${BACKEND_URL}/api/score/submit`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username: state.currentUser, score: state.score })
-        }).then(() => loadLeaderboard()).catch(e=>console.log(e));
+        }).then(() => loadLeaderboard());
     }
 
     function loadLeaderboard() {
-        fetch(`${BACKEND_URL}/api/leaderboard`)
-        .then(res => res.json())
-        .then(data => {
+        fetch(`${BACKEND_URL}/api/leaderboard`).then(res => res.json()).then(data => {
             const body = document.getElementById('leaderboardBody'); body.innerHTML = '';
-            if(!data || data.length === 0) {
-                body.innerHTML = `<tr><td colspan="3" style="text-align:center;">لا توجد بيانات حالياً</td></tr>`; return;
-            }
-            data.forEach((player, index) => {
-                const rankClass = index === 0 ? 'class="rank-gold"' : '';
-                body.innerHTML += `<tr><td ${rankClass}>#${player.rank || (index+1)}</td><td style="font-family:'Cairo'">${player.username}</td><td style="font-family:'Orbitron', sans-serif;">${(player.score || 0).toLocaleString()}</td></tr>`;
+            if(!data || data.length === 0) { body.innerHTML = '<tr><td colspan="3" style="text-align:center;">لا سجلات حالياً</td></tr>'; return; }
+            data.forEach((p, idx) => {
+                body.innerHTML += `<tr><td>#${idx+1}</td><td>${p.username}</td><td style="font-family:'Orbitron'">${p.score.toLocaleString()}</td></tr>`;
             });
-        }).catch(err => {
-            document.getElementById('leaderboardBody').innerHTML = `<tr><td colspan="3" style="text-align:center; color:var(--brand-red);">تعذر الاتصال بالخادم</td></tr>`;
-        });
+        }).catch(() => { document.getElementById('leaderboardBody').innerHTML = '<tr><td colspan="3" style="text-align:center; color:var(--brand-red);">فشل جلب لوحة المتصدرين</td></tr>'; });
     }
 
-    function executeRealPiPayment(txName, amount, onSuccess) {
-        document.getElementById('piModalTxName').innerText = `${txName}`;
-        document.getElementById('piModalCost').innerText = `${amount.toFixed(2)} Pi`;
+    function executeRealPiPayment(memo, amount, onSuccess) {
+        document.getElementById('piModalTxName').innerText = memo;
+        document.getElementById('piModalCost').innerText = `${amount} Pi`;
         document.getElementById('piPaywallModal').style.display = 'flex';
 
         if (typeof Pi === 'undefined' || window.location.hostname === 'localhost') {
-            setTimeout(() => { document.getElementById('piPaywallModal').style.display = 'none'; onSuccess(); }, 1200);
+            setTimeout(() => { document.getElementById('piPaywallModal').style.display = 'none'; onSuccess(); }, 1000);
             return;
         }
 
-        Pi.createPayment({
-            amount: amount, memo: txName, metadata: { txType: txName }
-        }, {
-            onReadyForServerApproval: function(paymentId) {
-                fetch(`${BACKEND_URL}/api/pi/approve`, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ paymentId: paymentId })
-                });
+        Pi.createPayment({ amount: amount, memo: memo, metadata: { type: memo } }, {
+            onReadyForServerApproval: (id) => {
+                fetch(`${BACKEND_URL}/api/pi/approve`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ paymentId: id }) });
             },
-            onReadyForServerCompletion: function(paymentId, txid) {
-                fetch(`${BACKEND_URL}/api/pi/complete`, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ paymentId: paymentId, txid: txid })
-                }).then(() => { document.getElementById('piPaywallModal').style.display = 'none'; onSuccess(); });
+            onReadyForServerCompletion: (id, txid) => {
+                fetch(`${BACKEND_URL}/api/pi/complete`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ paymentId: id, txid: txid }) })
+                .then(() => { document.getElementById('piPaywallModal').style.display = 'none'; onSuccess(); });
             },
-            onCancel: function() { document.getElementById('piPaywallModal').style.display = 'none'; },
-            onError: function() { 
-                document.getElementById('piPaywallModal').style.display = 'none'; 
-                showPiModal("فشل المعاملة ⚠️", "تعذر إكمال معاملة Pi. يرجى المحاولة لاحقاً.", "❌"); 
-            }
+            onCancel: () => { document.getElementById('piPaywallModal').style.display = 'none'; },
+            onError: () => { document.getElementById('piPaywallModal').style.display = 'none'; }
         });
     }
 
-    function requestMatchEntry() { executeRealPiPayment("تذكرة دخول ميدان النخبة التنافسي", 0.10, () => { initGame(); }); }
+    function requestMatchEntry() { executeRealPiPayment("تذكرة شحن طاقة قتال الساحة", 0.10, () => { initGame(); }); }
 
-    function switchTab(sectionId, element) {
-        document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
-        document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-        document.getElementById(sectionId).classList.add('active'); element.classList.add('active');
+    function switchTab(id, el) {
+        document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        document.getElementById(id).classList.add('active'); el.classList.add('active');
     }
 </script>
 </body>
