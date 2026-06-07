@@ -35,14 +35,12 @@
             min-height: 100vh;
         }
 
-        /* تخطيط الشاشة الفخم */
         .app-container {
             display: grid;
             grid-template-columns: 280px 1fr;
             min-height: 100vh;
         }
 
-        /* القائمة الجانبية */
         sidebar {
             background: rgba(13, 14, 24, 0.85);
             border-left: 1px solid rgba(138, 43, 226, 0.2);
@@ -113,7 +111,6 @@
             border-color: rgba(138, 43, 226, 0.4) rgba(138, 43, 226, 0.4) rgba(138, 43, 226, 0.4) transparent;
         }
 
-        /* منطقة المحتوى الرئيسي */
         main {
             padding: 2rem;
             display: flex;
@@ -136,7 +133,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* لوحة اللعبة الفخمة */
         .game-panel {
             background: var(--panel-bg);
             border: 1px solid rgba(138, 43, 226, 0.2);
@@ -210,7 +206,6 @@
             box-shadow: 0 0 25px var(--pi-neon);
         }
 
-        /* الجداول والقوائم (المتصدرين والمتجر) */
         .luxury-table {
             width: 100%;
             border-collapse: collapse;
@@ -241,7 +236,6 @@
 
         .rank-gold { color: var(--neon-gold); font-weight: bold;}
 
-        /* المتجر والمظاهر */
         .shop-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -275,7 +269,6 @@
             font-size: 2.5rem;
         }
 
-        /* نافذة دفع باي الـ SDK */
         .pi-modal {
             display: none;
             position: fixed;
@@ -319,65 +312,18 @@
 
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* كود التجاوب للهواتف */
         @media (max-width: 768px) {
-            .app-container {
-                grid-template-columns: 1fr;
-            }
-
-            sidebar {
-                border-left: none;
-                border-bottom: 1px solid rgba(138, 43, 226, 0.2);
-                padding: 1rem;
-                gap: 1rem;
-            }
-
-            .brand {
-                font-size: 1.2rem;
-                padding-bottom: 0.5rem;
-            }
-
-            .wallet-card {
-                padding: 0.8rem;
-            }
-
-            .balance {
-                font-size: 1.2rem;
-            }
-
-            .nav-menu {
-                flex-direction: row;
-                justify-content: space-around;
-                flex-wrap: wrap;
-                gap: 0.4rem;
-            }
-
-            .nav-item {
-                padding: 0.5rem 0.8rem;
-                font-size: 0.85rem;
-                border-radius: 6px;
-                text-align: center;
-                flex: 1;
-                min-width: 90px;
-            }
-
-            .nav-item:hover, .nav-item.active {
-                border-right: transparent;
-                border-bottom: 3px solid var(--neon-blue);
-            }
-
-            main {
-                padding: 1rem;
-            }
-
-            .game-panel {
-                padding: 1rem;
-            }
-
-            .luxury-table th, .luxury-table td {
-                padding: 0.6rem 0.8rem;
-                font-size: 0.85rem;
-            }
+            .app-container { grid-template-columns: 1fr; }
+            sidebar { border-left: none; border-bottom: 1px solid rgba(138, 43, 226, 0.2); padding: 1rem; gap: 1rem; }
+            .brand { font-size: 1.2rem; padding-bottom: 0.5rem; }
+            .wallet-card { padding: 0.8rem; }
+            .balance { font-size: 1.2rem; }
+            .nav-menu { flex-direction: row; justify-content: space-around; flex-wrap: wrap; gap: 0.4rem; }
+            .nav-item { padding: 0.5rem 0.8rem; font-size: 0.85rem; border-radius: 6px; text-align: center; flex: 1; min-width: 90px; }
+            .nav-item:hover, .nav-item.active { border-right: transparent; border-bottom: 3px solid var(--neon-blue); }
+            main { padding: 1rem; }
+            .game-panel { padding: 1rem; }
+            .luxury-table th, .luxury-table td { padding: 0.6rem 0.8rem; font-size: 0.85rem; }
         }
     </style>
 </head>
@@ -479,7 +425,6 @@
         gameActive: false
     };
 
-    // معالجة تسلسل تهيئة الـ SDK ثم طلب المصادقة بشكل منظم
     document.addEventListener("DOMContentLoaded", () => {
         if (typeof Pi !== 'undefined') {
             document.getElementById('walletBalance').innerText = "جاري تهيئة SDK...";
@@ -490,9 +435,8 @@
                 setTimeout(() => {
                     document.getElementById('walletBalance').innerText = "جاري طلب المصادقة...";
                     
-                    // دالة صمام الأمان لمعالجة وإكمال المدفوعات غير المكتملة تلقائياً (تحمى من انقطاع الاتصال)
                     const onIncompletePaymentFound = (payment) => {
-                        console.warn("⚠️ تم العثور على دفعة غير مكتملة (بسبب انقطاع الشبكة أو مهلة)، جاري تأكيدها ماليًا بالسيرفر:", payment);
+                        console.warn("⚠️ تم العثور على دفعة غير مكتملة، جاري تأكيدها ماليًا بالسيرفر:", payment);
                         
                         fetch(`${BACKEND_URL}/api/pi/complete`, {
                             method: 'POST',
@@ -504,16 +448,14 @@
                         })
                         .then(res => res.json())
                         .then(data => {
-                            if(data.success) {
+                            if(data.identifier) {
                                 console.log("✅ تم إغلاق وإكمال الدفعة المعلقة بنجاح ومزامنتها.");
-                                alert("✅ تم العثور على عملية دفع سابقة غير مكتملة وتم تأكيدها بنجاح ومزامنة حسابك!");
-                                // هنا يمكنك استدعاء دالة لتحديث حالة اللعبة بناءً على نوع الفاتورة المكتملة إذا لزم الأمر
+                                alert("✅ تم العثور على عملية دفع سابقة غير مكتملة وتم تأكيدها بنجاح!");
                             }
                         })
                         .catch(err => console.error("❌ فشل الاتصال بالسيرفر لإكمال الدفعة المعلقة:", err));
                     };
 
-                    // التعديل الرئيسي: استخدام .then لاستلام نتيجة المصادقة الناجحة وتحديث الواجهة
                     Pi.authenticate(['username', 'payments'], onIncompletePaymentFound)
                       .then(auth => {
                           state.currentUser = auth.user.username;
@@ -726,35 +668,40 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ paymentId: paymentId })
                 })
-                .then(res => res.json())
-                .then(data => {
-                    console.log("تمت موافقة السيرفر المبدئية:", data);
+                .then(res => {
+                    if (!res.ok) throw new Error("فشل رد السيرفر المالي");
+                    return res.json();
+                })
+                .then(paymentObjFromBackend => {
+                    console.log("✅ تم تأكيد موافقة السيرفر وتغذية الـ SDK بكائن الدفع الحقيقي:", paymentObjFromBackend);
                 })
                 .catch(err => {
                     console.error("خطأ أثناء الموافقة:", err);
                     closePiModal();
+                    alert("انتهت مهلة خادم الموافقة أو حدث خطأ بالاتصال الشبكي.");
                 });
             },
             onReadyForServerCompletion: function(paymentId, txid) {
-                document.getElementById('piModalStatus').innerText = "جاري تأكيد استلام العملات في محفظتك الملكية...";
+                document.getElementById('piModalStatus').innerText = "جاري تأكيد استلاف المعاملة في البلوكشين النهائي...";
                 
                 fetch(`${BACKEND_URL}/api/pi/complete`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ paymentId: paymentId, txid: txid })
                 })
-                .then(res => res.json())
-                .then(data => {
+                .then(res => {
+                    if (!res.ok) throw new Error("فشل رد السيرفر في مرحلة الإغلاق");
+                    return res.json();
+                })
+                .then(completedPaymentObj => {
                     closePiModal();
-                    if (data.success) {
-                        onSuccess();
-                    } else {
-                        alert("فشل تأكيد استلام الدفعة بالسيرفر: " + data.error);
-                    }
+                    console.log("✅ تمت المعاملة الماليّة بنجاح مطلق:", completedPaymentObj);
+                    onSuccess();
                 })
                 .catch(err => {
                     console.error("خطأ أثناء الإغلاق المالي لـ Pi:", err);
                     closePiModal();
+                    alert("فشل السيرفر في معالجة إغلاق المعاملة الموقعة مسبقاً.");
                 });
             },
             onCancel: function(paymentId) {
@@ -764,17 +711,7 @@
             onError: function(error, payment) {
                 console.error("خطأ مالي في الـ SDK:", error);
                 closePiModal();
-                
-                // رصد ومعالجة انتهاء مهلة الدفع (Timeout) أو الإلغاء بشكل احترافي
-                const errorMessage = (error && error.message) ? error.message.toLowerCase() : "";
-                
-                if (errorMessage.includes('timeout')) {
-                    alert("⏳ انتهت مهلة الدفع المستهدفة! يرجى التأكد من استقرار الاتصال بالإنترنت والمحاولة مجدداً. (إذا خُصمت العملات، سيتم تأكيدها تلقائياً بفضل نظام الأمان الجديد للعبة).");
-                } else if (errorMessage.includes('user_cancelled')) {
-                    console.log("قام المستخدم بإلغاء العملية يدوياً.");
-                } else {
-                    alert("حدث خطأ أثناء معالجة المحفظة: " + (error.message || "خطأ غير معروف في الشبكة"));
-                }
+                alert("حدث خطأ في واجهة محفظة باي: " + (error.message || "انتهت المهلة الزمنية"));
             }
         });
     }
