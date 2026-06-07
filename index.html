@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pi Arena: Elite Marksman</title>
+    <!-- استدعاء مكتبة الـ SDK الرسمية لشبكة باي نتورك -->
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
     <style>
         :root {
@@ -35,12 +36,14 @@
             min-height: 100vh;
         }
 
+        /* تخطيط الشاشة الفخم */
         .app-container {
             display: grid;
             grid-template-columns: 280px 1fr;
             min-height: 100vh;
         }
 
+        /* القائمة الجانبية */
         sidebar {
             background: rgba(13, 14, 24, 0.85);
             border-left: 1px solid rgba(138, 43, 226, 0.2);
@@ -111,6 +114,7 @@
             border-color: rgba(138, 43, 226, 0.4) rgba(138, 43, 226, 0.4) rgba(138, 43, 226, 0.4) transparent;
         }
 
+        /* منطقة المحتوى الرئيسي */
         main {
             padding: 2rem;
             display: flex;
@@ -133,6 +137,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* لوحة اللعبة الفخمة */
         .game-panel {
             background: var(--panel-bg);
             border: 1px solid rgba(138, 43, 226, 0.2);
@@ -206,6 +211,7 @@
             box-shadow: 0 0 25px var(--pi-neon);
         }
 
+        /* الجداول والقوائم (المتصدرين والمتجر) */
         .luxury-table {
             width: 100%;
             border-collapse: collapse;
@@ -236,6 +242,7 @@
 
         .rank-gold { color: var(--neon-gold); font-weight: bold;}
 
+        /* المتجر والمظاهر */
         .shop-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -269,6 +276,7 @@
             font-size: 2.5rem;
         }
 
+        /* نافذة دفع باي الـ SDK */
         .pi-modal {
             display: none;
             position: fixed;
@@ -312,6 +320,7 @@
 
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
+        /* كود التجاوب للهواتف */
         @media (max-width: 768px) {
             .app-container {
                 grid-template-columns: 1fr;
@@ -392,6 +401,7 @@
     </sidebar>
 
     <main>
+        <!-- 1. شاشة اللعبة وميدان الرماية -->
         <section id="game-section" class="view-section active">
             <div class="game-panel">
                 <div class="game-header">
@@ -411,6 +421,7 @@
             </div>
         </section>
 
+        <!-- 2. شاشة لوحة الصدارة الفخمة -->
         <section id="leaderboard-section" class="view-section">
             <h2 style="margin-bottom: 1rem; text-shadow: 0 0 10px var(--neon-blue);">المتصدرون لهذا اليوم</h2>
             <table class="luxury-table">
@@ -422,10 +433,12 @@
                     </tr>
                 </thead>
                 <tbody id="leaderboardBody">
-                    </tbody>
+                    <!-- تعبئة تلقائية من السيرفر خلف الكواليس -->
+                </tbody>
             </table>
         </section>
 
+        <!-- 3. شاشة المتجر -->
         <section id="shop-section" class="view-section">
             <h2 style="margin-bottom: 1rem; text-shadow: 0 0 10px var(--pi-neon);">ترسانة ليزر الأسلحة</h2>
             <div class="shop-grid">
@@ -446,6 +459,7 @@
     </main>
 </div>
 
+<!-- واجهة محاكاة نافذة دفع Pi SDK -->
 <div class="pi-modal" id="piPaywallModal">
     <div class="pi-modal-content">
         <div class="pi-logo">π</div>
@@ -458,10 +472,10 @@
 </div>
 
 <script>
-    // تغيير الرابط أدناه لرابط سيرفر Vercel الخاص بك عند النشر المباشر
+    // الرابط المباشر المستبدل والجاهز للتشغيل على السيرفر
     const BACKEND_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
         ? 'http://localhost:5000' 
-        : 'https://your-backend-app.vercel.app'; 
+        : 'https://pi-arena-game.vercel.app'; 
 
     let state = {
         currentUser: 'مقاتل_مجهول',
@@ -472,13 +486,11 @@
         gameActive: false
     };
 
-    // --- تهيئة مكتبة Pi SDK الرسمية ---
+    // تهيئة مكتبة Pi SDK الرسمية عند التحميل
     document.addEventListener("DOMContentLoaded", () => {
         if (typeof Pi !== 'undefined') {
-            // قم بتغيير sandbox إلى false عند إطلاق التطبيق رسمياً للعامة
             Pi.init({ version: "2.0", sandbox: true });
             
-            // طلب تسجيل دخول العميل وجلب بيانات الحساب
             Pi.authenticate(['username', 'payments'], onPiAuthExtensionApproved)
               .catch(err => {
                   console.error(err);
@@ -637,7 +649,6 @@
         document.getElementById('startBtn').style.display = 'block';
         document.getElementById('startBtn').innerText = 'دخول تحدي جديد (0.1 Pi)';
         
-        // إرسال النقاط الجديدة للسيرفر
         fetch(`${BACKEND_URL}/api/score/submit`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -664,9 +675,7 @@
         .catch(err => console.error("خطأ في تحميل المتصدرين:", err));
     }
 
-    // ==========================================
-    // 🔏 هندسة ربط مدفوعات Pi SDK الحقيقية بالسيرفر
-    // ==========================================
+    // ربط مدفوعات Pi SDK الحقيقية بالسيرفر
     function executeRealPiPayment(txName, amount, onSuccess) {
         document.getElementById('piModalTxName').innerText = `المعاملة: ${txName}`;
         document.getElementById('piModalCost').innerText = `${amount.toFixed(2)} Pi`;
@@ -678,7 +687,6 @@
             memo: txName,
             metadata: { txType: txName }
         }, {
-            // الخطوة 1: يرسل متصفح باي معرف المعاملة للموافقة عليها برموز التطبيق الخاصة بك
             onReadyForServerApproval: function(paymentId) {
                 document.getElementById('piModalStatus').innerText = "جاري مراجعة وموافقة السيرفر (Approve)...";
                 
@@ -696,7 +704,6 @@
                     closePiModal();
                 });
             },
-            // الخطوة 2: بعد قيام المستخدم بإدخال كلمة السر وتوقيع المعاملة بالبلوكشين، نقوم بإغلاقها واستلام الأموال
             onReadyForServerCompletion: function(paymentId, txid) {
                 document.getElementById('piModalStatus').innerText = "جاري تأكيد استلام العملات في محفظتك الملكية...";
                 
