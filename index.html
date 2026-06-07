@@ -238,6 +238,19 @@
             box-shadow: 0 0 30px var(--neon-gold-bright);
         }
 
+        .btn-owned {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%) !important;
+            color: #94a3b8 !important;
+            box-shadow: none !important;
+            cursor: pointer;
+        }
+
+        .btn-active-skin {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important;
+            color: white !important;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.4) !important;
+        }
+
         .luxury-table-container {
             background: var(--panel-bg);
             border-radius: 20px;
@@ -304,7 +317,6 @@
             font-size: 3rem;
         }
 
-        /* نافذة التنبيه المخصصة الاحترافية */
         .pi-modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -338,7 +350,6 @@
             border-radius: 10px; padding: 12px 40px; font-weight: bold; cursor: pointer;
         }
 
-        /* بوابة الدفع المالي */
         .pi-modal {
             display: none; position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -425,23 +436,28 @@
             <h2 style="margin-bottom: 1.5rem; text-shadow: 0 0 15px var(--pi-neon); font-weight: 800;">ترسانة ليزر الأسلحة</h2>
             <div class="shop-grid">
                 <div class="shop-card">
+                    <div class="skin-preview" style="color: #a855f7; text-shadow: 0 0 15px #a855f7;">🔮</div>
+                    <h3 style="font-weight: 700;">الشعاع الأرجواني القياسي</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">الليزر الأساسي المرفق مع بدلة القتال الافتراضية للشبكة.</p>
+                    <button class="btn-action btn-active-skin" id="btn-skin-Default" style="padding: 0.7rem; font-size: 1rem; border-radius: 10px;" onclick="selectOwnedSkin('Default', '#a855f7')">نشط حالياً</button>
+                </div>
+                <div class="shop-card">
                     <div class="skin-preview" style="color: #00f0ff; text-shadow: 0 0 15px #00f0ff;">⚡</div>
                     <h3 style="font-weight: 700;">شعاع البلازما السياني</h3>
                     <p style="color: var(--text-muted); font-size: 0.9rem;">يغير لون ليزر إطلاق النار والصدمات المرتدة إلى الأزرق السياني.</p>
-                    <button class="btn-action" style="padding: 0.7rem; font-size: 1rem; border-radius: 10px;" onclick="buySkin('Plasma', 0.5, '#00f0ff')">امتلاك (0.5 Pi)</button>
+                    <button class="btn-action" id="btn-skin-Plasma" style="padding: 0.7rem; font-size: 1rem; border-radius: 10px;" onclick="handleSkinAction('Plasma', 0.5, '#00f0ff')">امتلاك (0.5 Pi)</button>
                 </div>
                 <div class="shop-card">
                     <div class="skin-preview" style="color: #ffd700; text-shadow: 0 0 15px #ffd700;">🔥</div>
                     <h3 style="font-weight: 700;">شحنة النخبة الذهبية</h3>
                     <p style="color: var(--text-muted); font-size: 0.9rem;">تأثير ليزري ذهبي ملكي مخصص لأبطال الساحة النخبوية.</p>
-                    <button class="btn-action" style="padding: 0.7rem; font-size: 1rem; border-radius: 10px;" onclick="buySkin('Gold', 1.5, '#ffd700')">امتلاك (1.5 Pi)</button>
+                    <button class="btn-action" id="btn-skin-Gold" style="padding: 0.7rem; font-size: 1rem; border-radius: 10px;" onclick="handleSkinAction('Gold', 1.5, '#ffd700')">امتلاك (1.5 Pi)</button>
                 </div>
             </div>
         </section>
     </main>
 </div>
 
-<!-- الواجهات العائمة المخصصة -->
 <div class="pi-modal" id="piPaywallModal">
     <div class="pi-modal-content">
         <h2 style="color: var(--neon-gold); margin-bottom: 0.5rem; font-weight: 800;">بوابة دفع Pi Network</h2>
@@ -468,15 +484,21 @@
 
     let state = {
         currentUser: 'مقاتل_مجهول',
-        currentLaserColor: '#a855f7', // هذا المتغير سيتحكم بلون خط الليزر والانفجارات
+        currentLaserColor: '#a855f7',
+        activeSkinId: 'Default',
+        ownedSkins: ['Default'], // المظهر الافتراضي ممتلك دائماً
         score: 0,
         combo: 1,
         timeLeft: 30,
         gameActive: false
     };
 
-    // مصفوفة للاحتفاظ بخطوط الليزر النشطة للحظات لكي يراها اللاعب بوضوح قبل مسح الإطار
     let activeLasers = [];
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    let targets = [];
+    let particles = [];
+    let gameInterval = null;
 
     function showPiModal(title, message, icon = '⚡') {
         document.getElementById('modalTitle').innerText = title;
@@ -489,6 +511,7 @@
         document.getElementById('piCustomModal').classList.remove('active');
     }
 
+    // الفكرة الأساسية: الربط الشامل والمصادقة وجلب البيانات فور التحميل المبدئي
     document.addEventListener("DOMContentLoaded", () => {
         if (typeof Pi !== 'undefined') {
             try {
@@ -503,44 +526,109 @@
                     state.currentUser = auth.user.username;
                     document.getElementById('walletBalance').innerText = auth.user.username;
                     document.getElementById('walletBalance').style.color = "var(--neon-gold)";
+                    
+                    // استدعاء المخدم فوراً لجلب المظاهر المملوكة لهذا الحساب الفعلي
+                    syncUserSkinsFromBackend();
                 }).catch(err => {
                     document.getElementById('walletBalance').innerText = "وضع التجربة نشط";
+                    updateShopUI();
                 });
-            } catch(e) { console.error(e); }
+            } catch(e) { console.error(e); updateShopUI(); }
         } else {
-            document.getElementById('walletBalance').innerText = "أنت في بيئة التطوير المحلية";
+            document.getElementById('walletBalance').innerText = "بيئة تطوير محلية";
+            updateShopUI();
         }
         loadLeaderboard();
     });
 
-    const AudioEngine = {
-        ctx: null,
-        init() { if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)(); },
-        playShoot() {
-            this.init(); const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain();
-            osc.connect(gain); gain.connect(this.ctx.destination); osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(400, this.ctx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(100, this.ctx.currentTime + 0.1);
-            gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
-            osc.start(); osc.stop(this.ctx.currentTime + 0.1);
-        },
-        playHit() {
-            this.init(); const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain();
-            osc.connect(gain); gain.connect(this.ctx.destination); osc.type = 'sine';
-            osc.frequency.setValueAtTime(200, this.ctx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(700, this.ctx.currentTime + 0.12);
-            gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
-            osc.start(); osc.stop(this.ctx.currentTime + 0.12);
+    // جلب حالة الشراء والمظاهر المفعلة مسبقاً من الباك إيند وتطبيقها فوراً
+    function syncUserSkinsFromBackend() {
+        fetch(`${BACKEND_URL}/api/users/${state.currentUser}/skins`)
+        .then(res => res.json())
+        .then(data => {
+            if(data && data.ownedSkins) {
+                state.ownedSkins = data.ownedSkins;
+                state.currentLaserColor = data.currentLaserColor || '#a855f7';
+                state.activeSkinId = data.activeSkinId || 'Default';
+            }
+            updateShopUI();
+        }).catch(() => {
+            updateShopUI();
+        });
+    }
+
+    // تحديث شكل الأزرار في واجهة المتجر بناء على حالة الربط والمظاهر المملوكة
+    function updateShopUI() {
+        const skinsConfig = {
+            'Default': '#a855f7',
+            'Plasma': '#00f0ff',
+            'Gold': '#ffd700'
+        };
+
+        Object.keys(skinsConfig).forEach(skinId => {
+            const btn = document.getElementById(`btn-skin-${skinId}`);
+            if (!btn) return;
+
+            if (state.activeSkinId === skinId) {
+                btn.innerText = "نشط حالياً";
+                btn.className = "btn-action btn-active-skin";
+            } else if (state.ownedSkins.includes(skinId)) {
+                btn.innerText = "تفعيل المظهر";
+                btn.className = "btn-action btn-owned";
+            } else {
+                let price = skinId === 'Plasma' ? 0.5 : 1.5;
+                btn.innerText = `امتلاك (${price} Pi)`;
+                btn.className = "btn-action";
+            }
+        });
+    }
+
+    function handleSkinAction(skinId, cost, color) {
+        if (state.ownedSkins.includes(skinId)) {
+            selectOwnedSkin(skinId, color);
+        } else {
+            buySkin(skinId, cost, color);
         }
-    };
+    }
 
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
-    let targets = [];
-    let particles = [];
-    let gameInterval = null;
+    function selectOwnedSkin(skinId, color) {
+        state.activeSkinId = skinId;
+        state.currentLaserColor = color;
+        updateShopUI();
+        
+        // إبلاغ السيرفر بتغيير المظهر النشط حالياً للحفظ الدائم
+        fetch(`${BACKEND_URL}/api/users/skin/select`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: state.currentUser, activeSkinId: skinId, laserColor: color })
+        });
+    }
 
-    // تصميم الأهداف السيبرانية الجديدة (Cyber Matrix Target) المتنقلة والنباضة
+    function buySkin(skinName, cost, laserColor) {
+        executeRealPiPayment(`شراء مظهر السلاح: ${skinName}`, cost, () => {
+            if(!state.ownedSkins.includes(skinName)) {
+                state.ownedSkins.push(skinName);
+            }
+            state.activeSkinId = skinName;
+            state.currentLaserColor = laserColor;
+            updateShopUI();
+            
+            // تحديث قاعدة البيانات الخلفية وحفظ السجل المالي والمظهر المشترى
+            fetch(`${BACKEND_URL}/api/users/skin/buy-success`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: state.currentUser, skinId: skinName, laserColor: laserColor })
+            });
+
+            showPiModal(
+                "تمت ترقية الليزر بنجاح! 🔥", 
+                `لقد تم ربط وشراء المظهر [${skinName}] بمحفظتك بنجاح، وتفعيله داخل كود اللعبة.`, 
+                "🚀"
+            );
+        });
+    }
+
+    // بقية محرك الأنيميشن والأهداف المطورة السيبرانية النباضة كما هي تماماً:
     class CyberTarget {
         constructor() {
             this.x = Math.random() * (canvas.width - 80) + 40;
@@ -548,90 +636,66 @@
             this.baseRadius = Math.random() * 10 + 18;
             this.radius = this.baseRadius;
             this.pulseTimer = Math.random() * 10;
-            
-            // سرعة الحركة لتفادي الملل والبدائية
             this.vx = (Math.random() - 0.5) * 4;
             this.vy = (Math.random() - 0.5) * 4;
-            
             this.hue = Math.random() * 360;
             this.rotationAngle = 0;
             this.rotSpeed = (Math.random() - 0.5) * 0.05;
         }
-
         update() {
-            // تحديث موقع الحركة والارتداد عن جدران الكانفاس
-            this.x += this.vx;
-            this.y += this.vy;
+            this.x += this.vx; this.y += this.vy;
             if (this.x - this.radius < 0 || this.x + this.radius > canvas.width) this.vx *= -1;
             if (this.y - this.radius < 0 || this.y + this.radius > canvas.height) this.vy *= -1;
-
-            // تحديث النبض الداخلي والتدوير للحلقات الكونية حول الهدف
             this.pulseTimer += 0.1;
             this.radius = this.baseRadius + Math.sin(this.pulseTimer) * 4;
             this.rotationAngle += this.rotSpeed;
         }
-
         draw() {
-            ctx.save();
-            ctx.translate(this.x, this.y);
-            ctx.rotate(this.rotationAngle);
-
-            // توهج نيون خارجي
-            ctx.shadowBlur = 20;
-            ctx.shadowColor = `hsl(${this.hue}, 100%, 60%)`;
-
-            // الحلقة الخارجية المتقطعة (Cyber Ring)
-            ctx.strokeStyle = `hsl(${this.hue}, 100%, 60%)`;
-            ctx.lineWidth = 3;
-            ctx.beginPath();
-            ctx.arc(0, 0, this.radius, 0, Math.PI * 1.5);
-            ctx.stroke();
-
-            // الحلقة الداخلية المعاكسة للدوران
-            ctx.beginPath();
-            ctx.arc(0, 0, this.radius * 0.6, Math.PI * 0.5, Math.PI * 2);
-            ctx.strokeStyle = '#ffffff';
-            ctx.lineWidth = 1.5;
-            ctx.stroke();
-
-            // مركز الهدف المضيء المكثف
-            ctx.beginPath();
-            ctx.arc(0, 0, 6, 0, Math.PI * 2);
-            ctx.fillStyle = `hsl(${this.hue}, 100%, 70%)`;
-            ctx.fill();
-
-            ctx.restore();
+            ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.rotationAngle);
+            ctx.shadowBlur = 20; ctx.shadowColor = `hsl(${this.hue}, 100%, 60%)`;
+            ctx.strokeStyle = `hsl(${this.hue}, 100%, 60%)`; ctx.lineWidth = 3;
+            ctx.beginPath(); ctx.arc(0, 0, this.radius, 0, Math.PI * 1.5); ctx.stroke();
+            ctx.beginPath(); ctx.arc(0, 0, this.radius * 0.6, Math.PI * 0.5, Math.PI * 2);
+            ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 1.5; ctx.stroke();
+            ctx.beginPath(); ctx.arc(0, 0, 6, 0, Math.PI * 2);
+            ctx.fillStyle = `hsl(${this.hue}, 100%, 70%)`; ctx.fill(); ctx.restore();
         }
     }
 
     class NeonParticle {
         constructor(x, y, color) {
             this.x = x; this.y = y; this.color = color;
-            this.vx = (Math.random() - 0.5) * 8; 
-            this.vy = (Math.random() - 0.5) * 8;
-            this.radius = Math.random() * 3 + 1;
-            this.alpha = 1;
-            this.decay = Math.random() * 0.02 + 0.02;
+            this.vx = (Math.random() - 0.5) * 8; this.vy = (Math.random() - 0.5) * 8;
+            this.radius = Math.random() * 3 + 1; this.alpha = 1; this.decay = Math.random() * 0.02 + 0.02;
         }
         update() { this.x += this.vx; this.y += this.vy; this.alpha -= this.decay; }
         draw() {
-            ctx.save();
-            ctx.globalAlpha = this.alpha;
-            ctx.shadowBlur = 10;
-            ctx.shadowColor = this.color;
-            ctx.fillStyle = this.color;
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.restore();
+            ctx.save(); ctx.globalAlpha = this.alpha; ctx.shadowBlur = 10; ctx.shadowColor = this.color;
+            ctx.fillStyle = this.color; ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); ctx.fill(); ctx.restore();
         }
     }
+
+    const AudioEngine = {
+        ctx: null,
+        init() { if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)(); },
+        playShoot() {
+            this.init(); const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain();
+            osc.connect(gain); gain.connect(this.ctx.destination); osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(400, this.ctx.currentTime); osc.frequency.exponentialRampToValueAtTime(100, this.ctx.currentTime + 0.1);
+            gain.gain.setValueAtTime(0.15, this.ctx.currentTime); osc.start(); osc.stop(this.ctx.currentTime + 0.1);
+        },
+        playHit() {
+            this.init(); const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain();
+            osc.connect(gain); gain.connect(this.ctx.destination); osc.type = 'sine';
+            osc.frequency.setValueAtTime(200, this.ctx.currentTime); osc.frequency.exponentialRampToValueAtTime(700, this.ctx.currentTime + 0.12);
+            gain.gain.setValueAtTime(0.2, this.ctx.currentTime); osc.start(); osc.stop(this.ctx.currentTime + 0.12);
+        }
+    };
 
     function initGame() {
         state.score = 0; state.combo = 1; state.timeLeft = 30; state.gameActive = true;
         targets = [new CyberTarget(), new CyberTarget(), new CyberTarget(), new CyberTarget()];
-        particles = [];
-        activeLasers = [];
+        particles = []; activeLasers = [];
         document.getElementById('scoreVal').innerText = state.score;
         document.getElementById('comboVal').innerText = 'x' + state.combo;
         document.getElementById('timerVal').innerText = state.timeLeft + 's';
@@ -643,89 +707,56 @@
             document.getElementById('timerVal').innerText = state.timeLeft + 's';
             if (state.timeLeft <= 0) endGame();
         }, 1000);
-
         requestAnimationFrame(gameLoop);
     }
 
     function gameLoop() {
         if (!state.gameActive) return;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        // تحديث ورسم الأهداف المتنقلة الذكية
         targets.forEach(t => { t.update(); t.draw(); });
-
-        // تحديث ورسم جزيئات الانفجار المتطايرة
         particles = particles.filter(p => p.alpha > 0);
         particles.forEach(p => { p.update(); p.draw(); });
 
-        // رسم حزم الليزر النشطة ومسح منتهية الصلاحية
         activeLasers = activeLasers.filter(l => l.alpha > 0);
         activeLasers.forEach(laser => {
-            ctx.save();
-            ctx.globalAlpha = laser.alpha;
-            ctx.shadowBlur = 25;
-            ctx.shadowColor = state.currentLaserColor; // يستخدم لون الليزر المشتري الحالي بدقة هنا
-            ctx.strokeStyle = state.currentLaserColor;
-            ctx.lineWidth = 4;
-            ctx.beginPath();
-            ctx.moveTo(canvas.width/2, canvas.height);
-            ctx.lineTo(laser.targetX, laser.targetY);
-            ctx.stroke();
-            
-            // قلب شعاع الليزر بلون أبيض ناصع لإعطاء قوة بصرية صاعقة
-            ctx.strokeStyle = '#ffffff';
-            ctx.lineWidth = 1.5;
-            ctx.stroke();
-            ctx.restore();
-            laser.alpha -= 0.15; // تتبدد بسرعة عالية جداً
+            ctx.save(); ctx.globalAlpha = laser.alpha; ctx.shadowBlur = 25; ctx.shadowColor = state.currentLaserColor;
+            ctx.strokeStyle = state.currentLaserColor; ctx.lineWidth = 4;
+            ctx.beginPath(); ctx.moveTo(canvas.width/2, canvas.height); ctx.lineTo(laser.targetX, laser.targetY); ctx.stroke();
+            ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 1.5; ctx.stroke(); ctx.restore();
+            laser.alpha -= 0.15;
         });
-
         requestAnimationFrame(gameLoop);
     }
 
     canvas.addEventListener('mousedown', (e) => {
         if (!state.gameActive) return;
         AudioEngine.playShoot();
-        
         const rect = canvas.getBoundingClientRect();
         const mouseX = (e.clientX - rect.left) * (canvas.width / rect.width);
         const mouseY = (e.clientY - rect.top) * (canvas.height / rect.height);
 
-        // تسجيل إطلاق ليزر لإظهاره باللون الذي اشتراه اللاعب فورًا
         activeLasers.push({ targetX: mouseX, targetY: mouseY, alpha: 1.0 });
 
         let hit = false;
         for (let i = targets.length - 1; i >= 0; i--) {
             let t = targets[i];
             let dist = Math.hypot(mouseX - t.x, mouseY - t.y);
-            
-            // التحقق من الإصابة النظيفة
             if (dist < t.radius + 5) {
-                hit = true; 
-                AudioEngine.playHit();
-                
-                // توليد انفجار جزيئات النيون الحركي الملون
+                hit = true; AudioEngine.playHit();
                 let particleColor = `hsl(${t.hue}, 100%, 65%)`;
-                for(let p=0; p<20; p++) {
-                    particles.push(new NeonParticle(t.x, t.y, particleColor));
-                }
-                
-                state.score += 100 * state.combo;
-                state.combo++;
-                targets.splice(i, 1);
-                targets.push(new CyberTarget()); // إنتاج هدف متحرك جديد فورًا بديل عنه
+                for(let p=0; p<20; p++) particles.push(new NeonParticle(t.x, t.y, particleColor));
+                state.score += 100 * state.combo; state.combo++;
+                targets.splice(i, 1); targets.push(new CyberTarget());
                 break;
             }
         }
-
-        if (!hit) { state.combo = 1; }
+        if (!hit) state.combo = 1;
         document.getElementById('scoreVal').innerText = state.score;
         document.getElementById('comboVal').innerText = 'x' + state.combo;
     });
 
     function endGame() {
-        state.gameActive = false;
-        clearInterval(gameInterval);
+        state.gameActive = false; clearInterval(gameInterval);
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = '#fff'; ctx.font = 'bold 26px Segoe UI'; ctx.textAlign = 'center';
         ctx.fillText(`انتهت جولة التصويب! النتيجة: ${state.score}`, canvas.width/2, canvas.height/2);
@@ -735,15 +766,14 @@
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username: state.currentUser, score: state.score })
-        }).then(() => loadLeaderboard()).catch(err => console.error(err));
+        }).then(() => loadLeaderboard());
     }
 
     function loadLeaderboard() {
         fetch(`${BACKEND_URL}/api/leaderboard`)
         .then(res => res.json())
         .then(data => {
-            const body = document.getElementById('leaderboardBody');
-            body.innerHTML = '';
+            const body = document.getElementById('leaderboardBody'); body.innerHTML = '';
             data.forEach((player, index) => {
                 const rankClass = index === 0 ? 'class="rank-gold"' : '';
                 body.innerHTML += `<tr><td ${rankClass}>#${player.rank}</td><td>${player.username}</td><td>${player.score.toLocaleString()}</td></tr>`;
@@ -758,35 +788,24 @@
         document.getElementById('piPaywallModal').style.display = 'flex';
 
         if (typeof Pi === 'undefined') {
-            // بيئة تجريبية محلية في حال عدم وجود الـ SDK لسهولة الفحص والتشغيل الفوري
-            setTimeout(() => {
-                closePiModal();
-                onSuccess();
-            }, 1000);
+            setTimeout(() => { closePiModal(); onSuccess(); }, 1000);
             return;
         }
 
         Pi.createPayment({
-            amount: amount,
-            memo: txName,
-            metadata: { txType: txName }
+            amount: amount, memo: txName, metadata: { txType: txName }
         }, {
             onReadyForServerApproval: function(paymentId) {
                 fetch(`${BACKEND_URL}/api/pi/approve`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ paymentId: paymentId })
-                }).then(res => res.json());
+                });
             },
             onReadyForServerCompletion: function(paymentId, txid) {
                 fetch(`${BACKEND_URL}/api/pi/complete`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ paymentId: paymentId, txid: txid })
-                }).then(res => res.json()).then(() => {
-                    closePiModal();
-                    onSuccess();
-                });
+                }).then(() => { closePiModal(); onSuccess(); });
             },
             onCancel: function() { closePiModal(); },
             onError: function() { closePiModal(); showPiModal("فشل الدفع ⚠️", "تعذر إكمال المعاملة.", "❌"); }
@@ -794,30 +813,12 @@
     }
 
     function closePiModal() { document.getElementById('piPaywallModal').style.display = 'none'; }
-
-    function requestMatchEntry() {
-        executeRealPiPayment("تذكرة دخول ميدان النخبة التنافسي", 0.10, () => {
-            initGame();
-        });
-    }
-
-    // هنا تكمن معالجة تفعيل اللون برمجياً فور الشراء المالي الناجح
-    function buySkin(skinName, cost, laserColor) {
-        executeRealPiPayment(`شراء مظهر السلاح: ${skinName}`, cost, () => {
-            state.currentLaserColor = laserColor; // تحديث اللون فورا في الحالة النشطة للكانفاس
-            showPiModal(
-                "تمت ترقية الليزر بنجاح! 🔥", 
-                `لقد تم تفعيل مظهر السلاح [${skinName}] بنجاح، وربطه برمجياً بمحرك الرندرة الحالي للعبة. جربه الآن!`, 
-                "🚀"
-            );
-        });
-    }
+    function requestMatchEntry() { executeRealPiPayment("تذكرة دخول ميدان النخبة التنافسي", 0.10, () => { initGame(); }); }
 
     function switchTab(sectionId, element) {
         document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-        document.getElementById(sectionId).classList.add('active');
-        element.classList.add('active');
+        document.getElementById(sectionId).classList.add('active'); element.classList.add('active');
     }
 </script>
 </body>
