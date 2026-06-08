@@ -150,6 +150,32 @@
             box-shadow: 5px 0 15px rgba(255, 204, 0, 0.05);
         }
 
+        /* تنسيق روابط السياسات في أسفل القائمة */
+        .legal-footer {
+            margin-top: auto;
+            text-align: center;
+            font-size: 0.75rem;
+            padding: 1rem 0;
+            border-top: 1px solid rgba(255, 204, 0, 0.1);
+        }
+
+        .legal-footer a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.3s ease, text-shadow 0.3s ease;
+        }
+
+        .legal-footer a:hover {
+            color: var(--pi-gold-bright);
+            text-shadow: 0 0 8px var(--pi-gold-glow);
+        }
+
+        .legal-separator {
+            color: var(--pi-gold);
+            margin: 0 8px;
+            opacity: 0.5;
+        }
+
         main {
             padding: 2.5rem;
             display: flex;
@@ -416,6 +442,7 @@
             sidebar { border-right: none; border-bottom: 1px solid rgba(255, 204, 0, 0.15); }
             .nav-menu { flex-direction: row; justify-content: space-around; }
             main { padding: 1.2rem; }
+            .legal-footer { border-top: none; padding-top: 0; }
         }
     </style>
 </head>
@@ -428,15 +455,12 @@
         </div>
         <div class="sidebar-content">
             
-            <!-- تم دمج الحاويات في خط أفقي واحد مدمج ومدعوم بالذهبي الخافت -->
             <div class="horizontal-vault-row">
-                <!-- Pi Wallet Account Container -->
                 <div class="wallet-card">
                     <h3>👤 Pioneer</h3>
                     <div class="balance" id="walletBalance" style="font-size: 11px; color: #fff;">Connecting...</div>
                 </div>
                 
-                <!-- Game Vault Wallet Balance Container -->
                 <div class="wallet-card">
                     <h3>🎮 Vault</h3>
                     <div class="balance game-balance" id="gameBalance">0.00 PI</div>
@@ -449,6 +473,14 @@
                 <li class="nav-item" onclick="switchTab('shop-section', this)">⚡ Weapon Skins</li>
             </ul>
         </div>
+        
+        <!-- قسم الروابط القانونية -->
+        <div class="legal-footer">
+            <a href="privacy-policy.html" target="_blank">Privacy Policy</a>
+            <span class="legal-separator">|</span>
+            <a href="terms-of-service.html" target="_blank">Terms of Service</a>
+        </div>
+
     </sidebar>
 
     <main>
@@ -541,7 +573,7 @@
 
     let state = {
         currentUser: 'anonymous_operator',
-        currentLaserColor: '#ffcc00', // افتراضياً يبدأ بالليزر الذهبي الآن لتعميق الهوية الذهبية
+        currentLaserColor: '#ffcc00', 
         activeSkinId: 'Gold',
         ownedSkins: ['Default', 'Gold'],
         score: 0,
