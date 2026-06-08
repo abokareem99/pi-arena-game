@@ -487,9 +487,7 @@
     </sidebar>
 
     <main>
-        <!-- حاوية تضم محتوى الأقسام النشطة -->
         <div class="content-body">
-            <!-- Game Section -->
             <section id="game-section" class="view-section active">
                 <div class="game-panel">
                     <div class="game-header">
@@ -507,7 +505,6 @@
                 </div>
             </section>
 
-            <!-- Leaderboard Section -->
             <section id="leaderboard-section" class="view-section">
                 <h2 style="margin-bottom: 1.5rem; text-shadow: 0 0 15px var(--pi-gold-bright); font-weight: 800; color:#fff;">Daily Top Operators</h2>
                 <div class="luxury-table-container">
@@ -524,7 +521,6 @@
                 </div>
             </section>
 
-            <!-- Shop Section -->
             <section id="shop-section" class="view-section">
                 <h2 style="margin-bottom: 1.5rem; text-shadow: 0 0 15px var(--pi-gold); font-weight: 800; color:#fff;">Laser Weapon Arsenal</h2>
                 <div class="shop-grid">
@@ -550,7 +546,6 @@
             </section>
         </div>
 
-        <!-- تذييل الصفحة القانوني الجديد والمنفصل لضمان الظهور مع حركة الشاشة -->
         <footer class="legal-footer">
             <a href="privacy-policy.html" target="_blank">Privacy Policy</a>
             <span class="legal-separator">|</span>
@@ -559,7 +554,6 @@
     </main>
 </div>
 
-<!-- Modal Windows -->
 <div class="pi-modal" id="piPaywallModal">
     <div class="pi-modal-content">
         <h2 style="color: var(--pi-gold); margin-bottom: 0.5rem; font-weight: 800;">Pi Network Secure Gateway</h2>
@@ -601,16 +595,22 @@
     let targets = [];
     let particles = [];
     let gameInterval = null;
+    let modalCallback = null; // متغير لحفظ الوظيفة المراد تشغيلها بعد تأكيد الدفع
 
-    function showPiModal(title, message, icon = '⚡') {
+    function showPiModal(title, message, icon = '⚡', callback = null) {
         document.getElementById('modalTitle').innerText = title;
         document.getElementById('modalMessage').innerText = message;
         document.querySelector('.pi-modal-icon').innerText = icon;
         document.getElementById('piCustomModal').classList.add('active');
+        modalCallback = callback; // تخزين الاستدعاء الراجع لتشغيله عند النقر على زر الإغلاق
     }
 
     function closePiModalCustom() {
         document.getElementById('piCustomModal').classList.remove('active');
+        if (modalCallback) {
+            modalCallback(); // تشغيل الكود (مثل بدء اللعبة أو تفعيل السكن) فور إغلاق النافذة
+            modalCallback = null;
+        }
     }
 
     document.addEventListener("DOMContentLoaded", () => {
@@ -716,7 +716,6 @@
                 method: 'POST', headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username: state.currentUser, skinId: skinName, laserColor: laserColor })
             }).then(() => fetchUserGameWallet());
-            showPiModal("Laser Upgrade Success! 🔥", `Skin [${skinName}] has been bound to your vault.`, "🚀");
         });
     }
 
@@ -879,7 +878,15 @@
         document.getElementById('piPaywallModal').style.display = 'flex';
 
         if (typeof Pi === 'undefined' || window.location.hostname === 'localhost') {
-            setTimeout(() => { closePiModal(); onSuccess(); }, 1000);
+            setTimeout(() => { 
+                closePiModal(); 
+                showPiModal(
+                    "Payment Verified! ✅", 
+                    `Successfully Secured:\n[${txName}]\nYour network ledger has been updated. Ready for deployment.`, 
+                    "✅", 
+                    onSuccess
+                );
+            }, 1200);
             return;
         }
 
@@ -896,7 +903,15 @@
                 fetch(`${BACKEND_URL}/api/pi/complete`, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ paymentId: paymentId, txid: txid })
-                }).then(() => { closePiModal(); onSuccess(); });
+                }).then(() => { 
+                    closePiModal(); 
+                    showPiModal(
+                        "Payment Secured! ✅", 
+                        `Success! [${txName}] has been authorized and bound to your vault identity.`, 
+                        "✅", 
+                        onSuccess
+                    );
+                });
             },
             onCancel: function() { closePiModal(); },
             onError: function() { closePiModal(); showPiModal("Payment Failed ⚠️", "Transaction could not be certified.", "❌"); }
