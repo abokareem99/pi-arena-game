@@ -22,12 +22,22 @@ let leaderboard = [
 let activePayments = {};
 
 // ==========================================
-// الإعداد الحاسم: ربط واجهة المستخدم بالخلفية
+// الإعداد الحاسم: ربط واجهة المستخدم بالخلفية والسياسات القانونية
 // ==========================================
 
 // تشغيل الواجهة (index.html) تلقائياً عند فتح الرابط الرئيسي للمشروع
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+// مسار شروط الخدمة (Terms of Service) لمنع خطأ Cannot GET
+app.get('/terms-of-service.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'terms-of-service.html'));
+});
+
+// مسار سياسة الخصوصية (Privacy Policy) لمنع خطأ Cannot GET
+app.get('/privacy-policy.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'privacy-policy.html'));
 });
 
 // ==========================================
