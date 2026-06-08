@@ -7,17 +7,17 @@
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
     <style>
         :root {
-            --bg-dark: #05010d;
-            --panel-bg: rgba(25, 14, 44, 0.45);
-            --pi-purple: #8a2be2;
-            --pi-neon: #a855f7;
-            --neon-blue: #00f0ff;
-            --neon-gold: #f2a900;
-            --neon-gold-bright: #ffcd00;
-            --brand-red: #ff003c;
-            --text-light: #f3f4f6;
-            --text-muted: #b3a4c9;
-            --neon-green: #10b981;
+            /* درجات ألوان Pi الرسمية والفاخرة */
+            --bg-dark: #090314;
+            --panel-bg: rgba(26, 12, 47, 0.4);
+            --pi-purple-deep: #4a157d;
+            --pi-purple-bright: #a252fa;
+            --pi-gold: #e2a000;
+            --pi-gold-bright: #ffcc00;
+            --pi-gold-glow: rgba(255, 204, 0, 0.3);
+            --pi-purple-glow: rgba(162, 82, 250, 0.25);
+            --text-light: #f5f3f7;
+            --text-muted: #bdaecf;
         }
 
         * {
@@ -32,10 +32,11 @@
             background-color: var(--bg-dark);
             color: var(--text-light);
             overflow-x: hidden;
+            /* تدرج خلفية فاخر يعتمد على البنفسجي العميق ممتزج بالذهبي الخافت في الزوايا */
             background-image: 
-                radial-gradient(circle at top left, rgba(138, 43, 226, 0.15) 0%, transparent 60%),
-                radial-gradient(circle at bottom right, rgba(0, 240, 255, 0.08) 0%, transparent 60%),
-                radial-gradient(circle at center, #1a0b2e 0%, #05010d 100%);
+                radial-gradient(circle at top right, var(--pi-purple-glow) 0%, transparent 55%),
+                radial-gradient(circle at bottom left, var(--pi-gold-glow) 0%, transparent 50%),
+                radial-gradient(circle at center, #150827 0%, #090314 100%);
             min-height: 100vh;
         }
 
@@ -46,31 +47,31 @@
         }
 
         sidebar {
-            background: rgba(11, 4, 22, 0.9);
-            border-right: 1px solid rgba(138, 43, 226, 0.2);
+            background: rgba(14, 5, 26, 0.95);
+            border-right: 1px solid rgba(162, 82, 250, 0.15);
             padding: 0;
             display: flex;
             flex-direction: column;
             gap: 1.5rem;
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(20px);
             z-index: 10;
         }
 
         .brand-header {
             width: 100%;
-            padding: 1.5rem;
+            padding: 1.8rem 1.5rem;
             text-align: center;
-            background: rgba(0, 0, 0, 0.3);
-            border-bottom: 3px solid var(--neon-blue);
-            box-shadow: 0 4px 20px rgba(0, 240, 255, 0.15);
+            background: rgba(0, 0, 0, 0.4);
+            border-bottom: 2px solid var(--pi-gold);
+            box-shadow: 0 4px 25px var(--pi-gold-glow);
         }
 
         .brand {
             font-size: 1.4rem;
             font-weight: 900;
-            letter-spacing: 1.5px;
-            color: var(--text-light);
-            text-shadow: 0 0 15px var(--neon-blue);
+            letter-spacing: 2px;
+            color: #fff;
+            text-shadow: 0 0 15px var(--pi-purple-bright), 0 0 5px var(--pi-gold);
         }
 
         .sidebar-content {
@@ -82,41 +83,43 @@
         }
 
         .wallet-card {
-            background: linear-gradient(135deg, rgba(138, 43, 226, 0.2), rgba(0, 240, 255, 0.05));
-            border: 1px solid rgba(138, 43, 226, 0.2);
+            background: linear-gradient(135deg, rgba(74, 21, 125, 0.3), rgba(0, 0, 0, 0.3));
+            border: 1px solid rgba(162, 82, 250, 0.2);
             border-radius: 14px;
-            padding: 1rem;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
-            backdrop-filter: blur(5px);
+            padding: 1.2rem;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
         }
 
         .wallet-card.game-vault {
-            border-color: rgba(0, 240, 255, 0.25);
-            background: linear-gradient(135deg, rgba(0, 240, 255, 0.1), rgba(16, 185, 129, 0.05));
+            border-color: rgba(255, 204, 0, 0.3);
+            background: linear-gradient(135deg, rgba(255, 204, 0, 0.08), rgba(74, 21, 125, 0.15));
+            box-shadow: 0 8px 30px rgba(255, 204, 0, 0.05);
         }
 
         .wallet-card h3 {
             font-size: 0.75rem;
             color: var(--text-muted);
-            margin-bottom: 0.4rem;
+            margin-bottom: 0.5rem;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.8px;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
         }
 
         .balance {
-            font-size: 1.2rem;
+            font-size: 1.25rem;
             font-weight: 800;
-            color: var(--neon-gold);
-            text-shadow: 0 0 10px rgba(242, 169, 0, 0.3);
+            color: var(--pi-purple-bright);
+            text-shadow: 0 0 10px var(--pi-purple-glow);
             word-break: break-all;
         }
 
         .balance.game-balance {
-            color: var(--neon-blue);
-            text-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+            color: var(--pi-gold-bright);
+            text-shadow: 0 0 12px rgba(255, 204, 0, 0.4);
         }
 
         .nav-menu {
@@ -128,29 +131,29 @@
         }
 
         .nav-item {
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
+            padding: 0.8rem 1.2rem;
+            border-radius: 10px;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             color: var(--text-muted);
             font-weight: 600;
             border: 1px solid transparent;
             text-align: left;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             font-size: 0.9rem;
         }
 
         .nav-item:hover, .nav-item.active {
-            color: var(--text-light);
-            background: linear-gradient(90deg, rgba(0, 240, 255, 0.15) 0%, transparent 100%);
-            border-left: 4px solid var(--neon-blue);
-            box-shadow: 5px 0 15px rgba(0, 240, 255, 0.05);
+            color: #fff;
+            background: linear-gradient(90deg, rgba(162, 82, 250, 0.2) 0%, transparent 100%);
+            border-left: 4px solid var(--pi-gold);
+            box-shadow: 5px 0 15px rgba(162, 82, 250, 0.1);
         }
 
         main {
-            padding: 2rem;
+            padding: 2.5rem;
             display: flex;
             flex-direction: column;
             gap: 2rem;
@@ -159,7 +162,7 @@
 
         .view-section {
             display: none;
-            animation: fadeIn 0.5s ease forwards;
+            animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
 
         .view-section.active {
@@ -167,21 +170,21 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
         .game-panel {
             background: var(--panel-bg);
-            border: 1px solid rgba(138, 43, 226, 0.25);
-            border-radius: 20px;
-            padding: 1.5rem;
+            border: 1px solid rgba(162, 82, 250, 0.2);
+            border-radius: 24px;
+            padding: 1.8rem;
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 1.5rem;
-            backdrop-filter: blur(15px);
-            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), inset 0 0 20px rgba(162, 82, 250, 0.05);
             width: 100%;
         }
 
@@ -190,8 +193,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(162, 82, 250, 0.15);
+            padding-bottom: 1.2rem;
             flex-wrap: wrap;
             gap: 1rem;
         }
@@ -211,72 +214,77 @@
 
         .stat-box {
             text-align: center;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 0.4rem 1rem;
-            border-radius: 8px;
-            min-width: 80px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(14, 5, 26, 0.6);
+            padding: 0.5rem 1.2rem;
+            border-radius: 10px;
+            min-width: 90px;
+            border: 1px solid rgba(162, 82, 250, 0.1);
         }
 
         .stat-label {
             font-size: 0.7rem;
             color: var(--text-muted);
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .stat-val {
             font-size: 1.3rem;
             font-weight: 800;
-            color: var(--neon-blue);
+            color: var(--pi-gold-bright);
+            text-shadow: 0 0 10px rgba(255, 204, 0, 0.3);
         }
 
         #gameCanvas {
-            background: #020106;
-            border: 2px solid rgba(138, 43, 226, 0.3);
-            border-radius: 12px;
-            box-shadow: 0 0 25px rgba(138, 43, 226, 0.15);
+            background: #05020a;
+            border: 2px solid rgba(162, 82, 250, 0.25);
+            border-radius: 16px;
+            box-shadow: 0 0 30px rgba(162, 82, 250, 0.15), inset 0 0 20px rgba(0,0,0,0.8);
             cursor: crosshair;
             max-width: 100%;
             height: auto;
         }
 
-        /* تصغير حجم الأزرار وجعلها أكثر عصرية */
+        /* تصغير حجم الأزرار وجعلها تعكس ألوان Pi المتوهجة */
         .btn-action {
-            background: linear-gradient(135deg, var(--neon-gold) 0%, var(--neon-gold-bright) 100%);
-            color: #05010d;
+            background: linear-gradient(135deg, var(--pi-gold) 0%, var(--pi-gold-bright) 100%);
+            color: #090314;
             border: none;
-            padding: 0.6rem 1.8rem;
-            font-size: 0.95rem;
+            padding: 0.6rem 1.6rem;
+            font-size: 0.9rem;
             font-weight: 700;
             border-radius: 8px;
             cursor: pointer;
-            box-shadow: 0 0 15px rgba(242, 169, 0, 0.2);
-            transition: all 0.25s ease-in-out;
+            box-shadow: 0 0 15px rgba(255, 204, 0, 0.3);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .btn-action:hover {
             transform: translateY(-2px);
-            box-shadow: 0 0 20px var(--neon-gold-bright);
+            box-shadow: 0 0 22px var(--pi-gold-bright);
         }
 
         .btn-owned {
-            background: linear-gradient(135deg, #1e293b 0%, #334155 100%) !important;
-            color: #94a3b8 !important;
+            background: linear-gradient(135deg, #2a1645 0%, #3d2361 100%) !important;
+            color: var(--text-muted) !important;
+            border: 1px solid rgba(162, 82, 250, 0.3) !important;
             box-shadow: none !important;
         }
 
         .btn-active-skin {
-            background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important;
+            background: linear-gradient(135deg, var(--pi-purple-deep) 0%, var(--pi-purple-bright) 100%) !important;
             color: white !important;
-            box-shadow: 0 0 12px rgba(16, 185, 129, 0.3) !important;
+            border: 1px solid rgba(255, 204, 0, 0.4) !important;
+            box-shadow: 0 0 15px rgba(162, 82, 250, 0.4) !important;
         }
 
         .luxury-table-container {
             background: var(--panel-bg);
-            border-radius: 16px;
+            border-radius: 20px;
             padding: 0.5rem;
-            border: 1px solid rgba(138, 43, 226, 0.15);
+            border: 1px solid rgba(162, 82, 250, 0.15);
             overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
         }
 
         .luxury-table {
@@ -285,31 +293,32 @@
         }
 
         .luxury-table th, .luxury-table td {
-            padding: 1rem 1.2rem;
+            padding: 1.1rem 1.4rem;
             text-align: left;
         }
 
         .luxury-table th {
-            background: rgba(138, 43, 226, 0.15);
-            color: var(--neon-blue);
+            background: rgba(74, 21, 125, 0.3);
+            color: var(--pi-gold-bright);
             font-size: 0.85rem;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.8px;
+            border-bottom: 1px solid rgba(162, 82, 250, 0.2);
         }
 
         .luxury-table tr {
-            border-bottom: 1px solid rgba(255,255,255,0.04);
+            border-bottom: 1px solid rgba(162, 82, 250, 0.08);
             transition: background 0.2s;
         }
         
         .luxury-table tbody tr:hover {
-            background: rgba(255, 255, 255, 0.02);
+            background: rgba(162, 82, 250, 0.04);
         }
 
         .rank-gold { 
-            color: var(--neon-gold-bright); 
+            color: var(--pi-gold-bright); 
             font-weight: 900;
-            text-shadow: 0 0 8px rgba(255, 205, 0, 0.4);
+            text-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
         }
 
         .shop-grid {
@@ -320,38 +329,38 @@
 
         .shop-card {
             background: var(--panel-bg);
-            border: 1px solid rgba(255,255,255,0.04);
-            border-radius: 16px;
-            padding: 1.5rem;
+            border: 1px solid rgba(162, 82, 250, 0.15);
+            border-radius: 20px;
+            padding: 1.8rem;
             text-align: center;
             display: flex;
             flex-direction: column;
-            gap: 1rem;
-            transition: all 0.3s;
+            gap: 1.1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .shop-card:hover {
-            border-color: var(--neon-blue);
-            transform: translateY(-4px);
-            box-shadow: 0 10px 25px rgba(0, 240, 255, 0.05);
+            border-color: var(--pi-gold);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(255, 204, 0, 0.08);
         }
 
         .skin-preview {
-            height: 100px;
-            background: rgba(0,0,0,0.4);
-            border-radius: 10px;
+            height: 110px;
+            background: rgba(14, 5, 26, 0.6);
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.5rem;
-            border: 1px solid rgba(255,255,255,0.02);
+            font-size: 2.8rem;
+            border: 1px solid rgba(162, 82, 250, 0.1);
         }
 
         .pi-modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(5, 1, 13, 0.85);
-            backdrop-filter: blur(8px);
+            background: rgba(9, 3, 20, 0.9);
+            backdrop-filter: blur(10px);
             display: flex; justify-content: center; align-items: center;
             z-index: 9999; opacity: 0; pointer-events: none;
             transition: opacity 0.4s ease;
@@ -360,51 +369,56 @@
         .pi-modal-overlay.active { opacity: 1; pointer-events: auto; }
 
         .pi-modal-box {
-            background: linear-gradient(145deg, #1f1235 0%, #0f071c 100%);
-            border: 2px solid var(--neon-gold);
-            border-radius: 20px; padding: 30px; max-width: 400px; width: 90%;
+            background: linear-gradient(145deg, #240f3e 0%, #0e051a 100%);
+            border: 2px solid var(--pi-gold);
+            border-radius: 24px; padding: 35px; max-width: 400px; width: 90%;
             text-align: center; transform: scale(0.7); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 20px 60px rgba(255, 204, 0, 0.15);
         }
 
         .pi-modal-overlay.active .pi-modal-box { transform: scale(1); }
 
         .pi-modal-icon {
-            width: 60px; height: 60px; background: rgba(242, 169, 0, 0.1);
-            border: 2px solid var(--neon-gold); border-radius: 50%;
+            width: 65px; height: 65px; background: rgba(255, 204, 0, 0.1);
+            border: 2px solid var(--pi-gold); border-radius: 50%;
             display: flex; justify-content: center; align-items: center;
-            margin: 0 auto 15px; color: var(--neon-gold); font-size: 1.8rem;
+            margin: 0 auto 18px; color: var(--pi-gold); font-size: 2rem;
+            text-shadow: 0 0 10px var(--pi-gold);
         }
 
         .pi-modal-btn {
-            background: var(--neon-gold); color: #0b0416; border: none;
-            border-radius: 8px; padding: 10px 30px; font-weight: bold; cursor: pointer; font-size: 0.9rem;
+            background: linear-gradient(135deg, var(--pi-gold) 0%, var(--pi-gold-bright) 100%);
+            color: #090314; border: none;
+            border-radius: 8px; padding: 12px 35px; font-weight: bold; cursor: pointer; font-size: 0.95rem;
+            box-shadow: 0 5px 15px rgba(255, 204, 0, 0.2);
         }
 
         .pi-modal {
             display: none; position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(5, 1, 13, 0.9); z-index: 1000;
-            align-items: center; justify-content: center; backdrop-filter: blur(10px);
+            background: rgba(9, 3, 20, 0.92); z-index: 1000;
+            align-items: center; justify-content: center; backdrop-filter: blur(12px);
         }
 
         .pi-modal-content {
-            background: linear-gradient(145deg, #141522 0%, #0b0c16 100%);
-            border: 2px solid var(--neon-gold); border-radius: 20px;
-            padding: 2rem; width: 90%; max-width: 400px; text-align: center;
+            background: linear-gradient(145deg, #1d0d33 0%, #090314 100%);
+            border: 2px solid var(--pi-gold); border-radius: 24px;
+            padding: 2.5rem; width: 90%; max-width: 400px; text-align: center;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.8);
         }
 
         .loader {
-            border: 4px solid rgba(255,255,255,0.05); border-top: 4px solid var(--neon-gold);
-            border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 1.5rem auto;
+            border: 4px solid rgba(162, 82, 250, 0.1); border-top: 4px solid var(--pi-gold);
+            border-radius: 50%; width: 45px; height: 45px; animation: spin 1s linear infinite; margin: 1.8rem auto;
         }
 
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         @media (max-width: 768px) {
             .app-container { grid-template-columns: 1fr; }
-            sidebar { border-right: none; border-bottom: 1px solid rgba(138, 43, 226, 0.2); }
+            sidebar { border-right: none; border-bottom: 1px solid rgba(162, 82, 250, 0.15); }
             .nav-menu { flex-direction: row; justify-content: space-around; }
-            main { padding: 1rem; }
+            main { padding: 1.2rem; }
         }
     </style>
 </head>
@@ -416,13 +430,11 @@
             <div class="brand">PI ARENA ELITE</div>
         </div>
         <div class="sidebar-content">
-            <!-- Pi Wallet Account -->
             <div class="wallet-card">
                 <h3>👤 Pioneer Account</h3>
                 <div class="balance" id="walletBalance" style="font-size: 13px; color: var(--text-muted);">Connecting Pi SDK...</div>
             </div>
             
-            <!-- NEW: Game Vault Wallet Balance -->
             <div class="wallet-card game-vault">
                 <h3>🎮 Game Vault Balance</h3>
                 <div class="balance game-balance" id="gameBalance">0.00 PI</div>
@@ -437,7 +449,6 @@
     </sidebar>
 
     <main>
-        <!-- Game Section -->
         <section id="game-section" class="view-section active">
             <div class="game-panel">
                 <div class="game-header">
@@ -455,9 +466,8 @@
             </div>
         </section>
 
-        <!-- Leaderboard Section -->
         <section id="leaderboard-section" class="view-section">
-            <h2 style="margin-bottom: 1.5rem; text-shadow: 0 0 15px var(--neon-blue); font-weight: 800;">Daily Top Operators</h2>
+            <h2 style="margin-bottom: 1.5rem; text-shadow: 0 0 15px var(--pi-purple-bright); font-weight: 800;">Daily Top Operators</h2>
             <div class="luxury-table-container">
                 <table class="luxury-table">
                     <thead>
@@ -472,39 +482,37 @@
             </div>
         </section>
 
-        <!-- Shop Section -->
         <section id="shop-section" class="view-section">
-            <h2 style="margin-bottom: 1.5rem; text-shadow: 0 0 15px var(--pi-neon); font-weight: 800;">Laser Weapon Arsenal</h2>
+            <h2 style="margin-bottom: 1.5rem; text-shadow: 0 0 15px var(--pi-gold); font-weight: 800;">Laser Weapon Arsenal</h2>
             <div class="shop-grid">
                 <div class="shop-card">
-                    <div class="skin-preview" style="color: #a855f7; text-shadow: 0 0 15px #a855f7;">🔮</div>
-                    <h3 style="font-weight: 700;">Standard Purple Laser</h3>
-                    <p style="color: var(--text-muted); font-size: 0.85rem;">The basic cybernetic beam bundled with your default mainframe armor.</p>
-                    <button class="btn-action btn-active-skin" id="btn-skin-Default" style="padding: 0.5rem; font-size: 0.85rem;" onclick="selectOwnedSkin('Default', '#a855f7')">Active</button>
+                    <div class="skin-preview" style="color: var(--pi-purple-bright); text-shadow: 0 0 15px var(--pi-purple-bright);">🔮</div>
+                    <h3 style="font-weight: 700;">Imperial Purple Beam</h3>
+                    <p style="color: var(--text-muted); font-size: 0.85rem;">The signature Pi Network tactical violet core beam bundled with your mainframe armor.</p>
+                    <button class="btn-action btn-active-skin" id="btn-skin-Default" style="padding: 0.5rem; font-size: 0.85rem;" onclick="selectOwnedSkin('Default', '#a252fa')">Active</button>
                 </div>
                 <div class="shop-card">
-                    <div class="skin-preview" style="color: #00f0ff; text-shadow: 0 0 15px #00f0ff;">⚡</div>
-                    <h3 style="font-weight: 700;">Cyan Plasma Beam</h3>
-                    <p style="color: var(--text-muted); font-size: 0.85rem;">Modifies tactical firing strikes and discharge rings into high-frequency cyan.</p>
-                    <button class="btn-action" id="btn-skin-Plasma" style="padding: 0.5rem; font-size: 0.85rem;" onclick="handleSkinAction('Plasma', 0.5, '#00f0ff')">Claim (0.5 Pi)</button>
+                    <div class="skin-preview" style="color: var(--pi-gold-bright); text-shadow: 0 0 15px var(--pi-gold-bright);">🔱</div>
+                    <h3 style="font-weight: 700;">Royal Pi Gold Charge</h3>
+                    <p style="color: var(--text-muted); font-size: 0.85rem;">A prestigious imperial golden trail tailored exclusively for elite network champions.</p>
+                    <button class="btn-action" id="btn-skin-Gold" style="padding: 0.5rem; font-size: 0.85rem;" onclick="handleSkinAction('Gold', 0.5, '#ffcc00')">Claim (0.5 Pi)</button>
                 </div>
                 <div class="shop-card">
-                    <div class="skin-preview" style="color: #ffd700; text-shadow: 0 0 15px #ffd700;">🔥</div>
-                    <h3 style="font-weight: 700;">Royal Gold Charge</h3>
-                    <p style="color: var(--text-muted); font-size: 0.85rem;">A prestigious imperial golden trail tailored exclusively for arena champions.</p>
-                    <button class="btn-action" id="btn-skin-Gold" style="padding: 0.5rem; font-size: 0.85rem;" onclick="handleSkinAction('Gold', 1.5, '#ffd700')">Claim (1.5 Pi)</button>
+                    <div class="skin-preview" style="color: #ffffff; text-shadow: 0 0 15px #ffffff;">💎</div>
+                    <h3 style="font-weight: 700;">Astral Diamond Pulse</h3>
+                    <p style="color: var(--text-muted); font-size: 0.85rem;">Modifies tactical firing strikes into hyper-frequency pure starlight emissions.</p>
+                    <button class="btn-action" id="btn-skin-Plasma" style="padding: 0.5rem; font-size: 0.85rem;" onclick="handleSkinAction('Plasma', 1.5, '#ffffff')">Claim (1.5 Pi)</button>
                 </div>
             </div>
         </section>
     </main>
 </div>
 
-<!-- Modal Windows -->
 <div class="pi-modal" id="piPaywallModal">
     <div class="pi-modal-content">
-        <h2 style="color: var(--neon-gold); margin-bottom: 0.5rem; font-weight: 800;">Pi Network Secure Gateway</h2>
+        <h2 style="color: var(--pi-gold); margin-bottom: 0.5rem; font-weight: 800;">Pi Network Secure Gateway</h2>
         <p id="piModalTxName" style="font-size: 0.9rem; color: #fff;"></p>
-        <p id="piModalCost" style="font-size: 1.4rem; font-weight: bold; color: var(--neon-gold-bright); margin: 0.5rem 0;"></p>
+        <p id="piModalCost" style="font-size: 1.4rem; font-weight: bold; color: var(--pi-gold-bright); margin: 0.5rem 0;"></p>
         <div class="loader"></div>
         <p id="piModalStatus" style="color: var(--text-muted); font-size: 0.8rem;">Awaiting blockchain confirmation...</p>
     </div>
@@ -526,7 +534,7 @@
 
     let state = {
         currentUser: 'anonymous_operator',
-        currentLaserColor: '#a855f7',
+        currentLaserColor: '#a252fa',
         activeSkinId: 'Default',
         ownedSkins: ['Default'],
         score: 0,
@@ -561,45 +569,37 @@
             if (typeof Pi !== 'undefined') {
                 try {
                     const isSandbox = !(window.location.hostname.includes('vercel.app') || window.location.hostname.includes('yourdomain.com'));
-                    
-                    console.log("Initializing Pi SDK. Protection sandbox mode:", isSandbox);
                     Pi.init({ version: "2.0", sandbox: isSandbox });
                     
                     Pi.authenticate(['username', 'payments'])
                     .then(function(auth) {
-                        console.log("Authentication successful:", auth.user.username);
                         state.currentUser = auth.user.username;
                         const walletEl = document.getElementById('walletBalance');
                         walletEl.innerText = auth.user.username;
-                        walletEl.style.color = "var(--neon-green)";
+                        walletEl.style.color = "var(--pi-gold-bright)";
                         
-                        // Syncing data
                         syncUserSkinsFromBackend();
                         fetchUserGameWallet();
                     })
                     .catch(function(error) {
-                        console.error("Authentication error caught:", error);
                         authRetries++;
                         if (authRetries < maxRetries) {
                             setTimeout(tryPiAuthenticate, 1500);
                         } else {
                             document.getElementById('walletBalance').innerText = "Guest_Operator";
-                            document.getElementById('walletBalance').style.color = "var(--text-muted)";
                             updateShopUI();
                         }
                     });
                 } catch(e) { 
-                    console.error("Blockchain module integration crash:", e); 
                     document.getElementById('walletBalance').innerText = "Initialization Error";
                     updateShopUI(); 
                 }
             } else {
-                console.log("Local Host Sandbox Mode Simulated.");
-                state.currentUser = "local_pioneer_" + Math.floor(Math.random() * 900);
+                state.currentUser = "pioneer_dev_" + Math.floor(Math.random() * 900);
                 const walletEl = document.getElementById('walletBalance');
                 walletEl.innerText = state.currentUser + " (Dev Mode)";
-                walletEl.style.color = "var(--neon-blue)";
-                document.getElementById('gameBalance').innerText = "25.50 PI";
+                walletEl.style.color = "var(--pi-gold-bright)";
+                document.getElementById('gameBalance').innerText = "14.80 PI";
                 updateShopUI();
             }
         }
@@ -615,7 +615,7 @@
             if (data && data.balance !== undefined) {
                 document.getElementById('gameBalance').innerText = `${data.balance.toFixed(2)} PI`;
             }
-        }).catch(err => console.log("Wallet fetch fallback."));
+        }).catch(err => console.log("Wallet sync update."));
     }
 
     function syncUserSkinsFromBackend() {
@@ -624,7 +624,7 @@
         .then(data => {
             if(data && data.ownedSkins) {
                 state.ownedSkins = data.ownedSkins;
-                state.currentLaserColor = data.currentLaserColor || '#a855f7';
+                state.currentLaserColor = data.currentLaserColor || '#a252fa';
                 state.activeSkinId = data.activeSkinId || 'Default';
             }
             updateShopUI();
@@ -632,7 +632,7 @@
     }
 
     function updateShopUI() {
-        const skinsConfig = { 'Default': '#a855f7', 'Plasma': '#00f0ff', 'Gold': '#ffd700' };
+        const skinsConfig = { 'Default': '#a252fa', 'Gold': '#ffcc00', 'Plasma': '#ffffff' };
         Object.keys(skinsConfig).forEach(skinId => {
             const btn = document.getElementById(`btn-skin-${skinId}`);
             if (!btn) return;
@@ -641,7 +641,7 @@
             } else if (state.ownedSkins.includes(skinId)) {
                 btn.innerText = "Equip Skin"; btn.className = "btn-action btn-owned";
             } else {
-                let price = skinId === 'Plasma' ? 0.5 : 1.5;
+                let price = skinId === 'Gold' ? 0.5 : 1.5;
                 btn.innerText = `Unlock (${price} Pi)`; btn.className = "btn-action";
             }
         });
@@ -671,6 +671,7 @@
         });
     }
 
+    /* كائن الأهداف بروح متناسقة مع هوية ألوان باي النيون والذهبية المتداخلة */
     class CyberTarget {
         constructor() {
             this.x = Math.random() * (canvas.width - 80) + 40; 
@@ -680,7 +681,9 @@
             this.pulseTimer = Math.random() * 10;
             this.vx = (Math.random() - 0.5) * 4; 
             this.vy = (Math.random() - 0.5) * 4;
-            this.hue = Math.random() * 360; 
+            // الموازنة بين البنفسجي والذهبي كألوان للأهداف التنافسية
+            this.isGoldType = Math.random() > 0.5;
+            this.color = this.isGoldType ? '#ffcc00' : '#a252fa';
             this.rotationAngle = 0; 
             this.rotSpeed = (Math.random() - 0.5) * 0.05;
         }
@@ -694,13 +697,13 @@
         }
         draw() {
             ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.rotationAngle);
-            ctx.shadowBlur = 20; ctx.shadowColor = `hsl(${this.hue}, 100%, 60%)`;
-            ctx.strokeStyle = `hsl(${this.hue}, 100%, 60%)`; ctx.lineWidth = 3;
+            ctx.shadowBlur = 20; ctx.shadowColor = this.color;
+            ctx.strokeStyle = this.color; ctx.lineWidth = 3;
             ctx.beginPath(); ctx.arc(0, 0, this.radius, 0, Math.PI * 1.5); ctx.stroke();
             ctx.beginPath(); ctx.arc(0, 0, this.radius * 0.6, Math.PI * 0.5, Math.PI * 2); 
             ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 1.5; ctx.stroke();
             ctx.beginPath(); ctx.arc(0, 0, 6, 0, Math.PI * 2); 
-            ctx.fillStyle = `hsl(${this.hue}, 100%, 70%)`; ctx.fill(); ctx.restore();
+            ctx.fillStyle = this.color; ctx.fill(); ctx.restore();
         }
     }
 
@@ -783,7 +786,7 @@
             let t = targets[i]; let dist = Math.hypot(mouseX - t.x, mouseY - t.y);
             if (dist < t.radius + 5) {
                 hit = true; AudioEngine.playHit();
-                let particleColor = `hsl(${t.hue}, 100%, 65%)`;
+                let particleColor = t.color;
                 for(let p=0; p<20; p++) particles.push(new NeonParticle(t.x, t.y, particleColor));
                 state.score += 100 * state.combo; state.combo++;
                 targets.splice(i, 1); targets.push(new CyberTarget()); break;
