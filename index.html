@@ -21,6 +21,7 @@
         }
 
         * {
+            box-shadow: border-box;
             box-sizing: border-box;
             margin: 0;
             padding: 0;
@@ -31,7 +32,6 @@
         body {
             background-color: var(--bg-dark);
             color: var(--text-light);
-            /* تدرج خلفية غني يبرز اللون الذهبي في الأعماق */
             background-image: 
                 radial-gradient(circle at top right, rgba(255, 204, 0, 0.15) 0%, transparent 60%),
                 radial-gradient(circle at bottom left, var(--pi-purple-glow) 0%, transparent 50%),
@@ -81,7 +81,6 @@
             flex-grow: 1;
         }
 
-        /* حاوية أفقية تجمع المحفظة والحساب في سطر واحد */
         .horizontal-vault-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -149,7 +148,6 @@
             box-shadow: 5px 0 15px rgba(255, 204, 0, 0.05);
         }
 
-        /* حاوية المحتوى الرئيسي المعدلة لدعم تحريك الشاشة والتمرير لأسفل */
         main {
             padding: 2.5rem;
             display: flex;
@@ -362,7 +360,6 @@
             border: 1px solid rgba(255, 204, 0, 0.15);
         }
 
-        /* تنسيق التذييل القانوني الجديد في أسفل مساحة العرض الرئيسية */
         .legal-footer {
             text-align: center;
             font-size: 0.8rem;
@@ -465,19 +462,16 @@
             <div class="brand">PI ARENA ELITE</div>
         </div>
         <div class="sidebar-content">
-            
             <div class="horizontal-vault-row">
                 <div class="wallet-card">
                     <h3>👤 Pioneer</h3>
                     <div class="balance" id="walletBalance" style="font-size: 11px; color: #fff;">Connecting...</div>
                 </div>
-                
                 <div class="wallet-card">
                     <h3>🎮 Vault</h3>
                     <div class="balance game-balance" id="gameBalance">0.00 PI</div>
                 </div>
             </div>
-
             <ul class="nav-menu">
                 <li class="nav-item active" onclick="switchTab('game-section', this)">🎯 Battle Arena</li>
                 <li class="nav-item" onclick="switchTab('leaderboard-section', this)">🏆 Leaderboard</li>
@@ -595,20 +589,20 @@
     let targets = [];
     let particles = [];
     let gameInterval = null;
-    let modalCallback = null; // متغير لحفظ الوظيفة المراد تشغيلها بعد تأكيد الدفع
+    let modalCallback = null;
 
     function showPiModal(title, message, icon = '⚡', callback = null) {
         document.getElementById('modalTitle').innerText = title;
         document.getElementById('modalMessage').innerText = message;
         document.querySelector('.pi-modal-icon').innerText = icon;
         document.getElementById('piCustomModal').classList.add('active');
-        modalCallback = callback; // تخزين الاستدعاء الراجع لتشغيله عند النقر على زر الإغلاق
+        modalCallback = callback;
     }
 
     function closePiModalCustom() {
         document.getElementById('piCustomModal').classList.remove('active');
         if (modalCallback) {
-            modalCallback(); // تشغيل الكود (مثل بدء اللعبة أو تفعيل السكن) فور إغلاق النافذة
+            modalCallback();
             modalCallback = null;
         }
     }
@@ -809,13 +803,93 @@
         particles.forEach(p => { p.update(); p.draw(); });
         
         activeLasers = activeLasers.filter(l => l.alpha > 0);
+        
+        // المحرك البصري الجديد والمطور لرسم الأشعة بناءً على السلاح المجهّز
         activeLasers.forEach(laser => {
-            ctx.save(); ctx.globalAlpha = laser.alpha; ctx.shadowBlur = 25; ctx.shadowColor = state.currentLaserColor;
-            ctx.strokeStyle = state.currentLaserColor; ctx.lineWidth = 4;
-            ctx.beginPath(); ctx.moveTo(canvas.width/2, canvas.height); ctx.lineTo(laser.targetX, laser.targetY); ctx.stroke();
-            ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 1.5; ctx.stroke(); ctx.restore();
-            laser.alpha -= 0.15;
+            ctx.save();
+            ctx.globalAlpha = laser.alpha;
+            
+            const startX = canvas.width / 2;
+            const startY = canvas.height;
+            const endX = laser.targetX;
+            const endY = laser.targetY;
+
+            if (state.activeSkinId === 'Gold') {
+                // تأثير سلاح: Royal Pi Gold Charge
+                // 1. هالة خارجية ذهبية عريضة
+                ctx.shadowBlur = 35;
+                ctx.shadowColor = '#ffcc00';
+                ctx.strokeStyle = 'rgba(255, 204, 0, 0.3)';
+                ctx.lineWidth = 14;
+                ctx.beginPath(); ctx.moveTo(startX, startY); ctx.lineTo(endX, endY); ctx.stroke();
+
+                // 2. قلب ليزر ناري ذهبي متوسط
+                ctx.strokeStyle = '#ffcc00';
+                ctx.lineWidth = 6;
+                ctx.beginPath(); ctx.moveTo(startX, startY); ctx.lineTo(endX, endY); ctx.stroke();
+
+                // 3. قلب داخلي أبيض فائق التوهج
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 2;
+                ctx.beginPath(); ctx.moveTo(startX, startY); ctx.lineTo(endX, endY); ctx.stroke();
+
+            } else if (state.activeSkinId === 'Plasma') {
+                // تأثير سلاح: Astral Diamond Pulse
+                // توليد شعاع بلازما متعرج وصاعق عالي التردد
+                ctx.shadowBlur = 25;
+                ctx.shadowColor = '#00ffff';
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+                ctx.lineWidth = 3.5;
+                
+                ctx.beginPath();
+                ctx.moveTo(startX, startY);
+                
+                const segments = 12;
+                const dx = endX - startX;
+                const dy = endY - startY;
+                const length = Math.hypot(dx, dy);
+                
+                // حساب المتجهات العمودية لإضافة التعرج العشوائي للصاعقة
+                const nx = length > 0 ? -dy / length : 0;
+                const ny = length > 0 ? dx / length : 0;
+                
+                for (let i = 1; i <= segments; i++) {
+                    const progress = i / segments;
+                    let posX = startX + dx * progress;
+                    let posY = startY + dy * progress;
+                    
+                    if (i < segments) {
+                        // إزاحة التعرج بناءً على معدل اختفاء الشعاع لإعطاء حيوية للبلازما
+                        const jitter = (Math.random() - 0.5) * 18 * laser.alpha;
+                        posX += nx * jitter;
+                        posY += ny * jitter;
+                    }
+                    ctx.lineTo(posX, posY);
+                }
+                ctx.stroke();
+
+                // إضافة وميض ماسي خارجي سريع
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+
+            } else {
+                // تأثير سلاح: Imperial Purple Beam (الافتراضي)
+                ctx.shadowBlur = 20;
+                ctx.shadowColor = '#a252fa';
+                ctx.strokeStyle = '#a252fa';
+                ctx.lineWidth = 4;
+                ctx.beginPath(); ctx.moveTo(startX, startY); ctx.lineTo(endX, endY); ctx.stroke();
+                
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 1.5;
+                ctx.beginPath(); ctx.moveTo(startX, startY); ctx.lineTo(endX, endY); ctx.stroke();
+            }
+            
+            ctx.restore();
+            laser.alpha -= 0.14; // معدل تلاشي انسيابي للشعاع
         });
+        
         requestAnimationFrame(gameLoop);
     }
 
