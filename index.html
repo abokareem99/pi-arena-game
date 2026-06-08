@@ -618,7 +618,8 @@
         score: 0,
         combo: 1,
         timeLeft: 30,
-        gameActive: false
+        gameActive: false,
+        hasPaidArenaFee: false // 🔒 متغير الحماية المنطقية لمنع الشراء العشوائي قبل دفع الرسوم
     };
 
     let activeLasers = [];
@@ -729,7 +730,20 @@
     }
 
     function handleSkinAction(skinId, cost, color) {
-        if (state.ownedSkins.includes(skinId)) { selectOwnedSkin(skinId, color); } else { buySkin(skinId, cost, color); }
+        if (state.ownedSkins.includes(skinId)) { 
+            selectOwnedSkin(skinId, color); 
+        } else { 
+            // 🛑 التحقق الصارم قبل السماح باستدعاء معالجة شراء السلاح ومحفظة باي
+            if (!state.hasPaidArenaFee) {
+                showPiModal(
+                    "🔒 المتجر مغلق مؤقتاً", 
+                    "عذراً أيها العميل التكتيكي! لا يمكنك شراء ترقيات وأسلحة الليزر من المتجر قبل دفع رسوم دخول الحلبة والمشاركة في معركة واحدة على الأقل.", 
+                    "⚠️"
+                );
+                return; // إيقاف التنفيذ فوراً وحجب الدفع عن السلاح
+            }
+            buySkin(skinId, cost, color); 
+        }
     }
 
     function selectOwnedSkin(skinId, color) {
@@ -1031,7 +1045,13 @@
     }
 
     function closePiModal() { document.getElementById('piPaywallModal').style.display = 'none'; }
-    function requestMatchEntry() { executeRealPiPayment("Elite Competitive Arena Entry Pass", 0.10, () => { initGame(); }); }
+    
+    function requestMatchEntry() { 
+        executeRealPiPayment("Elite Competitive Arena Entry Pass", 0.10, () => { 
+            state.hasPaidArenaFee = true; // 🔑 تفعيل السماح بالشراء الفوري من المتجر عند نجاح دفع الرسوم وبدء اللعبة
+            initGame(); 
+        }); 
+    }
 
     function switchTab(sectionId, element) {
         document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
